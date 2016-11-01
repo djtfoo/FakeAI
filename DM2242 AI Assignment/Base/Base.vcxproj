@@ -13,14 +13,14 @@
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
-    <ClCompile Include="Source\GameObject\DeliveryMan.cpp" />
-    <ClCompile Include="Source\GameObject\Entity.cpp" />
+    <ClCompile Include="Source\GameObject\Entity\DeliveryMan.cpp" />
+    <ClCompile Include="Source\GameObject\Entity\Entity.cpp" />
+    <ClCompile Include="Source\GameObject\Entity\Machine.cpp" />
+    <ClCompile Include="Source\GameObject\Entity\MaintenanceMan.cpp" />
+    <ClCompile Include="Source\GameObject\Entity\Robot.cpp" />
+    <ClCompile Include="Source\GameObject\Entity\ScrapMan.cpp" />
+    <ClCompile Include="Source\GameObject\Entity\Worker.cpp" />
     <ClCompile Include="Source\GameObject\GameObject.cpp" />
-    <ClCompile Include="Source\GameObject\Machine.cpp" />
-    <ClCompile Include="Source\GameObject\MaintenanceMan.cpp" />
-    <ClCompile Include="Source\GameObject\Robot.cpp" />
-    <ClCompile Include="Source\GameObject\ScrapMan.cpp" />
-    <ClCompile Include="Source\GameObject\Worker.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
     <ClCompile Include="Source\main.cpp" />
@@ -34,14 +34,15 @@
   <ItemGroup>
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Camera.h" />
-    <ClInclude Include="Source\GameObject\DeliveryMan.h" />
-    <ClInclude Include="Source\GameObject\Entity.h" />
+    <ClInclude Include="Source\GameObject\Entity\DeliveryMan.h" />
+    <ClInclude Include="Source\GameObject\Entity\Entity.h" />
+    <ClInclude Include="Source\GameObject\Entity\Machine.h" />
+    <ClInclude Include="Source\GameObject\Entity\MaintenanceMan.h" />
+    <ClInclude Include="Source\GameObject\Entity\Robot.h" />
+    <ClInclude Include="Source\GameObject\Entity\ScrapMan.h" />
+    <ClInclude Include="Source\GameObject\Entity\Worker.h" />
     <ClInclude Include="Source\GameObject\GameObject.h" />
-    <ClInclude Include="Source\GameObject\Machine.h" />
-    <ClInclude Include="Source\GameObject\MaintenanceMan.h" />
-    <ClInclude Include="Source\GameObject\Robot.h" />
-    <ClInclude Include="Source\GameObject\ScrapMan.h" />
-    <ClInclude Include="Source\GameObject\Worker.h" />
+    <ClInclude Include="Source\GameObject\Workstation.h" />
     <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\LoadOBJ.h" />
     <ClInclude Include="Source\LoadTGA.h" />

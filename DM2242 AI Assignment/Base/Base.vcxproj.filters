@@ -19,6 +19,12 @@
     <Filter Include="Source Files\GameObject">
       <UniqueIdentifier>{3c517128-7683-4441-84e8-df46b762ea09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GameObject\Entity">
+      <UniqueIdentifier>{987a0c98-28d2-4479-bf75-519bd07d5963}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GameObject\Entity">
+      <UniqueIdentifier>{bb0938b4-43bb-41fd-825f-b03d2daccf56}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -57,26 +63,26 @@
     <ClCompile Include="Source\GameObject\GameObject.cpp">
       <Filter>Source Files\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\Entity.cpp">
-      <Filter>Source Files\GameObject</Filter>
+    <ClCompile Include="Source\GameObject\Entity\DeliveryMan.cpp">
+      <Filter>Source Files\GameObject\Entity</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\Machine.cpp">
-      <Filter>Source Files\GameObject</Filter>
+    <ClCompile Include="Source\GameObject\Entity\Entity.cpp">
+      <Filter>Source Files\GameObject\Entity</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\Worker.cpp">
-      <Filter>Source Files\GameObject</Filter>
+    <ClCompile Include="Source\GameObject\Entity\Machine.cpp">
+      <Filter>Source Files\GameObject\Entity</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\MaintenanceMan.cpp">
-      <Filter>Source Files\GameObject</Filter>
+    <ClCompile Include="Source\GameObject\Entity\MaintenanceMan.cpp">
+      <Filter>Source Files\GameObject\Entity</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\Robot.cpp">
-      <Filter>Source Files\GameObject</Filter>
+    <ClCompile Include="Source\GameObject\Entity\Robot.cpp">
+      <Filter>Source Files\GameObject\Entity</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\ScrapMan.cpp">
-      <Filter>Source Files\GameObject</Filter>
+    <ClCompile Include="Source\GameObject\Entity\ScrapMan.cpp">
+      <Filter>Source Files\GameObject\Entity</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\DeliveryMan.cpp">
-      <Filter>Source Files\GameObject</Filter>
+    <ClCompile Include="Source\GameObject\Entity\Worker.cpp">
+      <Filter>Source Files\GameObject\Entity</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -125,26 +131,29 @@
     <ClInclude Include="Source\GameObject\GameObject.h">
       <Filter>Header Files\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObject\Entity.h">
+    <ClInclude Include="Source\GameObject\Workstation.h">
       <Filter>Header Files\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObject\Robot.h">
-      <Filter>Header Files\GameObject</Filter>
+    <ClInclude Include="Source\GameObject\Entity\DeliveryMan.h">
+      <Filter>Header Files\GameObject\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObject\Machine.h">
-      <Filter>Header Files\GameObject</Filter>
+    <ClInclude Include="Source\GameObject\Entity\Entity.h">
+      <Filter>Header Files\GameObject\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObject\Worker.h">
-      <Filter>Header Files\GameObject</Filter>
+    <ClInclude Include="Source\GameObject\Entity\Machine.h">
+      <Filter>Header Files\GameObject\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObject\MaintenanceMan.h">
-      <Filter>Header Files\GameObject</Filter>
+    <ClInclude Include="Source\GameObject\Entity\MaintenanceMan.h">
+      <Filter>Header Files\GameObject\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObject\ScrapMan.h">
-      <Filter>Header Files\GameObject</Filter>
+    <ClInclude Include="Source\GameObject\Entity\Robot.h">
+      <Filter>Header Files\GameObject\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObject\DeliveryMan.h">
-      <Filter>Header Files\GameObject</Filter>
+    <ClInclude Include="Source\GameObject\Entity\ScrapMan.h">
+      <Filter>Header Files\GameObject\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObject\Entity\Worker.h">
+      <Filter>Header Files\GameObject\Entity</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
