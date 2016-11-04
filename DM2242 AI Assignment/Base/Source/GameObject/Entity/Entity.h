@@ -5,6 +5,15 @@
 
 class Entity : public GameObject
 {
+public:
+    enum DIRECTION
+    {
+        DIR_DOWN,
+        DIR_UP,
+        DIR_RIGHT,
+        DIR_LEFT,
+    };
+
 private:
     virtual void Sense(double dt) = 0;  // get/receive updates from the world
     virtual int Think() = 0;   // process the updates
@@ -13,8 +22,12 @@ private:
 protected:
     Entity();
 
+    DIRECTION m_dir;
+
 public:
     virtual ~Entity();
+
+    virtual void Init() = 0;
 
     virtual void RunFSM(double dt);
 

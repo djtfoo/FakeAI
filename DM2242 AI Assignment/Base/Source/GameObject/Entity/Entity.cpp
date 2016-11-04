@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity()
+Entity::Entity() : m_dir(DIR_DOWN)
 {
 }
 
