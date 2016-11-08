@@ -31,6 +31,9 @@ public:
 
     bool IsPartAtWorkstation();
     bool IsOnBreak();
+
+    virtual void Init();
+    virtual void Update(double dt);
 };
 
 #endif

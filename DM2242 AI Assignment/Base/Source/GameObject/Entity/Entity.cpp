@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity() : m_dir(DIR_DOWN)
+Entity::Entity(std::string name) : GameObject(name, true), m_dir(DIR_DOWN)
 {
 }
 

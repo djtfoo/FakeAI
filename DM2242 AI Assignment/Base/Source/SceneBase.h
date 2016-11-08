@@ -7,7 +7,7 @@
 #include "Mesh.h"
 #include "MatrixStack.h"
 #include "Light.h"
-#include "GameObject.h"
+#include "GameObject/GameObject.h"
 #include <vector>
 
 class SceneBase : public Scene
@@ -43,32 +43,39 @@ class SceneBase : public Scene
 public:
 	enum GEOMETRY_TYPE
 	{
-		GEO_AXES,
-		GEO_TEXT,
-		GEO_BALL,
-		GEO_BLUEBALL,
-		GEO_CUBE,
-        GEO_SHIP,
-        GEO_LSHIP,
-        GEO_MSHIP,
-        GEO_HSHIP,
-		GEO_ASTEROID,
-		GEO_PLANET,
-        GEO_MENU,
-		GEO_MISSILE,
-		GEO_GRAV_BOMB,
-        GEO_TURRET,
-		GEO_HEALTH,
-        GEO_BACKGROUND,
-        GEO_ENEMY_SHIP,
-        GEO_CARGO,
-		GEO_WORMHOLE,
-        GEO_ALERT_WORMHOLE,
-        GEO_ALERT_SURVIVE,
+        // Entities
+        GEO_MACHINE,
+        GEO_WORKER,
+        GEO_MAINTENANCEMAN,
+        GEO_ROBOT,
+        GEO_SCRAPMAN,
+        GEO_DELIVERYMAN,
 
-		GEO_TEXT_P1,
-		GEO_TEXT_P2,
-		GEO_BOOST_ICON,
+        // Game Objects
+        GEO_DELIVERYTRUCK,
+        GEO_CONVEYORBELT,
+        GEO_TOILET,
+        GEO_WORKSTATION,
+
+        GEO_SCRAP_PIECE,
+        GEO_SCRAP_STACK,
+
+        GEO_ROBOT_HEAD,
+        GEO_ROBOT_BODY,
+        GEO_ROBOT_LIMBS,
+        GEO_ROBOT_CHIP,
+        GEO_ROBOT_STAGE1,
+        GEO_ROBOT_STAGE2,
+        GEO_ROBOT_STAGE3,
+
+        GEO_PYRAMID_PART,
+        GEO_PYRAMID_STACK,
+        GEO_PYRAMID_STAGE1,
+        GEO_PYRAMID_STAGE2,
+        GEO_PYRAMID_STAGE3,
+
+        // Generic
+		GEO_TEXT,
 		NUM_GEOMETRY,
 	};
 public:
@@ -83,7 +90,7 @@ public:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMesh(Mesh *mesh, bool enableLight);
-	void RenderGO(GameObject *go);
+	void RenderGO(GameObject* go);
 
 	GameObject* FetchGO();
 protected:

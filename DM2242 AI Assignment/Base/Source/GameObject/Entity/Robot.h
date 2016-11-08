@@ -8,6 +8,10 @@ class Robot : public Entity
 public:
     enum ROBOT_STATE
     {
+        INCOMPLETE1, // being built in progress
+        INCOMPLETE2,
+        INCOMPLETE3,
+
         STARTUP,
         WORK,
         CHEER,
@@ -19,13 +23,16 @@ private:
     
     ROBOT_STATE m_state;
 
+    virtual void Sense(double dt);
+    virtual int Think();
+    virtual void Act(int value);
+
 public:
     Robot();
     virtual ~Robot();
 
-    virtual void Sense(double dt);
-    virtual int Think();
-    virtual void Act(int value);
+    virtual void Init();
+    virtual void Update(double dt);
 };
 
 #endif

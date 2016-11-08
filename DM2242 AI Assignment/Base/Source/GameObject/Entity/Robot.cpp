@@ -1,11 +1,21 @@
 #include "Robot.h"
 
-Robot::Robot()
+Robot::Robot() : Entity("Robot")
 {
 }
 
 Robot::~Robot()
 {
+}
+
+void Robot::Init()
+{
+
+}
+
+void Robot::Update(double dt)
+{
+
 }
 
 void Robot::Sense(double dt)

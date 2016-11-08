@@ -1,11 +1,21 @@
 #include "Worker.h"
 
-Worker::Worker()
+Worker::Worker() : Entity("Worker")
 {
 }
 
 Worker::~Worker()
 {
+}
+
+void Worker::Init()
+{
+
+}
+
+void Worker::Update(double dt)
+{
+
 }
 
 void Worker::Sense(double dt)
@@ -34,7 +44,7 @@ void Worker::Act(int value)
 
 bool Worker::IsPartAtWorkstation()
 {
-    
+    return true;
 }
 
 bool Worker::IsOnBreak()

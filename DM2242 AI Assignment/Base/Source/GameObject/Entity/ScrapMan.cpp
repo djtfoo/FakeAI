@@ -1,11 +1,21 @@
 #include "ScrapMan.h"
 
-ScrapMan::ScrapMan()
+ScrapMan::ScrapMan() : Entity("Scrap Man")
 {
 }
 
 ScrapMan::~ScrapMan()
 {
+}
+
+void ScrapMan::Init()
+{
+
+}
+
+void ScrapMan::Update(double dt)
+{
+
 }
 
 void ScrapMan::Sense(double dt)

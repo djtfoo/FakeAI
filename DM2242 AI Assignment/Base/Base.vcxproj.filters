@@ -57,9 +57,6 @@
     <ClCompile Include="Source\SceneBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SP3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\GameObject\GameObject.cpp">
       <Filter>Source Files\GameObject</Filter>
     </ClCompile>
@@ -83,6 +80,9 @@
     </ClCompile>
     <ClCompile Include="Source\GameObject\Entity\Worker.cpp">
       <Filter>Source Files\GameObject\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneAI.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -125,9 +125,6 @@
     <ClInclude Include="Source\SceneBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SP3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\GameObject\GameObject.h">
       <Filter>Header Files\GameObject</Filter>
     </ClInclude>
@@ -154,6 +151,9 @@
     </ClInclude>
     <ClInclude Include="Source\GameObject\Entity\Worker.h">
       <Filter>Header Files\GameObject\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneAI.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

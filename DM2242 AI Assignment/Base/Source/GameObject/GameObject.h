@@ -13,15 +13,27 @@ protected:
     bool b_active;
     Mesh* m_mesh;
 
-    GameObject();
+    bool b_isEntity;
+
+    GameObject(std::string name, bool isEntity = false);
 
 public:
     virtual ~GameObject();
+
+    virtual void Init() = 0;
+    virtual void Update(double dt) = 0;      // doing things for its state (e.g. walking)
 
     std::string GetName();
     Vector3 GetPos();
     bool IsActive();
     Mesh* GetMesh();
+
+    bool IsEntity();
+
+    void SetPos(const Vector3& pos);
+    void SetMesh(Mesh* mesh);
+    void SetActive();
+    void SetInactive();
 };
 
 #endif

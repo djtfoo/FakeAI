@@ -1,11 +1,21 @@
 #include "DeliveryMan.h"
 
-DeliveryMan::DeliveryMan()
+DeliveryMan::DeliveryMan() : Entity("Delivery Man")
 {
 }
 
 DeliveryMan::~DeliveryMan()
 {
+}
+
+void DeliveryMan::Init()
+{
+
+}
+
+void DeliveryMan::Update(double dt)
+{
+
 }
 
 void DeliveryMan::Sense(double dt)

@@ -1,6 +1,6 @@
 #include "Machine.h"
 
-Machine::Machine()
+Machine::Machine() : Entity("Machine")
 {
 }
 
@@ -17,6 +17,16 @@ void Machine::Init()
     m_maxScrapQuantity = 10;
 }
 
+void Machine::Update(double dt)
+{
+
+}
+
+void Machine::SetPartToCreate(ROBOT_PART part)
+{
+    m_partToCreate = part;
+}
+
 void Machine::Sense(double dt)
 {
     m_timer += dt;
@@ -29,9 +39,9 @@ int Machine::Think()
 {
     if (m_state == REST && m_timer > 10)
     {
-        m_timer = 0;
+        m_timer = 0.0;
 
-        if (m_scrapQuantity <= 0)
+        if (m_scrapQuantity < m_partToCreate)
         {
             return WAITFORREFILL;
         }
@@ -43,10 +53,11 @@ int Machine::Think()
 
     if (m_state == PRODUCTION && m_timer > 5)
     {
-
+        m_timer = 0.0;
+        return REST;
     }
 
-    return -1;
+    return 0;
 }
 
 void Machine::Act(int value)
@@ -54,13 +65,17 @@ void Machine::Act(int value)
     switch (value)
     {
     case REST:
+        m_state = REST;
         break;
 
     case PRODUCTION:
-    {
+        m_state = PRODUCTION;
         CreatePart();
         break;
-    }
+        
+    case WAITFORREFILL:
+        m_state = WAITFORREFILL;
+        break;
     }
 }
 
@@ -100,27 +115,19 @@ void Machine::CreatePart()
     switch (m_partToCreate)
     {
     case HEAD:
-    {
-                 m_scrapQuantity -= 1;
-                 break;
-    }
+        m_scrapQuantity -= 2;
+        break;
 
     case BODY:
-    {
-                 m_scrapQuantity -= 3;
-                 break;
-    }
+        m_scrapQuantity -= 4;
+        break;
 
     case LIMB:
-    {
-                 m_scrapQuantity -= 2;
-                 break;
-    }
+        m_scrapQuantity -= 3;
+        break;
 
     case MICROCHIP:
-    {
-                 m_scrapQuantity -= 1;
-                 break;
-    }
+        m_scrapQuantity -= 1;
+        break;
     }
 }

@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "SP3.h"
+#include "SceneAI.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -88,12 +88,14 @@ void Application::Init()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL 
 
 	//Create a window and create its OpenGL context
-	const GLFWvidmode *mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-	m_height = mode->height;
-	m_width = mode->width;
-	//m_width = 800;
-	//m_height = 600;
-	m_window = glfwCreateWindow(m_width, m_height, "Physics", NULL, NULL);
+	
+    //const GLFWvidmode *mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	//m_height = mode->height;
+	//m_width = mode->width;
+	
+    m_width = 800;
+	m_height = 600;
+	m_window = glfwCreateWindow(m_width, m_height, "Artifically Intelligent", NULL, NULL);
 
 	//If the window couldn't be created
 	if (!m_window)
@@ -125,7 +127,7 @@ void Application::Init()
 void Application::Run()
 {
 	//Main Loop
-	Scene *scene = new SP3;
+	Scene *scene = new SceneAI();
 	scene->Init();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame

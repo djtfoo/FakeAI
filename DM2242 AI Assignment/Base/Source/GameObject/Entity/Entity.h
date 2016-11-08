@@ -20,7 +20,7 @@ private:
     virtual void Act(int value) = 0;     // act upon any change in behaviour
 
 protected:
-    Entity();
+    Entity(std::string name);
 
     DIRECTION m_dir;
 
@@ -28,6 +28,7 @@ public:
     virtual ~Entity();
 
     virtual void Init() = 0;
+    virtual void Update(double dt) = 0;      // doing things for its state (e.g. walking)
 
     virtual void RunFSM(double dt);
 

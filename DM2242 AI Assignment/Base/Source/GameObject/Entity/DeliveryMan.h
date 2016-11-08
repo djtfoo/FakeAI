@@ -16,13 +16,16 @@ public:
 private:
     DELIVERYMAN_STATE m_state;
 
+    virtual void Sense(double dt);
+    virtual int Think();
+    virtual void Act(int value);
+
 public:
     DeliveryMan();
     virtual ~DeliveryMan();
 
-    virtual void Sense(double dt);
-    virtual int Think();
-    virtual void Act(int value);
+    virtual void Init();
+    virtual void Update(double dt);
 };
 
 #endif

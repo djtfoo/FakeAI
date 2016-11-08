@@ -8,10 +8,10 @@ class Machine : public Entity
 public:
     enum ROBOT_PART
     {
-        HEAD,
-        BODY,
-        LIMB,
-        MICROCHIP,
+        HEAD = 2,
+        BODY = 4,
+        LIMB = 3,
+        MICROCHIP = 1,
     };
 
     enum MACHINE_STATE
@@ -34,8 +34,6 @@ private:
     virtual int Think();
     virtual void Act(int value);
 
-    virtual void Init();
-
     // Machine Variables & Functions
     ROBOT_PART m_partToCreate;
 
@@ -44,6 +42,11 @@ private:
 public:
     Machine();
     virtual ~Machine();
+
+    virtual void Init();
+    virtual void Update(double dt);
+
+    void SetPartToCreate(ROBOT_PART part);
 
     double GetTimer();
     double GetOverheatCharge();

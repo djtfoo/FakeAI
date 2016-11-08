@@ -1,11 +1,21 @@
 #include "MaintenanceMan.h"
 
-MaintenanceMan::MaintenanceMan()
+MaintenanceMan::MaintenanceMan() : Entity("Maintenance Man")
 {
 }
 
 MaintenanceMan::~MaintenanceMan()
 {
+}
+
+void MaintenanceMan::Init()
+{
+
+}
+
+void MaintenanceMan::Update(double dt)
+{
+
 }
 
 void MaintenanceMan::Sense(double dt)
