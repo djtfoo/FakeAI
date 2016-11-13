@@ -15,6 +15,8 @@ void Machine::Init()
     m_overheatCharge = 0;
     m_scrapQuantity = 10; 
     m_maxScrapQuantity = 10;
+	m_isBroken = false;
+	m_partCreated = false;
 }
 
 void Machine::Update(double dt)
@@ -37,6 +39,8 @@ void Machine::Sense(double dt)
 
 int Machine::Think()
 {
+	// Change to switch case maybe?
+	
     if (m_state == REST && m_timer > 10)
     {
         m_timer = 0.0;
@@ -51,11 +55,37 @@ int Machine::Think()
         }
     }
 
-    if (m_state == PRODUCTION && m_timer > 5)
+    if (m_state == PRODUCTION)
     {
-        m_timer = 0.0;
-        return REST;
+		if (m_partCreated)
+		{
+			m_timer = 0.0;
+			m_partCreated = false;
+			return REST;
+		}
+		// Run the check if break down every 0.5 secs
+		else if (fmod(m_timer, 0.5) == 0)
+		{
+			int RandNum = Math::RandIntMinMax(0, 100);
+			if (RandNum < m_overheatCharge)
+				return BROKEN;
+		}
     }
+
+	if (m_state == WAITFORREFILL)
+	{
+		if (m_scrapQuantity > m_partToCreate)
+		{
+			return REST;
+		}
+	}
+
+	if (m_state == BROKEN)
+	{
+		if (!m_isBroken)
+			return PRODUCTION;
+	}
+
 
     return 0;
 }
@@ -70,9 +100,12 @@ void Machine::Act(int value)
 
     case PRODUCTION:
         m_state = PRODUCTION;
-        CreatePart();
-        break;
-        
+		if (m_timer > 5)
+		{
+			m_partCreated = true;
+			CreatePart();
+			break;
+		}
     case WAITFORREFILL:
         m_state = WAITFORREFILL;
         break;
@@ -130,4 +163,9 @@ void Machine::CreatePart()
         m_scrapQuantity -= 1;
         break;
     }
+}
+
+void Machine::SetIsBroken(bool status)
+{
+	m_isBroken = status;
 }

@@ -27,6 +27,8 @@ private:
     double m_overheatCharge;
     int m_scrapQuantity;
     int m_maxScrapQuantity;
+	bool m_partCreated;
+	bool m_isBroken;
 
     MACHINE_STATE m_state;
 
@@ -53,6 +55,8 @@ public:
     int GetScrapQuantity();
     bool IsBroken();
     bool IsEmpty();
+
+	void SetIsBroken(bool status);
 };
 
 #endif
