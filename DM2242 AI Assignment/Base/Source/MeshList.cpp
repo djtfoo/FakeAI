@@ -40,7 +40,7 @@ void MeshList::Init()
     meshList[GEO_DELIVERYTRUCK];
     meshList[GEO_CONVEYORBELT] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
     meshList[GEO_TOILET];
-    meshList[GEO_WORKSTATION];
+    meshList[GEO_WORKSTATION] = MeshBuilder::GenerateQuad("workstation", Color(0.5f, 0.2f, 0.07f));
 
     meshList[GEO_SCRAP_PIECE];
     meshList[GEO_SCRAP_STACK];
@@ -49,7 +49,7 @@ void MeshList::Init()
     meshList[GEO_ROBOT_BODY] = MeshBuilder::GenerateQuad("robot body", Color(0.3f, 0.5f, 0.5f), 0.75);
     meshList[GEO_ROBOT_LIMBS] = MeshBuilder::GenerateQuad("robot limbs", Color(0.3f, 0.5f, 0.5f), 0.75);
     meshList[GEO_ROBOT_CHIP] = MeshBuilder::GenerateQuad("robot chip", Color(0.3f, 0.5f, 0.5f), 0.75);
-    meshList[GEO_ROBOT_STAGE1];
+    meshList[GEO_ROBOT_STAGE1] = MeshBuilder::GenerateQuad("robot stage1", Color(0.5f, 0.5f, 0.5f), 1);
     meshList[GEO_ROBOT_STAGE2];
     meshList[GEO_ROBOT_STAGE3];
 

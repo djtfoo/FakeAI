@@ -1,5 +1,7 @@
 #include "Worker.h"
 
+#include "Robot.h"
+
 Worker::Worker() : Entity("Worker")
 {
 }
@@ -10,6 +12,8 @@ Worker::~Worker()
 
 void Worker::Init()
 {
+    m_state = IDLE;
+    m_timer = 0;
     m_workCompleted = false;
     m_atWorkstation = false;
     m_inToilet = false;
@@ -38,22 +42,31 @@ int Worker::Think()
             return BREAK;
         else if (IsPartAtWorkstation())
             return WORK;
+        else
+            return IDLE;
 
         break;
 
     case WORK:
+
         if (m_workCompleted)
         {
             m_timer = 0.0;
             m_workCompleted = false;
             return IDLE;
         }
+        else
+            return WORK;
         break;
 
     case BREAK:
-        if (m_inToilet = false)
+        if (m_inToilet == false)
+        {
             m_timer = 0.0;
             return IDLE;
+        }
+        else
+            return BREAK;
         break;
       
     
@@ -67,16 +80,19 @@ void Worker::Act(int value)
     switch (value)
     {
     case IDLE:
+        m_state = IDLE;
         DoIdle();
         break;
 
     case WORK:
+        m_state = WORK;
         DoWork();
         break;
 
-    case BREAK:
-        DoBreak();
-        break;
+    //case BREAK:
+    //    m_state = BREAK;
+    //    DoBreak();
+    //    break;
     }
 }
 
@@ -92,7 +108,19 @@ void Worker::DoIdle()
 void Worker::DoWork()
 {
     if (m_timer > 4)
+    {
         m_workCompleted = true;
+
+        m_workstation->RemoveFromStorage();
+
+        Robot* tempRobot = new Robot();
+        tempRobot->Init();
+        tempRobot->SetActive();
+        tempRobot->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_STAGE1));
+        tempRobot->SetPos(this->m_pos + Vector3(0, 1, 0));
+        tempRobot->SetRobotState(Robot::INCOMPLETE1);
+        SharedData::GetInstance()->m_goList.push_back(tempRobot);
+    }
 }
 
 void Worker::DoBreak()
@@ -103,7 +131,10 @@ void Worker::DoBreak()
 
 bool Worker::IsPartAtWorkstation()
 {
-    return true;
+    if (m_workstation->IfHasRobotPart())
+        return true;
+
+    return false;
 }
 
 bool Worker::IsOnBreak()
@@ -112,4 +143,10 @@ bool Worker::IsOnBreak()
         return true;
 
     return false;
+}
+
+
+void Worker::SetWorkstation(Workstation* station)
+{
+    m_workstation = station;
 }

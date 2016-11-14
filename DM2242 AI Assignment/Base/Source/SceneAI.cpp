@@ -69,11 +69,33 @@ void SceneAI::Init()
     //machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
     //SharedData::GetInstance()->m_goList.push_back(machine);
 
-    // Worker
-    SharedData::GetInstance()->AddGameObject(new Worker(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER), 7, 17);
-    SharedData::GetInstance()->AddGameObject(new Worker(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER), 11, 13);
-    SharedData::GetInstance()->AddGameObject(new Worker(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER), 6, 10);
-    SharedData::GetInstance()->AddGameObject(new Worker(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER), 2, 8);
+    // Worker + Assosiated Workstation
+    Workstation* tempStation = new Workstation();
+    tempStation->Init();
+    tempStation->SetActive();
+    tempStation->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKSTATION));
+    tempStation->SetPos(Vector3(6, 17, 0));
+    SharedData::GetInstance()->m_goList.push_back(tempStation);
+
+    Worker* tempWorker = new Worker();
+    tempWorker->Init();
+    tempWorker->SetActive();
+    tempWorker->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER));
+    tempWorker->SetPos(Vector3(7, 17, 0));
+    tempWorker->SetWorkstation(tempStation);
+    SharedData::GetInstance()->m_goList.push_back(tempWorker);
+
+    //SharedData::GetInstance()->AddGameObject(new Worker(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER), 7, 17);
+    //SharedData::GetInstance()->AddGameObject(new Workstation(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKSTATION), 6, 17);
+
+    //SharedData::GetInstance()->AddGameObject(new Worker(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER), 11, 13);
+    //SharedData::GetInstance()->AddGameObject(new Workstation(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKSTATION), 11, 14);
+
+    //SharedData::GetInstance()->AddGameObject(new Worker(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER), 6, 10);
+    //SharedData::GetInstance()->AddGameObject(new Workstation(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKSTATION), 7, 10);
+
+    //SharedData::GetInstance()->AddGameObject(new Worker(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER), 2, 8);
+    //SharedData::GetInstance()->AddGameObject(new Workstation(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKSTATION), 2, 9);
 
     // Maintenance Man
     SharedData::GetInstance()->AddGameObject(new MaintenanceMan(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_MAINTENANCEMAN), 15, 7);
@@ -139,14 +161,13 @@ void SceneAI::Update(double dt)
 {
 	SceneBase::Update(dt);
     
-    for (std::vector<GameObject*>::iterator it = SharedData::GetInstance()->m_goList.begin(); it != SharedData::GetInstance()->m_goList.end(); ++it)
+    for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
     {
-        GameObject* go = dynamic_cast<GameObject*>(*it);
-        go->Update(dt);
+        SharedData::GetInstance()->m_goList[i]->Update(dt);
 
-        if (go->IsEntity())
+        if (SharedData::GetInstance()->m_goList[i]->IsEntity())
         {
-            Entity* entity = dynamic_cast<Entity*>(go);
+            Entity* entity = dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i]);
             entity->RunFSM(dt);
         }
     }

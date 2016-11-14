@@ -72,8 +72,8 @@ int Machine::Think()
             m_partCreated = false;
             return REST;
         }
-		// Run the check if break down every 1 sec
-		else if (int(fmod(m_timer, 1)) == 0)
+		// Run the check if break down every 1.5 sec
+		else if (int(fmod(m_timer, 1.5)) == 0)
 		{
 			int RandNum = Math::RandIntMinMax(0, 100);
             if (RandNum < m_overheatCharge)

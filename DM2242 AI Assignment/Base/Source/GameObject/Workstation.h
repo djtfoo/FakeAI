@@ -4,6 +4,8 @@
 #include "RobotParts.h"
 #include <vector>
 
+#include "../SharedData.h"
+
 class Workstation : public GameObject
 {
 public: 
@@ -14,6 +16,7 @@ public:
     virtual void Update(double dt); // Check if any robotpart is at workstation, if so add into vector
 
     void AddToStorage(RobotPart* part);
+    RobotPart* RemoveFromStorage();
 
     bool IfHasRobotPart();
 

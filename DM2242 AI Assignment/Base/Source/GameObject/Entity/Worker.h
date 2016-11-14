@@ -40,6 +40,8 @@ public:
     bool IsPartAtWorkstation();
     bool IsOnBreak();
 
+    void SetWorkstation(Workstation* station);
+
     virtual void Init();
     virtual void Update(double dt);
 };

@@ -23,6 +23,7 @@
     <ClCompile Include="Source\GameObject\Entity\Worker.cpp" />
     <ClCompile Include="Source\GameObject\GameObject.cpp" />
     <ClCompile Include="Source\GameObject\RobotParts.cpp" />
+    <ClCompile Include="Source\GameObject\Workstation.cpp" />
     <ClCompile Include="Source\GridMap.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
