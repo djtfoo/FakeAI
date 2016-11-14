@@ -92,6 +92,11 @@
     </ClCompile>
     <ClCompile Include="Source\GameObject\ConveyorBelt.cpp">
       <Filter>Source Files\GameObject</Filter>
+    <ClCompile Include="Source\MeshList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SharedData.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +183,11 @@
     </ClInclude>
     <ClInclude Include="Source\GameObject\RobotParts.h">
       <Filter>Header Files\GameObject</Filter>
+    <ClInclude Include="Source\SharedData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MeshList.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

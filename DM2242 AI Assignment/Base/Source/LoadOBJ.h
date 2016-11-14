@@ -1,5 +1,5 @@
-#ifndef LOAD_OBJ_H
-#define LOAD_OBJ_H
+#ifndef LOADOBJ_H
+#define LOADOBJ_H
 
 #include <vector>
 #include "Vertex.h"

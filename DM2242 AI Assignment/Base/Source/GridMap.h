@@ -14,6 +14,7 @@ public:
     ~GridMap();
 
     void Update();  // Update collision grid
+    void Exit();
 
     int GetRows() const;
     int GetColumns() const;

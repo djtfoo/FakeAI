@@ -8,7 +8,6 @@
 
 class SceneAI : public SceneBase
 {
-
 public:
 	SceneAI();
 	~SceneAI();
@@ -24,11 +23,7 @@ public:
 	//void SpawnGameObject(OBJECT_TYPE ObjectType, GAMEOBJECT_TYPE GoType, Vector3 Position, Vector3 Scale, bool Collidable, bool Visible);
 
 protected:
-    // Scene Management
-    GridMap* m_gridMap;  // map that stores number of grids and collision information
-    void AddGameObject(GameObject* go, Mesh* mesh, int row, int col);    // add a GameObject to the scene, based on which grid u want it on
-    void AddGameObject(GameObject* go, Mesh* mesh, const Vector3& pos);    // add a GameObject to the scene, based on the Vec3 pos u want it on
-    void DeleteGameObject(GameObject* go);      // delete a GameObject from m_goList
+    
 };
 
 #endif

@@ -29,9 +29,11 @@
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshBuilder.cpp" />
+    <ClCompile Include="Source\MeshList.cpp" />
     <ClCompile Include="Source\SceneBase.cpp" />
     <ClCompile Include="Source\shader.cpp" />
     <ClCompile Include="Source\SceneAI.cpp" />
+    <ClCompile Include="Source\SharedData.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -57,10 +59,12 @@
     <ClInclude Include="Source\Material.h" />
     <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\MeshBuilder.h" />
+    <ClInclude Include="Source\MeshList.h" />
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\SceneBase.h" />
     <ClInclude Include="Source\shader.hpp" />
     <ClInclude Include="Source\SceneAI.h" />
+    <ClInclude Include="Source\SharedData.h" />
     <ClInclude Include="Source\Utility.h" />
     <ClInclude Include="Source\Vertex.h" />
   </ItemGroup>
