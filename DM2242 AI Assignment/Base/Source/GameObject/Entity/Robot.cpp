@@ -46,3 +46,13 @@ void Robot::Act(int value)
         break;
     }
 }
+
+void Robot::SetRobotState(ROBOT_STATE state)
+{
+    this->m_state = state;
+}
+
+Robot::ROBOT_STATE Robot::GetRobotState()
+{
+    return m_state;
+}

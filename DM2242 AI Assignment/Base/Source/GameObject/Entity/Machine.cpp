@@ -1,4 +1,5 @@
 #include "Machine.h"
+//#include "../../SceneBase.h"
 
 Machine::Machine() : Entity("Machine")
 {
@@ -24,9 +25,14 @@ void Machine::Update(double dt)
 
 }
 
-void Machine::SetPartToCreate(ROBOT_PART part)
+void Machine::SetPartToCreate(RobotPart::ROBOT_PART part)
 {
     m_partToCreate = part;
+}
+
+void Machine::SetSpawnLocation(ConveyorBelt* location)
+{
+    m_SpawnLocation = location;
 }
 
 void Machine::Sense(double dt)
@@ -57,12 +63,12 @@ int Machine::Think()
 
     if (m_state == PRODUCTION)
     {
-		if (m_partCreated)
-		{
-			m_timer = 0.0;
-			m_partCreated = false;
-			return REST;
-		}
+        if (m_partCreated)
+        {
+            m_timer = 0.0;
+            m_partCreated = false;
+            return REST;
+        }
 		// Run the check if break down every 0.5 secs
 		else if (fmod(m_timer, 0.5) == 0)
 		{
@@ -70,20 +76,25 @@ int Machine::Think()
 			if (RandNum < m_overheatCharge)
 				return BROKEN;
 		}
+        else
+            return PRODUCTION;
+
     }
 
 	if (m_state == WAITFORREFILL)
 	{
-		if (m_scrapQuantity > m_partToCreate)
-		{
-			return REST;
-		}
+        if (m_scrapQuantity > m_partToCreate)
+            return REST;
+        else
+            return WAITFORREFILL;
 	}
 
 	if (m_state == BROKEN)
 	{
 		if (!m_isBroken)
 			return PRODUCTION;
+        else
+            return BROKEN;
 	}
 
 
@@ -104,8 +115,8 @@ void Machine::Act(int value)
 		{
 			m_partCreated = true;
 			CreatePart();
-			break;
 		}
+        break;
     case WAITFORREFILL:
         m_state = WAITFORREFILL;
         break;
@@ -145,24 +156,33 @@ bool Machine::IsEmpty()
 
 void Machine::CreatePart()
 {
+    RobotPart* tempPart = new RobotPart();
+    tempPart->SetType(m_partToCreate);
+    tempPart->SetPos(m_SpawnLocation->GetPos());
+    tempPart->SetActive();
+
     switch (m_partToCreate)
     {
-    case HEAD:
+    case RobotPart::HEAD:
         m_scrapQuantity -= 2;
         break;
 
-    case BODY:
+    case RobotPart::BODY:
         m_scrapQuantity -= 4;
         break;
 
-    case LIMB:
+    case RobotPart::LIMB:
         m_scrapQuantity -= 3;
         break;
 
-    case MICROCHIP:
+    case RobotPart::MICROCHIP:
         m_scrapQuantity -= 1;
         break;
     }
+
+    // Set Mesh base on m_partToCreate 
+    //tempPart->SetMesh(SceneBase::meshList[SceneBase::GEO_ROBOT_HEAD]);
+    m_goList.push_back(tempPart);
 }
 
 void Machine::SetIsBroken(bool status)

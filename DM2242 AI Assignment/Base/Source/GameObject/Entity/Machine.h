@@ -2,20 +2,16 @@
 #define MACHINE_H
 
 #include "Entity.h"
+#include "../ConveyorBelt.h"
+#include "../RobotParts.h"
 
 class Machine : public Entity
 {
 public:
-    enum ROBOT_PART
-    {
-        HEAD = 2,
-        BODY = 4,
-        LIMB = 3,
-        MICROCHIP = 1,
-    };
 
     enum MACHINE_STATE
     {
+        NIL,
         REST,
         PRODUCTION,
         WAITFORREFILL,
@@ -32,12 +28,15 @@ private:
 
     MACHINE_STATE m_state;
 
+    // Location to spawn robot parts
+    ConveyorBelt* m_SpawnLocation;
+
     virtual void Sense(double dt);
     virtual int Think();
     virtual void Act(int value);
 
     // Machine Variables & Functions
-    ROBOT_PART m_partToCreate;
+    RobotPart::ROBOT_PART m_partToCreate;
 
     void CreatePart();
 
@@ -48,7 +47,8 @@ public:
     virtual void Init();
     virtual void Update(double dt);
 
-    void SetPartToCreate(ROBOT_PART part);
+    void SetPartToCreate(RobotPart::ROBOT_PART part);
+    void SetSpawnLocation(ConveyorBelt* location);
 
     double GetTimer();
     double GetOverheatCharge();

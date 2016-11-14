@@ -123,7 +123,7 @@ void SceneBase::Init()
 
     // Game Objects
     meshList[GEO_DELIVERYTRUCK];
-    meshList[GEO_CONVEYORBELT];
+    meshList[GEO_CONVEYORBELT] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));;
     meshList[GEO_TOILET];
     meshList[GEO_WORKSTATION];
 

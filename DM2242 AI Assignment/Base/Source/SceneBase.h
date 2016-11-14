@@ -93,9 +93,10 @@ public:
 	void RenderGO(GameObject* go);
 
 	GameObject* FetchGO();
+
 protected:
 	unsigned m_vertexArrayID;
-	Mesh* meshList[NUM_GEOMETRY];
+    Mesh* meshList[NUM_GEOMETRY];
 	unsigned m_programID;
 	unsigned m_parameters[U_TOTAL];
 

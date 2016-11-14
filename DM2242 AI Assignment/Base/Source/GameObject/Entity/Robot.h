@@ -8,9 +8,9 @@ class Robot : public Entity
 public:
     enum ROBOT_STATE
     {
-        INCOMPLETE1, // being built in progress
-        INCOMPLETE2,
-        INCOMPLETE3,
+        INCOMPLETE1, // body //being built in progress
+        INCOMPLETE2, // body + limbs
+        INCOMPLETE3, // body + limbs + head
 
         STARTUP,
         WORK,
@@ -30,6 +30,9 @@ private:
 public:
     Robot();
     virtual ~Robot();
+
+    void SetRobotState(ROBOT_STATE state);
+    ROBOT_STATE GetRobotState();
 
     virtual void Init();
     virtual void Update(double dt);
