@@ -1,5 +1,5 @@
 #include "Machine.h"
-//#include "../../SceneBase.h"
+#include "../../SharedData.h"
 
 Machine::Machine() : Entity("Machine")
 {
@@ -165,24 +165,26 @@ void Machine::CreatePart()
     {
     case RobotPart::HEAD:
         m_scrapQuantity -= 2;
+        tempPart->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_HEAD));
         break;
 
     case RobotPart::BODY:
         m_scrapQuantity -= 4;
+        tempPart->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_BODY));
         break;
 
     case RobotPart::LIMB:
         m_scrapQuantity -= 3;
+        tempPart->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_LIMBS));
         break;
 
     case RobotPart::MICROCHIP:
         m_scrapQuantity -= 1;
+        tempPart->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_CHIP));
         break;
     }
 
-    // Set Mesh base on m_partToCreate 
-    //tempPart->SetMesh(SceneBase::meshList[SceneBase::GEO_ROBOT_HEAD]);
-    m_goList.push_back(tempPart);
+    SharedData::GetInstance()->m_goList.push_back(tempPart);
 }
 
 void Machine::SetIsBroken(bool status)

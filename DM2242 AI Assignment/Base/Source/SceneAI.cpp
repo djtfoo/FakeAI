@@ -39,8 +39,8 @@ void SceneAI::Init()
     ConveyorBelt* conveyor = new ConveyorBelt();
     conveyor->Init();
     conveyor->SetPos(Vector3(3, 16, 0));
-    conveyor->SetMesh(meshList[GEO_CONVEYORBELT]);
-    GameObject::m_goList.push_back(conveyor);
+    conveyor->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_CONVEYORBELT));
+    SharedData::GetInstance()->m_goList.push_back(conveyor);
 
     // Machine
     Machine* machine = new Machine();
@@ -48,22 +48,23 @@ void SceneAI::Init()
     machine->SetPartToCreate(RobotPart::BODY);
     machine->SetPos(Vector3(2.f, 16.f, 0));
     machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
+    machine->SetSpawnLocation(conveyor);
     SharedData::GetInstance()->m_goList.push_back(machine);
 
     machine = new Machine();
-    machine->SetPartToCreate(Machine::HEAD);
+    machine->SetPartToCreate(RobotPart::HEAD);
     machine->SetPos(Vector3(10.f, 17.f, 0));
     machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
     SharedData::GetInstance()->m_goList.push_back(machine);
 
     machine = new Machine();
-    machine->SetPartToCreate(Machine::LIMB);
+    machine->SetPartToCreate(RobotPart::LIMB);
     machine->SetPos(Vector3(10.f, 10.f, 0));
     machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
     SharedData::GetInstance()->m_goList.push_back(machine);
 
     machine = new Machine();
-    machine->SetPartToCreate(Machine::MICROCHIP);
+    machine->SetPartToCreate(RobotPart::MICROCHIP);
     machine->SetPos(Vector3(3.f, 12.f, 0));
     machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
     SharedData::GetInstance()->m_goList.push_back(machine);

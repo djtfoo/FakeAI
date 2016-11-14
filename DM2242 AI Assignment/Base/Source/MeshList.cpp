@@ -38,17 +38,17 @@ void MeshList::Init()
 
     // Game Objects
     meshList[GEO_DELIVERYTRUCK];
-    meshList[GEO_CONVEYORBELT];
+    meshList[GEO_CONVEYORBELT] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
     meshList[GEO_TOILET];
     meshList[GEO_WORKSTATION];
 
     meshList[GEO_SCRAP_PIECE];
     meshList[GEO_SCRAP_STACK];
 
-    meshList[GEO_ROBOT_HEAD];
-    meshList[GEO_ROBOT_BODY];
-    meshList[GEO_ROBOT_LIMBS];
-    meshList[GEO_ROBOT_CHIP];
+    meshList[GEO_ROBOT_HEAD] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
+    meshList[GEO_ROBOT_BODY] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
+    meshList[GEO_ROBOT_LIMBS] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
+    meshList[GEO_ROBOT_CHIP] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
     meshList[GEO_ROBOT_STAGE1];
     meshList[GEO_ROBOT_STAGE2];
     meshList[GEO_ROBOT_STAGE3];
