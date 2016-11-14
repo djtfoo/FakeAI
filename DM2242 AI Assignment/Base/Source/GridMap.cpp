@@ -16,17 +16,21 @@ GridMap::GridMap(const int rows, const int cols) : m_rows(rows), m_columns(cols)
 
 GridMap::~GridMap()
 {
+}
+
+void GridMap::Update()
+{
+    // update the collision grid
+}
+
+void GridMap::Exit()
+{
     for (int i = 0; i < m_rows; ++i)
     {
         delete[] m_collisionGrid[i];
     }
 
     delete[] m_collisionGrid;
-}
-
-void GridMap::Update()
-{
-    // update the collision grid
 }
 
 int GridMap::GetRows() const

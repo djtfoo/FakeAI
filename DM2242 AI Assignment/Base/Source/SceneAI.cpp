@@ -2,8 +2,7 @@
 #include "GL\glew.h"
 #include "Application.h"
 #include <sstream>
-#include "MeshBuilder.h"
-#include "LoadTGA.h"
+#include "SharedData.h"
 
 #include <fstream>
 #include <sstream>
@@ -29,8 +28,8 @@ void SceneAI::Init()
 
     Math::InitRNG();
 
-    // Initialise grid map
-    m_gridMap = new GridMap(20, 20);
+    // Initialise shared variables
+    SharedData::GetInstance()->Init();
 
     //================
     // Create entities
@@ -40,67 +39,38 @@ void SceneAI::Init()
     Machine* machine = new Machine();
     machine->SetPartToCreate(Machine::BODY);
     machine->SetPos(Vector3(2.f, 16.f, 0));
-    machine->SetMesh(meshList[GEO_MACHINE]);
-    GameObject::m_goList.push_back(machine);
+    machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
+    SharedData::GetInstance()->m_goList.push_back(machine);
 
     machine = new Machine();
     machine->SetPartToCreate(Machine::HEAD);
     machine->SetPos(Vector3(10.f, 17.f, 0));
-    machine->SetMesh(meshList[GEO_MACHINE]);
-    GameObject::m_goList.push_back(machine);
+    machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
+    SharedData::GetInstance()->m_goList.push_back(machine);
 
     machine = new Machine();
     machine->SetPartToCreate(Machine::LIMB);
     machine->SetPos(Vector3(10.f, 10.f, 0));
-    machine->SetMesh(meshList[GEO_MACHINE]);
-    GameObject::m_goList.push_back(machine);
+    machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
+    SharedData::GetInstance()->m_goList.push_back(machine);
 
     machine = new Machine();
     machine->SetPartToCreate(Machine::MICROCHIP);
     machine->SetPos(Vector3(3.f, 12.f, 0));
-    machine->SetMesh(meshList[GEO_MACHINE]);
-    GameObject::m_goList.push_back(machine);
+    machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
+    SharedData::GetInstance()->m_goList.push_back(machine);
 
     // Worker
-    AddGameObject(new Worker(), meshList[GEO_WORKER], 7, 17);
-    AddGameObject(new Worker(), meshList[GEO_WORKER], 11, 13);
-    AddGameObject(new Worker(), meshList[GEO_WORKER], 6, 10);
-    AddGameObject(new Worker(), meshList[GEO_WORKER], 2, 8);
+    SharedData::GetInstance()->AddGameObject(new Worker(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER), 7, 17);
+    SharedData::GetInstance()->AddGameObject(new Worker(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER), 11, 13);
+    SharedData::GetInstance()->AddGameObject(new Worker(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER), 6, 10);
+    SharedData::GetInstance()->AddGameObject(new Worker(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER), 2, 8);
 
     // Maintenance Man
-    AddGameObject(new MaintenanceMan(), meshList[GEO_MAINTENANCEMAN], 15, 7);
+    SharedData::GetInstance()->AddGameObject(new MaintenanceMan(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_MAINTENANCEMAN), 15, 7);
 
     // Scrap Man
-    AddGameObject(new ScrapMan(), meshList[GEO_SCRAPMAN], 14, 2);
-}
-
-void SceneAI::AddGameObject(GameObject* go, Mesh* mesh, int row, int col)
-{
-    // add to m_goList
-    go->SetPos(Vector3(row * 1.f, col * 1.f, 0));
-    go->SetMesh(mesh);
-    GameObject::m_goList.push_back(go);
-
-    // add collision to gridmap
-    m_gridMap->m_collisionGrid[row][col] = true;
-}
-
-void SceneAI::AddGameObject(GameObject* go, Mesh* mesh, const Vector3& pos)
-{
-    // add to m_goList
-    go->SetPos(pos);
-    go->SetMesh(mesh);
-    GameObject::m_goList.push_back(go);
-
-    // add collision to gridmap
-    int row = (int)(pos.y) / m_gridMap->GetRows();
-    int col = (int)(pos.x) / m_gridMap->GetColumns();
-    m_gridMap->m_collisionGrid[row][col] = true;
-}
-
-void SceneAI::DeleteGameObject(GameObject* go)
-{
-
+    SharedData::GetInstance()->AddGameObject(new ScrapMan(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAPMAN), 14, 2);
 }
 
 //GameObject* SP3::FetchGameObject(OBJECT_TYPE ObjectType)
@@ -160,7 +130,7 @@ void SceneAI::Update(double dt)
 {
 	SceneBase::Update(dt);
     
-    for (std::vector<GameObject*>::iterator it = GameObject::m_goList.begin(); it != GameObject::m_goList.end(); ++it)
+    for (std::vector<GameObject*>::iterator it = SharedData::GetInstance()->m_goList.begin(); it != SharedData::GetInstance()->m_goList.end(); ++it)
     {
         GameObject* go = dynamic_cast<GameObject*>(*it);
         go->Update(dt);
@@ -188,7 +158,7 @@ void SceneAI::Render()
 
 	// Projection matrix : Orthographic Projection
 	Mtx44 projection;
-	projection.SetToOrtho(0.5, m_gridMap->GetRows() - 0.5, -0.5, m_gridMap->GetColumns() - 0.5, -10, 10);
+    projection.SetToOrtho(0.5, SharedData::GetInstance()->m_gridMap->GetRows() - 0.5, -0.5, SharedData::GetInstance()->m_gridMap->GetColumns() - 0.5, -10, 10);
 	projectionStack.LoadMatrix(projection);
 
 	// Camera matrix
@@ -201,7 +171,7 @@ void SceneAI::Render()
 	// Model matrix : an identity matrix (model will be at the origin)
 	modelStack.LoadIdentity();
 
-	for (std::vector<GameObject*>::iterator it = GameObject::m_goList.begin(); it != GameObject::m_goList.end(); ++it)
+    for (std::vector<GameObject*>::iterator it = SharedData::GetInstance()->m_goList.begin(); it != SharedData::GetInstance()->m_goList.end(); ++it)
 	{
 		GameObject *go = (GameObject *)*it;
 		if (go->IsActive())
@@ -215,18 +185,6 @@ void SceneAI::Render()
 void SceneAI::Exit()
 {
 	SceneBase::Exit();
-	//Cleanup GameObjects
-	while (GameObject::m_goList.size() > 0)
-	{
-		GameObject *go = GameObject::m_goList.back();
-		delete go;
-		GameObject::m_goList.pop_back();
-	}
 
-    // Cleanup GridMap
-    if (m_gridMap)
-    {
-        delete m_gridMap;
-        m_gridMap = NULL;
-    }
+    SharedData::GetInstance()->Exit();
 }
