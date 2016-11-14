@@ -84,6 +84,9 @@
     <ClCompile Include="Source\SceneAI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\GridMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -153,6 +156,12 @@
       <Filter>Header Files\GameObject\Entity</Filter>
     </ClInclude>
     <ClInclude Include="Source\SceneAI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObject\Entity\Pathfinding.h">
+      <Filter>Header Files\GameObject\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GridMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

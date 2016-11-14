@@ -1,5 +1,7 @@
 #include "GameObject.h"
 
+std::vector<GameObject*> GameObject::m_goList;
+
 GameObject::GameObject(std::string name, bool isEntity) : m_name(name), b_isEntity(isEntity)
 {
 }

@@ -2,6 +2,7 @@
 #define GAMEOBJECT_H
 
 #include <string>
+#include <vector>
 #include "Vector3.h"
 #include "../Mesh.h"
 
@@ -18,6 +19,8 @@ protected:
     GameObject(std::string name, bool isEntity = false);
 
 public:
+    static std::vector<GameObject*> m_goList;
+
     virtual ~GameObject();
 
     virtual void Init() = 0;

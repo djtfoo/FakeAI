@@ -21,6 +21,7 @@
     <ClCompile Include="Source\GameObject\Entity\ScrapMan.cpp" />
     <ClCompile Include="Source\GameObject\Entity\Worker.cpp" />
     <ClCompile Include="Source\GameObject\GameObject.cpp" />
+    <ClCompile Include="Source\GridMap.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
     <ClCompile Include="Source\main.cpp" />
@@ -38,11 +39,13 @@
     <ClInclude Include="Source\GameObject\Entity\Entity.h" />
     <ClInclude Include="Source\GameObject\Entity\Machine.h" />
     <ClInclude Include="Source\GameObject\Entity\MaintenanceMan.h" />
+    <ClInclude Include="Source\GameObject\Entity\Pathfinding.h" />
     <ClInclude Include="Source\GameObject\Entity\Robot.h" />
     <ClInclude Include="Source\GameObject\Entity\ScrapMan.h" />
     <ClInclude Include="Source\GameObject\Entity\Worker.h" />
     <ClInclude Include="Source\GameObject\GameObject.h" />
     <ClInclude Include="Source\GameObject\Workstation.h" />
+    <ClInclude Include="Source\GridMap.h" />
     <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\LoadOBJ.h" />
     <ClInclude Include="Source\LoadTGA.h" />
