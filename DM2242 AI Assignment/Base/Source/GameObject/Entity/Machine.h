@@ -20,11 +20,13 @@ public:
 
 private:
     double m_timer;
+    double m_storedTimer;
     double m_overheatCharge;
     int m_scrapQuantity;
     int m_maxScrapQuantity;
 	bool m_partCreated;
 	bool m_isBroken;
+    bool m_isEmpty;
 
     MACHINE_STATE m_state;
 
@@ -57,6 +59,9 @@ public:
     bool IsEmpty();
 
 	void SetIsBroken(bool status);
+    void SetIsEmpty(bool status);
+
+    MACHINE_STATE GetState();
 };
 
 #endif

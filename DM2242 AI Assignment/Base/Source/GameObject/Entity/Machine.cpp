@@ -37,7 +37,8 @@ void Machine::SetSpawnLocation(ConveyorBelt* location)
 
 void Machine::Sense(double dt)
 {
-    m_timer += dt;
+    if (m_state != BROKEN && m_state != WAITFORREFILL)
+        m_timer += dt;
 
     if (m_state == PRODUCTION)
         m_overheatCharge += dt;
@@ -54,10 +55,12 @@ int Machine::Think()
         if (m_scrapQuantity < m_partToCreate)
         {
             return WAITFORREFILL;
+            m_timer = 0.0;
         }
         else
         {
             return PRODUCTION;
+            m_timer = 0.0;
         }
     }
 
@@ -69,12 +72,15 @@ int Machine::Think()
             m_partCreated = false;
             return REST;
         }
-		// Run the check if break down every 0.5 secs
-		else if (fmod(m_timer, 0.5) == 0)
+		// Run the check if break down every 1 sec
+		else if (int(fmod(m_timer, 1)) == 0)
 		{
 			int RandNum = Math::RandIntMinMax(0, 100);
-			if (RandNum < m_overheatCharge)
-				return BROKEN;
+            if (RandNum < m_overheatCharge)
+            {
+                m_storedTimer = m_timer;
+                return BROKEN;
+            }
 		}
         else
             return PRODUCTION;
@@ -91,8 +97,12 @@ int Machine::Think()
 
 	if (m_state == BROKEN)
 	{
-		if (!m_isBroken)
-			return PRODUCTION;
+        if (!m_isBroken)
+        {
+            m_overheatCharge = 0.0;
+            m_timer = m_storedTimer;
+            return PRODUCTION;
+        }
         else
             return BROKEN;
 	}
@@ -119,6 +129,12 @@ void Machine::Act(int value)
         break;
     case WAITFORREFILL:
         m_state = WAITFORREFILL;
+        m_isEmpty = true;
+        break;
+
+    case BROKEN:
+        m_state = BROKEN;
+        m_isBroken = true;
         break;
     }
 }
@@ -190,4 +206,14 @@ void Machine::CreatePart()
 void Machine::SetIsBroken(bool status)
 {
 	m_isBroken = status;
+}
+
+void Machine::SetIsEmpty(bool status)
+{
+    m_isEmpty = status;
+}
+
+Machine::MACHINE_STATE Machine::GetState()
+{
+    return m_state;
 }

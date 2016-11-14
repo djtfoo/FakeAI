@@ -43,31 +43,31 @@ void SceneAI::Init()
     SharedData::GetInstance()->m_goList.push_back(conveyor);
 
     // Machine
-    Machine* machine = new Machine();
-    machine->Init();
-    machine->SetPartToCreate(RobotPart::BODY);
-    machine->SetPos(Vector3(2.f, 16.f, 0));
-    machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
-    machine->SetSpawnLocation(conveyor);
-    SharedData::GetInstance()->m_goList.push_back(machine);
+    debugMachine = new Machine();
+    debugMachine->Init();
+    debugMachine->SetPartToCreate(RobotPart::BODY);
+    debugMachine->SetPos(Vector3(2.f, 16.f, 0));
+    debugMachine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
+    debugMachine->SetSpawnLocation(conveyor);
+    SharedData::GetInstance()->m_goList.push_back(debugMachine);
 
-    machine = new Machine();
-    machine->SetPartToCreate(RobotPart::HEAD);
-    machine->SetPos(Vector3(10.f, 17.f, 0));
-    machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
-    SharedData::GetInstance()->m_goList.push_back(machine);
+    //machine = new Machine();
+    //machine->SetPartToCreate(RobotPart::HEAD);
+    //machine->SetPos(Vector3(10.f, 17.f, 0));
+    //machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
+    //SharedData::GetInstance()->m_goList.push_back(machine);
 
-    machine = new Machine();
-    machine->SetPartToCreate(RobotPart::LIMB);
-    machine->SetPos(Vector3(10.f, 10.f, 0));
-    machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
-    SharedData::GetInstance()->m_goList.push_back(machine);
+    //machine = new Machine();
+    //machine->SetPartToCreate(RobotPart::LIMB);
+    //machine->SetPos(Vector3(10.f, 10.f, 0));
+    //machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
+    //SharedData::GetInstance()->m_goList.push_back(machine);
 
-    machine = new Machine();
-    machine->SetPartToCreate(RobotPart::MICROCHIP);
-    machine->SetPos(Vector3(3.f, 12.f, 0));
-    machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
-    SharedData::GetInstance()->m_goList.push_back(machine);
+    //machine = new Machine();
+    //machine->SetPartToCreate(RobotPart::MICROCHIP);
+    //machine->SetPos(Vector3(3.f, 12.f, 0));
+    //machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
+    //SharedData::GetInstance()->m_goList.push_back(machine);
 
     // Worker
     SharedData::GetInstance()->AddGameObject(new Worker(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER), 7, 17);
@@ -150,6 +150,14 @@ void SceneAI::Update(double dt)
             entity->RunFSM(dt);
         }
     }
+
+    // DEBUG 
+
+    if (Application::IsKeyPressed('1'))
+        debugMachine->SetIsBroken(false);
+
+    if (Application::IsKeyPressed('2'))
+        debugMachine->SetIsEmpty(false);
 }
 
 void SceneAI::RenderGO(GameObject *go)
@@ -189,6 +197,24 @@ void SceneAI::Render()
 		}
 	}
 
+
+    // DEBUG 
+    switch (debugMachine->GetState())
+    {
+    case Machine::REST:
+        std::cout << "Machine: REST             Timer: " << debugMachine->GetTimer() << std::endl;
+        break;
+    case Machine::PRODUCTION:
+        std::cout << "Machine: PRODUCTION       Timer: " << debugMachine->GetTimer() << std::endl;
+        break;
+    case Machine::BROKEN:
+        std::cout << "Machine: BROKEN           Timer: " << debugMachine->GetTimer() << std::endl;
+        break;
+    case Machine::WAITFORREFILL:
+        std::cout << "Machine: WAITFORREFILL    Timer: " << debugMachine->GetTimer() << std::endl;
+        break;
+    }
+    
 }
 
 void SceneAI::Exit()

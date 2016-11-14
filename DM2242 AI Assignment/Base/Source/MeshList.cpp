@@ -45,10 +45,10 @@ void MeshList::Init()
     meshList[GEO_SCRAP_PIECE];
     meshList[GEO_SCRAP_STACK];
 
-    meshList[GEO_ROBOT_HEAD] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
-    meshList[GEO_ROBOT_BODY] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
-    meshList[GEO_ROBOT_LIMBS] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
-    meshList[GEO_ROBOT_CHIP] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
+    meshList[GEO_ROBOT_HEAD] = MeshBuilder::GenerateQuad("robot head", Color(0.3f, 0.5f, 0.5f), 0.75);
+    meshList[GEO_ROBOT_BODY] = MeshBuilder::GenerateQuad("robot body", Color(0.3f, 0.5f, 0.5f), 0.75);
+    meshList[GEO_ROBOT_LIMBS] = MeshBuilder::GenerateQuad("robot limbs", Color(0.3f, 0.5f, 0.5f), 0.75);
+    meshList[GEO_ROBOT_CHIP] = MeshBuilder::GenerateQuad("robot chip", Color(0.3f, 0.5f, 0.5f), 0.75);
     meshList[GEO_ROBOT_STAGE1];
     meshList[GEO_ROBOT_STAGE2];
     meshList[GEO_ROBOT_STAGE3];

@@ -5,6 +5,7 @@
 
 #include "GridMap.h"
 #include "GameObject/GameObject.h"
+#include "GameObject/Entity/Machine.h"
 
 class SceneAI : public SceneBase
 {
@@ -21,6 +22,9 @@ public:
 
 	//GameObject* FetchGameObject(OBJECT_TYPE ObjectType);
 	//void SpawnGameObject(OBJECT_TYPE ObjectType, GAMEOBJECT_TYPE GoType, Vector3 Position, Vector3 Scale, bool Collidable, bool Visible);
+
+    // Machine pointer for debug info
+    Machine* debugMachine;
 
 protected:
     
