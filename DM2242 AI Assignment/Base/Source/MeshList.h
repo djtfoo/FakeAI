@@ -36,8 +36,10 @@ enum GEOMETRY_TYPE
     GEO_PYRAMID_STAGE2,
     GEO_PYRAMID_STAGE3,
 
-    // Generic
+    // Generic/Debug
     GEO_TEXT,
+    GEO_PATHFINDING_NODE,
+    
     NUM_GEOMETRY,
 };
 

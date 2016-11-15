@@ -14,6 +14,8 @@
 #include "GameObject/Entity/DeliveryMan.h"
 #include "GameObject/Entity/ScrapMan.h"
 
+#include "GameObject/Toilet.h"
+
 SceneAI::SceneAI()
 {
 }
@@ -31,9 +33,9 @@ void SceneAI::Init()
     // Initialise shared variables
     SharedData::GetInstance()->Init();
 
-    //================
-    // Create entities
-    //================
+    //===================
+    // Create GameObjects
+    //===================
 
     // Conveyor Belt
     ConveyorBelt* conveyor = new ConveyorBelt();
@@ -41,6 +43,13 @@ void SceneAI::Init()
     conveyor->SetPos(Vector3(3, 16, 0));
     conveyor->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_CONVEYORBELT));
     SharedData::GetInstance()->m_goList.push_back(conveyor);
+
+    // Toilet
+    SharedData::GetInstance()->AddGameObject(new Toilet(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_TOILET), 18, 18);
+
+    //================
+    // Create Entities
+    //================
 
     // Machine
     debugMachine = new Machine();
@@ -102,6 +111,11 @@ void SceneAI::Init()
 
     // Scrap Man
     SharedData::GetInstance()->AddGameObject(new ScrapMan(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAPMAN), 14, 2);
+
+    // pathfinder test
+    pathfinderTest.ReceiveCurrentPos(Vector3(2, 8, 0));
+    pathfinderTest.ReceiveDestination(Vector3(18, 18, 0));
+    //pathfinderTest.FindPathGreedyBestFirst();
 }
 
 //GameObject* SP3::FetchGameObject(OBJECT_TYPE ObjectType)
@@ -160,14 +174,15 @@ void SceneAI::Init()
 void SceneAI::Update(double dt)
 {
 	SceneBase::Update(dt);
-    
+
     for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
     {
-        SharedData::GetInstance()->m_goList[i]->Update(dt);
+        GameObject* go = SharedData::GetInstance()->m_goList[i];
+        go->Update(dt);
 
-        if (SharedData::GetInstance()->m_goList[i]->IsEntity())
+        if (go->IsEntity())
         {
-            Entity* entity = dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i]);
+            Entity* entity = dynamic_cast<Entity*>(go);
             entity->RunFSM(dt);
         }
     }
@@ -185,7 +200,7 @@ void SceneAI::RenderGO(GameObject *go)
 {
 	modelStack.PushMatrix();
 	modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
-	//modelStack.Scale(1, 1, 1);
+    modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
 	RenderMesh(go->GetMesh(), false);
 	modelStack.PopMatrix();
 }
@@ -210,14 +225,23 @@ void SceneAI::Render()
 	modelStack.LoadIdentity();
 
     for (std::vector<GameObject*>::iterator it = SharedData::GetInstance()->m_goList.begin(); it != SharedData::GetInstance()->m_goList.end(); ++it)
-	{
-		GameObject *go = (GameObject *)*it;
-		if (go->IsActive())
-		{
-			RenderGO(go);
-		}
-	}
+    {
+        GameObject *go = (GameObject *)*it;
+        if (go->IsActive())
+        {
+            RenderGO(go);
+        }
+    }
 
+
+    for (std::vector<Node>::iterator it = pathfinderTest.foundPath.begin(); it != pathfinderTest.foundPath.end(); ++it)
+    {
+        std::cout << "render node " << (*it).col << "," << (*it).row << std::endl;
+        modelStack.PushMatrix();
+        modelStack.Translate((*it).col, (*it).row, 0);
+        RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
+        modelStack.PopMatrix();
+    }
 
     // DEBUG 
     switch (debugMachine->GetState())

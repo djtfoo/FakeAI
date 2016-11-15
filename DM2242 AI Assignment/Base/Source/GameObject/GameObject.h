@@ -10,6 +10,7 @@ class GameObject
 protected:
     std::string m_name;
     Vector3 m_pos;
+    Vector3 m_scale;
     bool b_active;
     Mesh* m_mesh;
 
@@ -25,6 +26,7 @@ public:
 
     std::string GetName();
     Vector3 GetPos();
+    Vector3 GetScale();
     bool IsActive();
     Mesh* GetMesh();
 

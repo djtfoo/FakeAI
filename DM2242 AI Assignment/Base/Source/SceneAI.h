@@ -6,6 +6,7 @@
 #include "GridMap.h"
 #include "GameObject/GameObject.h"
 #include "GameObject/Entity/Machine.h"
+#include "GameObject/Entity/Pathfinder.h"
 
 class SceneAI : public SceneBase
 {
@@ -27,7 +28,7 @@ public:
     Machine* debugMachine;
 
 protected:
-    
+    Pathfinder pathfinderTest;
 };
 
 #endif

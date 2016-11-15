@@ -18,11 +18,13 @@
     <ClCompile Include="Source\GameObject\Entity\Entity.cpp" />
     <ClCompile Include="Source\GameObject\Entity\Machine.cpp" />
     <ClCompile Include="Source\GameObject\Entity\MaintenanceMan.cpp" />
+    <ClCompile Include="Source\GameObject\Entity\Pathfinder.cpp" />
     <ClCompile Include="Source\GameObject\Entity\Robot.cpp" />
     <ClCompile Include="Source\GameObject\Entity\ScrapMan.cpp" />
     <ClCompile Include="Source\GameObject\Entity\Worker.cpp" />
     <ClCompile Include="Source\GameObject\GameObject.cpp" />
     <ClCompile Include="Source\GameObject\RobotParts.cpp" />
+    <ClCompile Include="Source\GameObject\Toilet.cpp" />
     <ClCompile Include="Source\GameObject\Workstation.cpp" />
     <ClCompile Include="Source\GridMap.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />

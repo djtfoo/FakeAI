@@ -15,7 +15,7 @@ public:
     };
 
     RobotPart();
-    ~RobotPart();
+    virtual ~RobotPart();
 
     virtual void Init();
     virtual void Update(double dt);

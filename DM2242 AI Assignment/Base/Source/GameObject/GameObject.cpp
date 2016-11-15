@@ -1,6 +1,6 @@
 #include "GameObject.h"
 
-GameObject::GameObject(std::string name, bool isEntity) : m_name(name), b_isEntity(isEntity)
+GameObject::GameObject(std::string name, bool isEntity) : m_name(name), b_isEntity(isEntity), m_scale(1, 1, 1)
 {
 }
 
@@ -16,6 +16,11 @@ std::string GameObject::GetName()
 Vector3 GameObject::GetPos()
 {
     return m_pos;
+}
+
+Vector3 GameObject::GetScale()
+{
+    return m_scale;
 }
 
 bool GameObject::IsActive()

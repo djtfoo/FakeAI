@@ -10,7 +10,7 @@ class Workstation : public GameObject
 {
 public: 
     Workstation();
-    ~Workstation();
+    virtual ~Workstation();
 
     virtual void Init();
     virtual void Update(double dt); // Check if any robotpart is at workstation, if so add into vector

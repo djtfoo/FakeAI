@@ -7,7 +7,7 @@ class ConveyorBelt : public GameObject
 {
 public:
     ConveyorBelt();
-    ~ConveyorBelt();
+    virtual ~ConveyorBelt();
 
     virtual void Init();
     virtual void Update(double dt);
