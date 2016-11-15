@@ -10,11 +10,19 @@ Robot::~Robot()
 
 void Robot::Init()
 {
-
+	m_currWaypoint = 0;
 }
 
 void Robot::Update(double dt)
 {
+	// Temporary, just to make robot move away
+	//m_pos.x += dt;
+
+	Vector3 dir = (m_beltToFollow->GetNextCheckpoint(m_currWaypoint) - m_pos).Normalized();
+	m_pos += dir * dt;
+
+	if ((m_beltToFollow->GetNextCheckpoint(m_currWaypoint) - m_pos).Length() < 1.005)
+		++m_currWaypoint;
 
 }
 
@@ -55,4 +63,14 @@ void Robot::SetRobotState(ROBOT_STATE state)
 Robot::ROBOT_STATE Robot::GetRobotState()
 {
     return m_state;
+}
+
+void Robot::SetBelt(ConveyorBelt* belt)
+{
+	m_beltToFollow = belt;
+}
+
+void Robot::SetWaypoint(int idx)
+{
+	m_currWaypoint = idx;
 }

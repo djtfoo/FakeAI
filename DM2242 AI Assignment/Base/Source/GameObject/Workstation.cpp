@@ -16,10 +16,11 @@ void Workstation::Update(double dt)
     {
         if ((m_pos - SharedData::GetInstance()->m_goList[i]->GetPos()).Length() < 1.001)
         {
-            if (SharedData::GetInstance()->m_goList[i]->GetName() == "RobotPart")
+			if (SharedData::GetInstance()->m_goList[i]->GetName() == "RobotPart" && SharedData::GetInstance()->m_goList[i]->IsActive())
             {
                 SharedData::GetInstance()->m_goList[i]->SetInactive();
                 AddToStorage(dynamic_cast<RobotPart*>(SharedData::GetInstance()->m_goList[i]));
+				break;
             }
         }
     }

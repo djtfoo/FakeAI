@@ -179,9 +179,6 @@
     <ClInclude Include="Source\SceneAI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObject\Entity\Pathfinding.h">
-      <Filter>Header Files\GameObject\Entity</Filter>
-    </ClInclude>
     <ClInclude Include="Source\GridMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -199,6 +196,9 @@
     </ClInclude>
     <ClInclude Include="Source\GameObject\Toilet.h">
       <Filter>Header Files\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObject\Entity\Pathfinder.h">
+      <Filter>Header Files\GameObject\Entity</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

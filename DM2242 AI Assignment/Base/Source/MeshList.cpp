@@ -19,10 +19,14 @@ void MeshList::Init()
     }
 
     // Machine
-    meshList[GEO_MACHINE] = MeshBuilder::GenerateQuad("machine", Color(1, 0, 0));
+    meshList[GEO_MACHINE] = MeshBuilder::GenerateQuad("machine", Color(1, 0.5f, 0));
+    meshList[GEO_MACHINE_PRODUCTION] = MeshBuilder::GenerateQuad("machine production", Color(1, 1, 0));
+    meshList[GEO_MACHINE_BROKEN] = MeshBuilder::GenerateQuad("machine broken", Color(1, 0.2f, 0.2f));
+    meshList[GEO_MACHINE_WAITFORREFILL] = MeshBuilder::GenerateQuad("machine wait", Color(1, 0.5f, 0.5f));
 
     // Worker
     meshList[GEO_WORKER] = MeshBuilder::GenerateQuad("worker", Color(0, 0, 1));
+    meshList[GEO_WORKER_WORKING] = MeshBuilder::GenerateQuad("worker working", Color(0.5, 0.5, 1));
 
     // Maintenance Man
     meshList[GEO_MAINTENANCEMAN] = MeshBuilder::GenerateQuad("maintenance man", Color(0, 1, 1));
@@ -46,11 +50,11 @@ void MeshList::Init()
     meshList[GEO_SCRAP_PIECE];
     meshList[GEO_SCRAP_STACK];
 
-    meshList[GEO_ROBOT_HEAD] = MeshBuilder::GenerateQuad("robot part - head", Color(0.3f, 0.5f, 0.5f));
-    meshList[GEO_ROBOT_BODY] = MeshBuilder::GenerateQuad("robot part - body", Color(0.3f, 0.5f, 0.5f));
-    meshList[GEO_ROBOT_LIMBS] = MeshBuilder::GenerateQuad("robot part - limbs", Color(0.3f, 0.5f, 0.5f));
-    meshList[GEO_ROBOT_CHIP] = MeshBuilder::GenerateQuad("robot part - chip", Color(0.3f, 0.5f, 0.5f));
-    meshList[GEO_ROBOT_STAGE1] = MeshBuilder::GenerateQuad("robot stage1", Color(0.5f, 0.5f, 0.5f), 1);
+    meshList[GEO_ROBOT_HEAD] = MeshBuilder::GenerateQuad("robot part - head", Color(0.3f, 0.5f, 0.5f), 0.7f);
+    meshList[GEO_ROBOT_BODY] = MeshBuilder::GenerateQuad("robot part - body", Color(0.3f, 0.5f, 0.5f), 0.7f);
+    meshList[GEO_ROBOT_LIMBS] = MeshBuilder::GenerateQuad("robot part - limbs", Color(0.3f, 0.5f, 0.5f), 0.7f);
+    meshList[GEO_ROBOT_CHIP] = MeshBuilder::GenerateQuad("robot part - chip", Color(0.3f, 0.5f, 0.5f), 0.7f);
+    meshList[GEO_ROBOT_STAGE1] = MeshBuilder::GenerateQuad("robot stage1", Color(0.5f, 0.5f, 0.5f));
     meshList[GEO_ROBOT_STAGE2];
     meshList[GEO_ROBOT_STAGE3];
 

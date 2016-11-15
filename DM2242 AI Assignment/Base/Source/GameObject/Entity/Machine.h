@@ -21,6 +21,7 @@ public:
 private:
     double m_timer;
     double m_storedTimer;
+	double m_overheatTimer;
     double m_overheatCharge;
     int m_scrapQuantity;
     int m_maxScrapQuantity;
@@ -31,7 +32,8 @@ private:
     MACHINE_STATE m_state;
 
     // Location to spawn robot parts
-    ConveyorBelt* m_SpawnLocation;
+    Vector3 m_SpawnLocation;
+    //ConveyorBelt* m_SpawnLocation;
 
     virtual void Sense(double dt);
     virtual int Think();
@@ -50,7 +52,7 @@ public:
     virtual void Update(double dt);
 
     void SetPartToCreate(RobotPart::ROBOT_PART part);
-    void SetSpawnLocation(ConveyorBelt* location);
+	void SetSpawnLocation(const Vector3& location);
 
     double GetTimer();
     double GetOverheatCharge();

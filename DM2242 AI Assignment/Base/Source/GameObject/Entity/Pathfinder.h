@@ -16,6 +16,7 @@ struct Node
 
     // heuristics
     int cost;   // how much it cost to get here from start point
+    int distFromStart;  // how far it is from the start point
     int distToGoal;     // how far it is from the destination
 
     Node() {}
@@ -38,11 +39,13 @@ class Pathfinder
     // open list
     // closed list
 
-    Vector3 position;
+    
     Vector3 destination;
 
 public:
     std::vector<Node> foundPath;     // top Node in stack is the next step to take; destination at bottom of stack
+
+    Vector3 position;
 
     Pathfinder();
     ~Pathfinder();

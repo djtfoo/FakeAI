@@ -47,7 +47,7 @@
     <ClInclude Include="Source\GameObject\Entity\Entity.h" />
     <ClInclude Include="Source\GameObject\Entity\Machine.h" />
     <ClInclude Include="Source\GameObject\Entity\MaintenanceMan.h" />
-    <ClInclude Include="Source\GameObject\Entity\Pathfinding.h" />
+    <ClInclude Include="Source\GameObject\Entity\Pathfinder.h" />
     <ClInclude Include="Source\GameObject\Entity\Robot.h" />
     <ClInclude Include="Source\GameObject\Entity\ScrapMan.h" />
     <ClInclude Include="Source\GameObject\Entity\Worker.h" />

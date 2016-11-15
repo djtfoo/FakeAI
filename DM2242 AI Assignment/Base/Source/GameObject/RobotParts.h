@@ -2,6 +2,7 @@
 #define ROBOT_PART_H
 
 #include "GameObject.h"
+#include "ConveyorBelt.h"
 
 class RobotPart : public GameObject
 {
@@ -25,9 +26,15 @@ public:
     void SetType(ROBOT_PART type);
     ROBOT_PART GetType();
 
+	void SetBelt(ConveyorBelt* belt);
+	void SetWaypoint(int idx);
+
 private:
     int m_cost;
     ROBOT_PART m_type;
+
+	int m_currWaypoint;
+	ConveyorBelt* m_beltToFollow;
 };
 
 #endif

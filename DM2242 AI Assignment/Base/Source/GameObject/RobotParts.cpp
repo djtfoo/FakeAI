@@ -9,12 +9,18 @@ RobotPart::~RobotPart()
 }
 
 void RobotPart::Init()
-{}
+{
+	m_currWaypoint = 0;
+}
 
 void RobotPart::Update(double dt)
 {
     // Temporary
-    m_pos.x += dt;
+    // m_pos.x += dt;
+
+	Vector3 dir = (m_beltToFollow->GetNextCheckpoint(m_currWaypoint) - m_pos).Normalized();
+	m_pos += dir * dt;
+
 }
 
 int RobotPart::GetCost()
@@ -49,4 +55,14 @@ void RobotPart::SetType(ROBOT_PART type)
 RobotPart::ROBOT_PART RobotPart::GetType()
 {
     return m_type;
+}
+
+void RobotPart::SetBelt(ConveyorBelt* belt)
+{
+	m_beltToFollow = belt;
+}
+
+void RobotPart::SetWaypoint(int idx)
+{
+	m_currWaypoint = idx;
 }

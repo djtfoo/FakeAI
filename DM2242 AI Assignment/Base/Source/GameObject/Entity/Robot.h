@@ -2,6 +2,7 @@
 #define ROBOT_H
 
 #include "Entity.h"
+#include "../ConveyorBelt.h"
 
 class Robot : public Entity
 {
@@ -23,9 +24,13 @@ private:
     
     ROBOT_STATE m_state;
 
+	int m_currWaypoint;
+	ConveyorBelt* m_beltToFollow;
+
     virtual void Sense(double dt);
     virtual int Think();
     virtual void Act(int value);
+
 
 public:
     Robot();
@@ -34,8 +39,14 @@ public:
     void SetRobotState(ROBOT_STATE state);
     ROBOT_STATE GetRobotState();
 
+	void SetBelt(ConveyorBelt* belt);
+	void SetWaypoint(int idx);
+
+
     virtual void Init();
     virtual void Update(double dt);
+
+
 };
 
 #endif

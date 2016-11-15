@@ -41,11 +41,11 @@ void SharedData::Exit()
     }
 }
 
-void SharedData::AddGameObject(GameObject* go, Mesh* mesh, int row, int col)
+void SharedData::AddGameObject(GameObject* go, Mesh* mesh, int col, int row)
 {
     // add to m_goList
     go->Init();
-    go->SetPos(Vector3(row * 1.f, col * 1.f, 0));
+    go->SetPos(Vector3(col * 1.f, row * 1.f, 0));
     go->SetMesh(mesh);
     m_goList.push_back(go);
 

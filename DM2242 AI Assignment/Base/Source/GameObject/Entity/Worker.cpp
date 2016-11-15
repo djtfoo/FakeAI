@@ -14,14 +14,26 @@ void Worker::Init()
 {
     m_state = IDLE;
     m_timer = 0;
+	m_breakCharge = 0;
     m_workCompleted = false;
     m_atWorkstation = false;
     m_inToilet = false;
+
+	m_workstation = NULL;
 }
 
 void Worker::Update(double dt)
 {
+	switch (m_state)
+	{
+	case IDLE:
+		m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER);
+		break;
 
+	case WORK:
+		m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER_WORKING);
+		break;
+	}
 }
 
 void Worker::Sense(double dt)
@@ -116,9 +128,19 @@ void Worker::DoWork()
         Robot* tempRobot = new Robot();
         tempRobot->Init();
         tempRobot->SetActive();
-        tempRobot->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_STAGE1));
-        tempRobot->SetPos(this->m_pos + Vector3(0, 1, 0));
-        tempRobot->SetRobotState(Robot::INCOMPLETE1);
+
+        tempRobot->SetPos(m_pos - Vector3(0, 1, 0));
+
+		for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
+		{
+			if (SharedData::GetInstance()->m_goList[i]->GetName() == "ConveyorBelt")
+			{
+				tempRobot->SetBelt(dynamic_cast<ConveyorBelt*>(SharedData::GetInstance()->m_goList[i]));
+			}
+		}
+		tempRobot->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_STAGE1));
+		tempRobot->SetRobotState(Robot::INCOMPLETE1);
+		tempRobot->SetWaypoint(1);
         SharedData::GetInstance()->m_goList.push_back(tempRobot);
     }
 }
