@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "../SharedData.h"
+#include "Entity\Robot.h"
 
 class Workstation : public GameObject
 {
@@ -19,9 +20,20 @@ public:
     RobotPart* RemoveFromStorage();
 
     bool IfHasRobotPart();
+    bool IfRobotAtStation();
+
+    void SetTypeStored(RobotPart::ROBOT_PART type);
+    RobotPart::ROBOT_PART GetTypeStored();
+
+    Robot* GetCurrRobot();
+    void SetCurrRobot(Robot* robot);
 
 private:
     std::vector<RobotPart*> m_RobotPartStorage;
+    bool m_robotAtStation;
+    RobotPart::ROBOT_PART m_partToStore;
+    Robot* m_currRobot;
+
 };
 
 #endif

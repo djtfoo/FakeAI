@@ -34,6 +34,8 @@ void Worker::Update(double dt)
 		m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER_WORKING);
 		break;
 	}
+
+
 }
 
 void Worker::Sense(double dt)
@@ -51,8 +53,9 @@ int Worker::Think()
 
     case IDLE:
         if (m_breakCharge >= 100)
-            return BREAK;
-        else if (IsPartAtWorkstation())
+            //return BREAK;
+            ;
+        else if (IsAbleToWork())
             return WORK;
         else
             return IDLE;
@@ -123,25 +126,41 @@ void Worker::DoWork()
     {
         m_workCompleted = true;
 
+        if (m_workstation->GetTypeStored() == RobotPart::BODY)
+        {
+
+            Robot* tempRobot = new Robot();
+            tempRobot->Init();
+            tempRobot->SetActive();
+
+            tempRobot->SetPos(m_pos - Vector3(0, 1, 0));
+
+            for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
+            {
+                if (SharedData::GetInstance()->m_goList[i]->GetName() == "ConveyorBelt")
+                {
+                    tempRobot->SetBelt(dynamic_cast<ConveyorBelt*>(SharedData::GetInstance()->m_goList[i]));
+                }
+            }
+
+            tempRobot->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_STAGE1));
+            tempRobot->SetRobotState(Robot::INCOMPLETE1);
+            tempRobot->SetWaypoint(1);
+
+            SharedData::GetInstance()->m_goList.push_back(tempRobot);
+        }
+        else
+        {
+            if (m_workstation->GetCurrRobot())
+            {
+                m_workstation->GetCurrRobot()->SetRobotState(static_cast<Robot::ROBOT_STATE>(m_workstation->GetCurrRobot()->GetRobotState() + 1));
+                m_workstation->GetCurrRobot()->SetWorkedOn(false);
+                m_workstation->SetCurrRobot(NULL);
+            }
+        }
+
+        m_timer = 0;
         m_workstation->RemoveFromStorage();
-
-        Robot* tempRobot = new Robot();
-        tempRobot->Init();
-        tempRobot->SetActive();
-
-        tempRobot->SetPos(m_pos - Vector3(0, 1, 0));
-
-		for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
-		{
-			if (SharedData::GetInstance()->m_goList[i]->GetName() == "ConveyorBelt")
-			{
-				tempRobot->SetBelt(dynamic_cast<ConveyorBelt*>(SharedData::GetInstance()->m_goList[i]));
-			}
-		}
-		tempRobot->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_STAGE1));
-		tempRobot->SetRobotState(Robot::INCOMPLETE1);
-		tempRobot->SetWaypoint(1);
-        SharedData::GetInstance()->m_goList.push_back(tempRobot);
     }
 }
 
@@ -171,4 +190,29 @@ bool Worker::IsOnBreak()
 void Worker::SetWorkstation(Workstation* station)
 {
     m_workstation = station;
+}
+
+bool Worker::IsAbleToWork()
+{
+    switch (m_workstation->GetTypeStored())
+    {
+    case RobotPart::BODY:
+        if (IsPartAtWorkstation())
+            return true;
+        break;
+    case RobotPart::HEAD:
+        if (IsPartAtWorkstation() && m_workstation->IfRobotAtStation())
+            return true;
+        break;
+    case RobotPart::LIMB:
+        if (IsPartAtWorkstation() && m_workstation->IfRobotAtStation())
+            return true;
+        break;
+    case RobotPart::MICROCHIP:
+        if (IsPartAtWorkstation() && m_workstation->IfRobotAtStation())
+            return true;
+        break;
+    }
+
+    return false;
 }

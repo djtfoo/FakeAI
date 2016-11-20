@@ -27,6 +27,8 @@ private:
 	int m_currWaypoint;
 	ConveyorBelt* m_beltToFollow;
 
+    bool m_workedOn;
+
     virtual void Sense(double dt);
     virtual int Think();
     virtual void Act(int value);
@@ -42,6 +44,7 @@ public:
 	void SetBelt(ConveyorBelt* belt);
 	void SetWaypoint(int idx);
 
+    void SetWorkedOn(bool status);
 
     virtual void Init();
     virtual void Update(double dt);

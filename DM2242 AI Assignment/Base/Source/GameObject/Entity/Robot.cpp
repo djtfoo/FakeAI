@@ -11,6 +11,8 @@ Robot::~Robot()
 void Robot::Init()
 {
 	m_currWaypoint = 0;
+    m_workedOn = false;
+    b_active = true;
 }
 
 void Robot::Update(double dt)
@@ -18,11 +20,14 @@ void Robot::Update(double dt)
 	// Temporary, just to make robot move away
 	//m_pos.x += dt;
 
-	Vector3 dir = (m_beltToFollow->GetNextCheckpoint(m_currWaypoint) - m_pos).Normalized();
-	m_pos += dir * dt;
+    if (!m_workedOn)
+    {
+        Vector3 dir = (m_beltToFollow->GetNextCheckpoint(m_currWaypoint) - m_pos).Normalized();
+        m_pos += dir * dt;
 
-	if ((m_beltToFollow->GetNextCheckpoint(m_currWaypoint) - m_pos).Length() < 1.005)
-		++m_currWaypoint;
+        if ((m_beltToFollow->GetNextCheckpoint(m_currWaypoint) - m_pos).Length() < 0.1)
+            ++m_currWaypoint;
+    }
 
 }
 
@@ -73,4 +78,9 @@ void Robot::SetBelt(ConveyorBelt* belt)
 void Robot::SetWaypoint(int idx)
 {
 	m_currWaypoint = idx;
+}
+
+void Robot::SetWorkedOn(bool status)
+{
+    m_workedOn = status;
 }

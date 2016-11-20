@@ -18,8 +18,9 @@ public:
 	Vector3 GetCheckpoint(int Idx);
 	Vector3 GetNextCheckpoint(int currIdx);
 
+    std::vector<Vector3> m_Checkpoints; // Checkpoints to go to
 private:
-	std::vector<Vector3> m_Checkpoints; // Checkpoints to go to
+	
 };
 
 #endif

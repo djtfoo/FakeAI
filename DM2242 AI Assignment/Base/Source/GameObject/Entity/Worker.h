@@ -41,6 +41,7 @@ public:
     virtual ~Worker();
 
     bool IsPartAtWorkstation();
+    bool IsAbleToWork();
     bool IsOnBreak();
 
     void SetWorkstation(Workstation* station);
