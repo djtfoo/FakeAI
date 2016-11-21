@@ -11,6 +11,7 @@ public:
         IDLE,
         DRIVING,
         COLLECT_PRODUCT,
+        DELIVERYMAN_STATES_TOTAL
     };
 
 private:
@@ -26,6 +27,11 @@ public:
 
     virtual void Init();
     virtual void Update(double dt);
+
+    DELIVERYMAN_STATE GetState();
+    void SetState(DELIVERYMAN_STATE state);
+    virtual int GetStateInt();
+    virtual int GetMaxStates();
 };
 
 #endif

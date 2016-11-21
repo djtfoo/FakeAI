@@ -43,7 +43,7 @@ int Robot::Think()
     else if (1)
         return 2;
 
-    return 0;
+    return -1;
 }
 
 void Robot::Act(int value)
@@ -83,4 +83,25 @@ void Robot::SetWaypoint(int idx)
 void Robot::SetWorkedOn(bool status)
 {
     m_workedOn = status;
+}
+
+Robot::ROBOT_STATE Robot::GetState()
+{
+    return m_state;
+}
+
+void Robot::SetState(ROBOT_STATE state)
+{
+    this->m_state = state;
+    this->SetSprite();
+}
+
+int Robot::GetStateInt()
+{
+    return m_state;
+}
+
+int Robot::GetMaxStates()
+{
+    return ROBOT_STATES_TOTAL;
 }

@@ -67,7 +67,7 @@ int MaintenanceMan::Think()
 
     }
 
-    return 0;
+    return -1;
 }
 
 void MaintenanceMan::Act(int value)
@@ -147,4 +147,25 @@ void MaintenanceMan::DoRefill()
 void MaintenanceMan::DoBreak()
 {
 
+}
+
+MaintenanceMan::MAINTENANCEMAN_STATE MaintenanceMan::GetState()
+{
+    return m_state;
+}
+
+void MaintenanceMan::SetState(MAINTENANCEMAN_STATE state)
+{
+    this->m_state = state;
+    this->SetSprite();
+}
+
+int MaintenanceMan::GetStateInt()
+{
+    return m_state;
+}
+
+int MaintenanceMan::GetMaxStates()
+{
+    return MAINTENANCEMAN_STATES_TOTAL;
 }

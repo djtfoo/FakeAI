@@ -14,6 +14,7 @@ public:
         REPAIR,
         REFILL,
         BREAK,
+        MAINTENANCEMAN_STATES_TOTAL
     };
 
 private:
@@ -42,6 +43,11 @@ public:
 
     virtual void Init();
     virtual void Update(double dt);
+
+    MAINTENANCEMAN_STATE GetState();
+    void SetState(MAINTENANCEMAN_STATE state);
+    virtual int GetStateInt();
+    virtual int GetMaxStates();
 };
 
 #endif

@@ -27,7 +27,7 @@ int DeliveryMan::Think()
 {
 
 
-    return 0;
+    return -1;
 }
 
 void DeliveryMan::Act(int value)
@@ -40,4 +40,25 @@ void DeliveryMan::Act(int value)
     case 1:
         break;
     }
+}
+
+DeliveryMan::DELIVERYMAN_STATE DeliveryMan::GetState()
+{
+    return m_state;
+}
+
+void DeliveryMan::SetState(DELIVERYMAN_STATE state)
+{
+    this->m_state = state;
+    this->SetSprite();
+}
+
+int DeliveryMan::GetStateInt()
+{
+    return m_state;
+}
+
+int DeliveryMan::GetMaxStates()
+{
+    return DELIVERYMAN_STATES_TOTAL;
 }

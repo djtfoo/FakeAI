@@ -17,6 +17,8 @@ public:
         WORK,
         CHEER,
         SHUTDOWN,
+
+        ROBOT_STATES_TOTAL
     };
 
 private:
@@ -49,7 +51,10 @@ public:
     virtual void Init();
     virtual void Update(double dt);
 
-
+    ROBOT_STATE GetState();
+    void SetState(ROBOT_STATE state);
+    virtual int GetStateInt();
+    virtual int GetMaxStates();
 };
 
 #endif

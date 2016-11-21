@@ -27,7 +27,7 @@ int ScrapMan::Think()
 {
 
 
-    return 0;
+    return -1;
 }
 
 void ScrapMan::Act(int value)
@@ -40,4 +40,25 @@ void ScrapMan::Act(int value)
     case 1:
         break;
     }
+}
+
+ScrapMan::SCRAPMAN_STATE ScrapMan::GetState()
+{
+    return m_state;
+}
+
+void ScrapMan::SetState(SCRAPMAN_STATE state)
+{
+    this->m_state = state;
+    this->SetSprite();
+}
+
+int ScrapMan::GetStateInt()
+{
+    return m_state;
+}
+
+int ScrapMan::GetMaxStates()
+{
+    return SCRAPMAN_STATES_TOTAL;
 }
