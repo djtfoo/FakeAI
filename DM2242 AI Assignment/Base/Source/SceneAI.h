@@ -19,7 +19,11 @@ public:
 	virtual void Render();
 	virtual void Exit();
 
+    void RenderBackground();
 	void RenderGO(GameObject *go);
+
+    void RenderGameObject(GameObject* go);
+    void RenderEntity(Entity* entity);
 
 	//GameObject* FetchGameObject(OBJECT_TYPE ObjectType);
 	//void SpawnGameObject(OBJECT_TYPE ObjectType, GAMEOBJECT_TYPE GoType, Vector3 Position, Vector3 Scale, bool Collidable, bool Visible);

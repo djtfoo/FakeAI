@@ -20,12 +20,15 @@ void MeshList::Init()
 
     // Machine
     meshList[GEO_MACHINE] = MeshBuilder::GenerateQuad("machine", Color(1, 0.5f, 0));
-    meshList[GEO_MACHINE_PRODUCTION] = MeshBuilder::GenerateQuad("machine production", Color(1, 1, 0));
-    meshList[GEO_MACHINE_BROKEN] = MeshBuilder::GenerateQuad("machine broken", Color(1, 0.2f, 0.2f));
-    meshList[GEO_MACHINE_WAITFORREFILL] = MeshBuilder::GenerateQuad("machine wait", Color(1, 0.5f, 0.5f));
+    meshList[GEO_MACHINE]->textureID = LoadTGA("Image/Entity_Machine.tga");
+
+    //meshList[GEO_MACHINE_PRODUCTION] = MeshBuilder::GenerateQuad("machine production", Color(1, 1, 0));
+    //meshList[GEO_MACHINE_BROKEN] = MeshBuilder::GenerateQuad("machine broken", Color(1, 0.2f, 0.2f));
+    //meshList[GEO_MACHINE_WAITFORREFILL] = MeshBuilder::GenerateQuad("machine wait", Color(1, 0.5f, 0.5f));
 
     // Worker
     meshList[GEO_WORKER] = MeshBuilder::GenerateQuad("worker", Color(0, 0, 1));
+    meshList[GEO_WORKER]->textureID = LoadTGA("Image/Entity_Worker.tga");
     meshList[GEO_WORKER_WORKING] = MeshBuilder::GenerateQuad("worker working", Color(0.5, 0.5, 1));
 
     // Maintenance Man
@@ -64,6 +67,9 @@ void MeshList::Init()
     meshList[GEO_PYRAMID_STAGE2];
     meshList[GEO_PYRAMID_STAGE3];
 
+    meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("floor", Color(1, 1, 1), 1.f, 5.f);
+    meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floor.tga");
+
     meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
     meshList[GEO_TEXT]->textureID = LoadTGA("Image//Fonts/Font_FFF Forward.tga");
     meshList[GEO_TEXT]->LoadFontData("Image//Fonts/FontData_FFF Forward.csv");
@@ -77,7 +83,10 @@ void MeshList::Exit()
     for (int i = 0; i < NUM_GEOMETRY; ++i)
     {
         if (meshList[i])
+        {
             delete meshList[i];
+            meshList[i] = NULL;
+        }
     }
 }
 

@@ -11,8 +11,10 @@ Machine::~Machine()
 
 void Machine::Init()
 {
+    m_dir = DIR_DOWN;
+
     m_state = REST;
-    m_timer = 0;
+    m_timer = (double)(Math::RandFloatMinMax(0.f, 2.f));  // init at diff times so machines will start production at random times
 	m_storedTimer = 0;
 	m_overheatTimer = 0;
     m_overheatCharge = 0;
@@ -28,19 +30,24 @@ void Machine::Update(double dt)
 	switch (m_state)
 	{
 	case REST:
-		m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE);
+		//m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE);
 		break;
 
 	case PRODUCTION:
-		m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE_PRODUCTION);
+		//m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE_PRODUCTION);
+        if (m_timer > 5)
+        {
+            m_partCreated = true;
+            CreatePart();
+        }
 		break;
 
 	case BROKEN:
-		m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE_BROKEN);
+		//m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE_BROKEN);
 		break;
 
 	case WAITFORREFILL:
-		m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE_WAITFORREFILL);
+		//m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE_WAITFORREFILL);
 		break;
 	}
 }
@@ -69,21 +76,20 @@ void Machine::Sense(double dt)
 
 int Machine::Think()
 {
+    //~~~~~~~~~~~~~~~~
 	// Change to switch case maybe?
-	
+    //~~~~~~~~~~~~~~~~
+
     if (m_state == REST && m_timer > 5)
     {
-        m_timer = 0.0;
-
         if (m_scrapQuantity < m_partToCreate)
         {
             return WAITFORREFILL;
-            m_timer = 0.0;
         }
         else
         {
-            return PRODUCTION;
             m_timer = 0.0;
+            return PRODUCTION;
         }
     }
 
@@ -126,14 +132,14 @@ int Machine::Think()
         {
             m_overheatCharge = 0.0;
             m_timer = m_storedTimer;
+            m_storedTimer = 0.0;
             return PRODUCTION;
         }
         else
             return BROKEN;
 	}
 
-
-    return 0;
+    return -1;
 }
 
 void Machine::Act(int value)
@@ -141,24 +147,24 @@ void Machine::Act(int value)
     switch (value)
     {
     case REST:
-        m_state = REST;
+        SetState(REST);
         break;
 
     case PRODUCTION:
-        m_state = PRODUCTION;
-		if (m_timer > 5)
-		{
-			m_partCreated = true;
-			CreatePart();
-		}
+        SetState(PRODUCTION);
+		//if (m_timer > 5)
+		//{
+		//	m_partCreated = true;
+		//	CreatePart();
+		//}
         break;
     case WAITFORREFILL:
-        m_state = WAITFORREFILL;
+        SetState(WAITFORREFILL);
         m_isEmpty = true;
         break;
 
     case BROKEN:
-        m_state = BROKEN;
+        SetState(BROKEN);
         m_isBroken = true;
         break;
     }
@@ -257,4 +263,20 @@ void Machine::SetIsEmpty(bool status)
 Machine::MACHINE_STATE Machine::GetState()
 {
     return m_state;
+}
+
+void Machine::SetState(MACHINE_STATE state)
+{
+    this->m_state = state;
+    this->SetSprite();
+}
+
+int Machine::GetStateInt()
+{
+    return m_state;
+}
+
+int Machine::GetMaxStates()
+{
+    return MACHINE_STATES_TOTAL;
 }

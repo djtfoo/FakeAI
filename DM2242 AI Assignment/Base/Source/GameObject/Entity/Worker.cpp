@@ -27,11 +27,11 @@ void Worker::Update(double dt)
 	switch (m_state)
 	{
 	case IDLE:
-		m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER);
+		//m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER);
 		break;
 
 	case WORK:
-		m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER_WORKING);
+		//m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER_WORKING);
 		break;
 	}
 
@@ -87,7 +87,7 @@ int Worker::Think()
     
     }
 
-    return 0;
+    return -1;
 }
 
 void Worker::Act(int value)
@@ -215,4 +215,25 @@ bool Worker::IsAbleToWork()
     }
 
     return false;
+}
+
+Worker::WORKER_STATE Worker::GetState()
+{
+    return m_state;
+}
+
+void Worker::SetState(WORKER_STATE state)
+{
+    this->m_state = state;
+    this->SetSprite();
+}
+
+int Worker::GetStateInt()
+{
+    return m_state;
+}
+
+int Worker::GetMaxStates()
+{
+    return WORKER_STATES_TOTAL;
 }

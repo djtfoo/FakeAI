@@ -248,6 +248,7 @@ void SceneAI::Update(double dt)
         {
             Entity* entity = dynamic_cast<Entity*>(go);
             entity->RunFSM(dt);
+            //entity->SetSprite();
         }
     }
 
@@ -258,6 +259,15 @@ void SceneAI::Update(double dt)
 
     if (Application::IsKeyPressed('2'))
         debugMachine->SetIsEmpty(false);
+}
+
+void SceneAI::RenderBackground()
+{
+    modelStack.PushMatrix();
+    modelStack.Translate(-0.5f + 0.5f * SharedData::GetInstance()->m_gridMap->GetRows(), -0.5f + 0.5f * SharedData::GetInstance()->m_gridMap->GetColumns(), -1);
+    modelStack.Scale(SharedData::GetInstance()->m_gridMap->GetRows(), SharedData::GetInstance()->m_gridMap->GetColumns(), 1);
+    RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_FLOOR), false);
+    modelStack.PopMatrix();
 }
 
 void SceneAI::RenderGO(GameObject *go)
@@ -287,6 +297,8 @@ void SceneAI::Render()
 		);
 	// Model matrix : an identity matrix (model will be at the origin)
 	modelStack.LoadIdentity();
+
+    RenderBackground();
 
     for (std::vector<GameObject*>::iterator it = SharedData::GetInstance()->m_goList.begin(); it != SharedData::GetInstance()->m_goList.end(); ++it)
     {

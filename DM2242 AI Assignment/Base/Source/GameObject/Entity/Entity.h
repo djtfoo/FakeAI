@@ -12,6 +12,7 @@ public:
         DIR_UP,
         DIR_RIGHT,
         DIR_LEFT,
+        DIRECTIONS_TOTAL
     };
 
 private:
@@ -26,11 +27,17 @@ protected:
 
 public:
     virtual ~Entity();
-
+    
     virtual void Init() = 0;
     virtual void Update(double dt) = 0;      // doing things for its state (e.g. walking)
 
     virtual void RunFSM(double dt);
+
+    // setting Entity's sprite
+    void SetDirection(DIRECTION dir);
+    virtual void SetSprite();   // edit the mesh TexCoords
+    virtual int GetStateInt();     // default just in case
+    virtual int GetMaxStates(); // default just in case
 
     // idea:
     // multiple types of think and act... use int values for switch case

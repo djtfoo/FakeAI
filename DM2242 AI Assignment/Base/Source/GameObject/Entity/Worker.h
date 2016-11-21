@@ -10,10 +10,11 @@ class Worker : public Entity
 public:
     enum WORKER_STATE
     {
-        NIL,
+        //NIL,
         IDLE,
         WORK,
         BREAK,
+        WORKER_STATES_TOTAL
     };
 
 private:
@@ -48,6 +49,11 @@ public:
 
     virtual void Init();
     virtual void Update(double dt);
+
+    WORKER_STATE GetState();
+    void SetState(WORKER_STATE state);
+    virtual int GetStateInt();
+    virtual int GetMaxStates();
 };
 
 #endif

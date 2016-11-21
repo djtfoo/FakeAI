@@ -1,4 +1,6 @@
 #include "GameObject.h"
+#include "Entity/Entity.h"
+#include "../MeshBuilder.h"
 
 GameObject::GameObject(std::string name, bool isEntity) : m_name(name), b_isEntity(isEntity), m_scale(1, 1, 1)
 {
@@ -45,7 +47,24 @@ void GameObject::SetPos(const Vector3& pos)
 
 void GameObject::SetMesh(Mesh* mesh)
 {
-    this->m_mesh = mesh;
+    /*this->m_mesh = mesh;
+    if (this->b_isEntity)
+    {
+        Entity* entity = dynamic_cast<Entity*>(this);
+        entity->SetSprite();
+    }*/
+
+    if (this->b_isEntity)
+    {
+        this->m_mesh = MeshBuilder::GenerateQuad("machine", Color(1, 0.5f, 0));
+        this->m_mesh->textureID = mesh->textureID;
+        Entity* entity = dynamic_cast<Entity*>(this);
+        entity->SetSprite();
+    }
+    else
+    {
+        this->m_mesh = mesh;
+    }
 }
 
 void GameObject::SetActive()

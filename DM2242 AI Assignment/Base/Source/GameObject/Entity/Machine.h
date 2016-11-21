@@ -11,11 +11,12 @@ public:
 
     enum MACHINE_STATE
     {
-        NIL,
+        //NIL,
         REST,
         PRODUCTION,
         WAITFORREFILL,
         BROKEN,
+        MACHINE_STATES_TOTAL
     };
 
 private:
@@ -64,6 +65,9 @@ public:
     void SetIsEmpty(bool status);
 
     MACHINE_STATE GetState();
+    void SetState(MACHINE_STATE state);
+    virtual int GetStateInt();
+    virtual int GetMaxStates();
 };
 
 #endif
