@@ -33,15 +33,18 @@ void MeshList::Init()
 
     // Maintenance Man
     meshList[GEO_MAINTENANCEMAN] = MeshBuilder::GenerateQuad("maintenance man", Color(0, 1, 1));
+    meshList[GEO_MAINTENANCEMAN]->textureID = LoadTGA("Image/Entity_MaintenanceMan.tga");
 
     // Robot
     meshList[GEO_ROBOT] = MeshBuilder::GenerateQuad("robot", Color(0.5f, 0.5f, 0.5f));
 
     // Scrap Man
     meshList[GEO_SCRAPMAN] = MeshBuilder::GenerateQuad("scrap man", Color(0.3f, 0.3f, 0.3f));
+    //meshList[GEO_SCRAPMAN]->textureID = LoadTGA("Image/Entity_ScrapMan.tga");
 
     // Delivery Man
     meshList[GEO_DELIVERYMAN] = MeshBuilder::GenerateQuad("delivery man", Color(1, 0.5f, 0.5f));
+    meshList[GEO_DELIVERYMAN]->textureID = LoadTGA("Image/Entity_DeliveryMan.tga");
 
     // Game Objects
     meshList[GEO_DELIVERYTRUCK];

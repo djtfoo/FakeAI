@@ -95,12 +95,12 @@ void Worker::Act(int value)
     switch (value)
     {
     case IDLE:
-        m_state = IDLE;
+        SetState(IDLE);
         DoIdle();
         break;
 
     case WORK:
-        m_state = WORK;
+        SetState(WORK);
         DoWork();
         break;
 

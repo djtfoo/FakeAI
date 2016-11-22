@@ -10,6 +10,7 @@ public:
     {
         IDLE,
         DRIVING,
+        WALK,
         COLLECT_PRODUCT,
         DELIVERYMAN_STATES_TOTAL
     };
