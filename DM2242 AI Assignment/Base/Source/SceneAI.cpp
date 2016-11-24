@@ -39,75 +39,75 @@ void SceneAI::Init()
 
     // Conveyor Belt
     ConveyorBelt* conveyor = new ConveyorBelt();
-    conveyor->SetPos(Vector3(3, 16, 0));
+    conveyor->SetPos(Vector3(3, 12, 0));
     conveyor->Init();
     conveyor->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_CONVEYORBELT));
-    conveyor->AddCheckpoint(Vector3(7, 16, 0));
-    conveyor->AddCheckpoint(Vector3(10, 16, 0));
-    conveyor->AddCheckpoint(Vector3(10, 13, 0));
-    conveyor->AddCheckpoint(Vector3(10, 11, 0));
-    conveyor->AddCheckpoint(Vector3(6, 11, 0));
-    conveyor->AddCheckpoint(Vector3(3, 11, 0));
-    conveyor->AddCheckpoint(Vector3(3, 8, 0));
+    conveyor->AddCheckpoint(Vector3(7, 12, 0));
+    conveyor->AddCheckpoint(Vector3(9, 12, 0));
+    conveyor->AddCheckpoint(Vector3(9, 9, 0));
+    conveyor->AddCheckpoint(Vector3(9, 8, 0));
+    conveyor->AddCheckpoint(Vector3(6, 8, 0));
+    conveyor->AddCheckpoint(Vector3(4, 8, 0));
+    conveyor->AddCheckpoint(Vector3(4, 6, 0));
     SharedData::GetInstance()->m_goList.push_back(conveyor);
 
     // Toilet
-    SharedData::GetInstance()->AddGameObject(new Toilet(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_TOILET), 18, 18);
+    SharedData::GetInstance()->AddGameObject(new Toilet(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_TOILET), 14, 14);
 
     // Machine
     debugMachine = new Machine();
     debugMachine->Init();
     debugMachine->SetPartToCreate(RobotPart::BODY);
-    debugMachine->SetPos(Vector3(2.f, 16.f, 0));
+    debugMachine->SetPos(Vector3(2.f, 12.f, 0));
     debugMachine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
     debugMachine->SetSpawnLocation(conveyor->GetCheckpoint(0));
     SharedData::GetInstance()->m_goList.push_back(debugMachine);
 
-    SharedData::GetInstance()->m_gridMap->m_collisionGrid[16][2] = true;
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[12][2] = true;
 
     Machine* machine = new Machine();
     machine->Init();
     machine->SetPartToCreate(RobotPart::HEAD);
-    machine->SetPos(Vector3(10.f, 17.f, 0));
+    machine->SetPos(Vector3(9.f, 13.f, 0));
     machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
     machine->SetSpawnLocation(conveyor->GetCheckpoint(2));
     SharedData::GetInstance()->m_goList.push_back(machine);
-    SharedData::GetInstance()->m_gridMap->m_collisionGrid[17][10] = true;
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[13][9] = true;
 
     machine = new Machine();
     machine->Init();
     machine->SetPartToCreate(RobotPart::LIMB);
-    machine->SetPos(Vector3(10.f, 10.f, 0));
+    machine->SetPos(Vector3(9.f, 7.f, 0));
     machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
     machine->SetSpawnLocation(conveyor->GetCheckpoint(4));
     SharedData::GetInstance()->m_goList.push_back(machine);
-    SharedData::GetInstance()->m_gridMap->m_collisionGrid[10][10] = true;
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[6][9] = true;
 
     machine = new Machine();
     machine->Init();
     machine->SetPartToCreate(RobotPart::MICROCHIP);
-    machine->SetPos(Vector3(3.f, 12.f, 0));
+    machine->SetPos(Vector3(3.f, 8.f, 0));
     machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
     machine->SetSpawnLocation(conveyor->GetCheckpoint(6));
     SharedData::GetInstance()->m_goList.push_back(machine);
-    SharedData::GetInstance()->m_gridMap->m_collisionGrid[12][3] = true;
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[8][3] = true;
 
     // Worker + Assosiated Workstation ( 1 )
     Workstation* tempStation = new Workstation();
     tempStation->Init();
     tempStation->SetActive();
     tempStation->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKSTATION));
-    tempStation->SetPos(Vector3(6, 17, 0));
+    tempStation->SetPos(Vector3(6, 13, 0));
     tempStation->SetTypeStored(RobotPart::BODY);
     SharedData::GetInstance()->m_goList.push_back(tempStation);
 
-    SharedData::GetInstance()->m_gridMap->m_collisionGrid[17][6] = true;
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[13][6] = true;
 
     Worker* tempWorker = new Worker();
     tempWorker->Init();
     tempWorker->SetActive();
     tempWorker->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER));
-    tempWorker->SetPos(Vector3(7, 17, 0));
+    tempWorker->SetPos(Vector3(7, 13, 0));
     tempWorker->SetWorkstation(tempStation);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
@@ -116,17 +116,17 @@ void SceneAI::Init()
     tempStation->Init();
     tempStation->SetActive();
     tempStation->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKSTATION));
-    tempStation->SetPos(Vector3(11, 14, 0));
+    tempStation->SetPos(Vector3(10, 10, 0));
     tempStation->SetTypeStored(RobotPart::HEAD);
     SharedData::GetInstance()->m_goList.push_back(tempStation);
 
-    SharedData::GetInstance()->m_gridMap->m_collisionGrid[17][6] = true;
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[10][10] = true;
 
     tempWorker = new Worker();
     tempWorker->Init();
     tempWorker->SetActive();
     tempWorker->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER));
-    tempWorker->SetPos(Vector3(11, 13, 0));
+    tempWorker->SetPos(Vector3(10, 9, 0));
     tempWorker->SetWorkstation(tempStation);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
@@ -135,17 +135,17 @@ void SceneAI::Init()
     tempStation->Init();
     tempStation->SetActive();
     tempStation->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKSTATION));
-    tempStation->SetPos(Vector3(7, 10, 0));
+    tempStation->SetPos(Vector3(7, 7, 0));
     tempStation->SetTypeStored(RobotPart::LIMB);
     SharedData::GetInstance()->m_goList.push_back(tempStation);
 
-    SharedData::GetInstance()->m_gridMap->m_collisionGrid[10][7] = true;
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[6][7] = true;
 
     tempWorker = new Worker();
     tempWorker->Init();
     tempWorker->SetActive();
     tempWorker->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER));
-    tempWorker->SetPos(Vector3(6, 10, 0));
+    tempWorker->SetPos(Vector3(6, 7, 0));
     tempWorker->SetWorkstation(tempStation);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
@@ -154,32 +154,32 @@ void SceneAI::Init()
     tempStation->Init();
     tempStation->SetActive();
     tempStation->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKSTATION));
-    tempStation->SetPos(Vector3(2, 9, 0));
+    tempStation->SetPos(Vector3(3, 6, 0));
     tempStation->SetTypeStored(RobotPart::MICROCHIP);
     SharedData::GetInstance()->m_goList.push_back(tempStation);
 
-    SharedData::GetInstance()->m_gridMap->m_collisionGrid[9][2] = true;
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[8][2] = true;
 
     tempWorker = new Worker();
     tempWorker->Init();
     tempWorker->SetActive();
     tempWorker->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER));
-    tempWorker->SetPos(Vector3(2, 8, 0));
+    tempWorker->SetPos(Vector3(3, 5, 0));
     tempWorker->SetWorkstation(tempStation);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
     // Maintenance Man
-    SharedData::GetInstance()->AddGameObject(new MaintenanceMan(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_MAINTENANCEMAN), 15, 7);
+    SharedData::GetInstance()->AddGameObject(new MaintenanceMan(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_MAINTENANCEMAN), 13, 5);
 
     // Scrap Man
-    SharedData::GetInstance()->AddGameObject(new ScrapMan(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAPMAN), 14, 2);
+    SharedData::GetInstance()->AddGameObject(new ScrapMan(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAPMAN), 12, 2);
 
     // pathfinder test
-    pathfinderTest.ReceiveCurrentPos(Vector3(rand() % 20, rand() % 20, 0));
-    //pathfinderTest.ReceiveCurrentPos(Vector3(2, 17, 0));
-
-    pathfinderTest.ReceiveDestination(Vector3(18, 18, 0));
-    pathfinderTest.FindPathGreedyBestFirst();
+    //pathfinderTest.ReceiveCurrentPos(Vector3(rand() % 20, rand() % 20, 0));
+    ////pathfinderTest.ReceiveCurrentPos(Vector3(2, 17, 0));
+    //
+    //pathfinderTest.ReceiveDestination(Vector3(18, 18, 0));
+    //pathfinderTest.FindPathGreedyBestFirst();
 }
 
 //GameObject* SP3::FetchGameObject(OBJECT_TYPE ObjectType)
@@ -342,7 +342,7 @@ void SceneAI::Render()
         }
     }
 
-    
+    /*// pathfinder test
     modelStack.PushMatrix();
     modelStack.Translate(pathfinderTest.position.x, pathfinderTest.position.y, 0);
     RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_HEAD), false);
@@ -354,7 +354,7 @@ void SceneAI::Render()
         modelStack.Translate((*it).col, (*it).row, 0);
         RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
         modelStack.PopMatrix();
-    }
+    }*/
 
     // DEBUG 
     switch (debugMachine->GetState())

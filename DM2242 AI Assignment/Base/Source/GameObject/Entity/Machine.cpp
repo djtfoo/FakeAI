@@ -221,28 +221,30 @@ void Machine::CreatePart()
     {
     case RobotPart::HEAD:
         m_scrapQuantity -= 2;
-        tempPart->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_HEAD));
+        //tempPart->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_HEAD));
         tempPart->SetWaypoint(2);
         break;
 
     case RobotPart::BODY:
         m_scrapQuantity -= 4;
-        tempPart->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_BODY));
+        //tempPart->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_BODY));
 		tempPart->SetWaypoint(0);
         break;
 
     case RobotPart::LIMB:
         m_scrapQuantity -= 3;
-        tempPart->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_LIMBS));
+        //tempPart->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_LIMBS));
         tempPart->SetWaypoint(4);
         break;
 
     case RobotPart::MICROCHIP:
         m_scrapQuantity -= 1;
-        tempPart->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_CHIP));
+        //tempPart->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_CHIP));
         tempPart->SetWaypoint(6);
         break;
     }
+
+    tempPart->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_PART_PACKAGE));
 
     SharedData::GetInstance()->m_goList.push_back(tempPart);
 }

@@ -36,6 +36,9 @@ public:
     void SetMesh(Mesh* mesh);
     void SetActive();
     void SetInactive();
+
+    virtual void SetSprite();   // edit the mesh TexCoords
+    // if a GameObject doesn't have different sprites, don't need define, can use GameObject's default
 };
 
 #endif

@@ -14,7 +14,8 @@ public:
         INCOMPLETE3, // body + limbs + head
 
         STARTUP,
-        WORK,
+        WORK_WITHOUTPART,
+        WORK_WITHPART,
         CHEER,
         SHUTDOWN,
 

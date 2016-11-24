@@ -1,3 +1,5 @@
+#include "GL\glew.h"
+
 #include "GameObject.h"
 #include "Entity/Entity.h"
 #include "../MeshBuilder.h"
@@ -56,7 +58,7 @@ void GameObject::SetMesh(Mesh* mesh)
 
     if (this->b_isEntity)
     {
-        this->m_mesh = MeshBuilder::GenerateQuad("machine", Color(1, 0.5f, 0));
+        this->m_mesh = MeshBuilder::GenerateQuad(this->GetName(), Color(1, 0.5f, 0));
         this->m_mesh->textureID = mesh->textureID;
         Entity* entity = dynamic_cast<Entity*>(this);
         entity->SetSprite();
@@ -64,6 +66,7 @@ void GameObject::SetMesh(Mesh* mesh)
     else
     {
         this->m_mesh = mesh;
+        this->SetSprite();
     }
 }
 
@@ -75,4 +78,22 @@ void GameObject::SetActive()
 void GameObject::SetInactive()
 {
     this->b_active = false;
+}
+
+void GameObject::SetSprite()
+{
+    if (this->m_mesh->textureID > 0)
+    {
+        TexCoord texCoords[4] = {
+            TexCoord(0.f, 0.f),
+            TexCoord(1.f, 0.f),
+            TexCoord(1.f, 1.f),
+            TexCoord(0.f, 1.f)
+        };
+
+        glBindBuffer(GL_ARRAY_BUFFER, m_mesh->vertexBuffer);
+        for (unsigned i = 0; i < 4; ++i) {
+            glBufferSubData(GL_ARRAY_BUFFER, (sizeof(Vertex)-sizeof(TexCoord)) + (i * sizeof(Vertex)), sizeof(TexCoord), &texCoords[i]);
+        }
+    }
 }

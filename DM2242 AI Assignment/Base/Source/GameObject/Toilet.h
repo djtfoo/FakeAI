@@ -6,6 +6,10 @@
 
 class Toilet : public GameObject
 {
+    std::queue<GameObject*> m_ToiletQueue;
+
+    bool b_occupied;
+
 public:
     Toilet();
     virtual ~Toilet();
@@ -13,10 +17,9 @@ public:
     virtual void Init();
     virtual void Update(double dt); // Check if any robotpart is at workstation, if so add into vector
 
-private:
-    
-    std::queue<GameObject*> m_ToiletQueue;
+    virtual void SetSprite();   // edit the mesh TexCoords
 
+    bool IsOccupied();      // gets whether someone is in the toilet
 };
 
 #endif

@@ -10,7 +10,9 @@ ScrapMan::~ScrapMan()
 
 void ScrapMan::Init()
 {
+    m_dir = DIR_DOWN;
 
+    m_state = IDLE;
 }
 
 void ScrapMan::Update(double dt)

@@ -10,7 +10,7 @@ public:
     {
         IDLE,
         PICKUP_ROBOT,
-        BREAKDOWN_ROBOT,
+        //BREAKDOWN_ROBOT,
         BREAK,
         SCRAPMAN_STATES_TOTAL
     };

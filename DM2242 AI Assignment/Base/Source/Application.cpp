@@ -42,7 +42,7 @@ void resize_callback(GLFWwindow* window, int w, int h)
 
 bool Application::IsKeyPressed(unsigned short key)
 {
-    return ((GetAsyncKeyState(key) & 0x8001) != 0);
+    return ((GetAsyncKeyState(key) & 0x8000) != 0);
 }
 bool Application::IsMousePressed(unsigned short key) //0 - Left, 1 - Right, 2 - Middle
 {
@@ -95,7 +95,7 @@ void Application::Init()
 	
     m_width = 800;
 	m_height = 600;
-	m_window = glfwCreateWindow(m_width, m_height, "Artifically Intelligent", NULL, NULL);
+	m_window = glfwCreateWindow(m_width, m_height, "Robotopia", NULL, NULL);
 
 	//If the window couldn't be created
 	if (!m_window)

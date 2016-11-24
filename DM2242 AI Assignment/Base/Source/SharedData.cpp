@@ -13,7 +13,7 @@ void SharedData::Init()
     m_meshList = new MeshList();
     m_meshList->Init();
 
-    m_gridMap = new GridMap(20, 20);
+    m_gridMap = new GridMap(15, 15);
 }
 
 void SharedData::Exit()

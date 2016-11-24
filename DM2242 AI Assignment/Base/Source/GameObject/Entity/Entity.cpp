@@ -32,7 +32,7 @@ void Entity::RunFSM(double dt)
 void Entity::SetDirection(DIRECTION dir)
 {
     this->m_dir = dir;
-    //this->SetSprite();
+    this->SetSprite();
 }
 
 void Entity::SetSprite()
