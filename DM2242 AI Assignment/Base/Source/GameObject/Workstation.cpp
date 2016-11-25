@@ -36,7 +36,7 @@ void Workstation::Update(double dt)
             if (go->GetName() == "Robot" && go->IsActive())
             {
                 Robot* robot = dynamic_cast<Robot*>(SharedData::GetInstance()->m_goList[i]);
-                switch (robot->GetRobotState())
+                switch (robot->GetState())
                 {
                 case Robot::INCOMPLETE1: // Body
                     if (GetTypeStored() == RobotPart::HEAD)

@@ -60,16 +60,6 @@ void Robot::Act(int value)
     }
 }
 
-void Robot::SetRobotState(ROBOT_STATE state)
-{
-    this->m_state = state;
-}
-
-Robot::ROBOT_STATE Robot::GetRobotState()
-{
-    return m_state;
-}
-
 void Robot::SetBelt(ConveyorBelt* belt)
 {
 	m_beltToFollow = belt;

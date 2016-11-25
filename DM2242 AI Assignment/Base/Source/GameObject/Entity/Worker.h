@@ -10,7 +10,6 @@ class Worker : public Entity
 public:
     enum WORKER_STATE
     {
-        //NIL,
         IDLE,
         WORK,
         BREAK,

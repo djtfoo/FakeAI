@@ -41,9 +41,6 @@ public:
     Robot();
     virtual ~Robot();
 
-    void SetRobotState(ROBOT_STATE state);
-    ROBOT_STATE GetRobotState();
-
 	void SetBelt(ConveyorBelt* belt);
 	void SetWaypoint(int idx);
 

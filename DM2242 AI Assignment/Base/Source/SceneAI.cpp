@@ -15,6 +15,8 @@
 #include "GameObject/Entity/ScrapMan.h"
 
 #include "GameObject/Toilet.h"
+#include "GameObject/BuildingBlockStack.h"
+#include "GameObject/Ornament.h"
 
 SceneAI::SceneAI()
 {
@@ -44,15 +46,29 @@ void SceneAI::Init()
     conveyor->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_CONVEYORBELT));
     conveyor->AddCheckpoint(Vector3(7, 12, 0));
     conveyor->AddCheckpoint(Vector3(9, 12, 0));
+    conveyor->AddCheckpoint(Vector3(9, 10, 0));
     conveyor->AddCheckpoint(Vector3(9, 9, 0));
-    conveyor->AddCheckpoint(Vector3(9, 8, 0));
-    conveyor->AddCheckpoint(Vector3(6, 8, 0));
-    conveyor->AddCheckpoint(Vector3(4, 8, 0));
+    conveyor->AddCheckpoint(Vector3(6, 9, 0));
+    conveyor->AddCheckpoint(Vector3(4, 9, 0));
     conveyor->AddCheckpoint(Vector3(4, 6, 0));
     SharedData::GetInstance()->m_goList.push_back(conveyor);
 
     // Toilet
     SharedData::GetInstance()->AddGameObject(new Toilet(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_TOILET), 14, 14);
+
+    // Building Blocks Pile
+    SharedData::GetInstance()->AddGameObject(new BuildingBlockStack(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_BUILDINGBLOCK_STACK), 6, 5);
+    SharedData::GetInstance()->AddGameObject(new BuildingBlockStack(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_BUILDINGBLOCK_STACK), 7, 5);
+    SharedData::GetInstance()->AddGameObject(new BuildingBlockStack(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_BUILDINGBLOCK_STACK), 8, 5);
+
+    // Ornaments
+    SharedData::GetInstance()->AddGameObject(new Ornament(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_ORNAMENT), 6, 1);
+    SharedData::GetInstance()->AddGameObject(new Ornament(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_ORNAMENT), 7, 1);
+    SharedData::GetInstance()->AddGameObject(new Ornament(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_ORNAMENT), 8, 1);
+
+    //===================
+    // Create Entities
+    //===================
 
     // Machine
     debugMachine = new Machine();
@@ -77,7 +93,7 @@ void SceneAI::Init()
     machine = new Machine();
     machine->Init();
     machine->SetPartToCreate(RobotPart::LIMB);
-    machine->SetPos(Vector3(9.f, 7.f, 0));
+    machine->SetPos(Vector3(9.f, 8.f, 0));
     machine->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE));
     machine->SetSpawnLocation(conveyor->GetCheckpoint(4));
     SharedData::GetInstance()->m_goList.push_back(machine);
@@ -135,7 +151,7 @@ void SceneAI::Init()
     tempStation->Init();
     tempStation->SetActive();
     tempStation->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKSTATION));
-    tempStation->SetPos(Vector3(7, 7, 0));
+    tempStation->SetPos(Vector3(7, 8, 0));
     tempStation->SetTypeStored(RobotPart::LIMB);
     SharedData::GetInstance()->m_goList.push_back(tempStation);
 
@@ -145,7 +161,7 @@ void SceneAI::Init()
     tempWorker->Init();
     tempWorker->SetActive();
     tempWorker->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER));
-    tempWorker->SetPos(Vector3(6, 7, 0));
+    tempWorker->SetPos(Vector3(6, 8, 0));
     tempWorker->SetWorkstation(tempStation);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 

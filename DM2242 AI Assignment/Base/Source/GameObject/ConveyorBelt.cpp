@@ -16,7 +16,7 @@ void ConveyorBelt::Update(double dt)
 {
 }
 
-void ConveyorBelt::AddCheckpoint(Vector3 checkpoint)
+void ConveyorBelt::AddCheckpoint(const Vector3& checkpoint)
 {
 	m_Checkpoints.push_back(checkpoint);
 }

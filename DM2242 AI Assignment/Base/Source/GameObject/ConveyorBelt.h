@@ -13,7 +13,7 @@ public:
     virtual void Init();
     virtual void Update(double dt);
 
-	void AddCheckpoint(Vector3 checkpoint);
+	void AddCheckpoint(const Vector3& checkpoint);
 
 	Vector3 GetCheckpoint(int Idx);
 	Vector3 GetNextCheckpoint(int currIdx);

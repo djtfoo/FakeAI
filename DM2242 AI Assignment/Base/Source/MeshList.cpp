@@ -29,7 +29,7 @@ void MeshList::Init()
     // Worker
     meshList[GEO_WORKER] = MeshBuilder::GenerateQuad("worker", Color(0, 0, 1));
     meshList[GEO_WORKER]->textureID = LoadTGA("Image/Entity_Worker.tga");
-    meshList[GEO_WORKER_WORKING] = MeshBuilder::GenerateQuad("worker working", Color(0.5, 0.5, 1));
+    //meshList[GEO_WORKER_WORKING] = MeshBuilder::GenerateQuad("worker working", Color(0.5, 0.5, 1));
 
     // Maintenance Man
     meshList[GEO_MAINTENANCEMAN] = MeshBuilder::GenerateQuad("maintenance man", Color(0, 1, 1));
@@ -37,6 +37,7 @@ void MeshList::Init()
 
     // Robot
     meshList[GEO_ROBOT] = MeshBuilder::GenerateQuad("robot", Color(0.5f, 0.5f, 0.5f));
+    meshList[GEO_ROBOT]->textureID = LoadTGA("Image/Entity_Robot.tga");
 
     // Scrap Man
     meshList[GEO_SCRAPMAN] = MeshBuilder::GenerateQuad("scrap man", Color(0.3f, 0.3f, 0.3f));
@@ -47,8 +48,11 @@ void MeshList::Init()
     meshList[GEO_DELIVERYMAN]->textureID = LoadTGA("Image/Entity_DeliveryMan.tga");
 
     // Game Objects
-    meshList[GEO_DELIVERYTRUCK];
+    meshList[GEO_DELIVERYTRUCK] = MeshBuilder::GenerateQuad("delivery truck", Color(1, 0.5f, 0.5f));
+    meshList[GEO_DELIVERYTRUCK]->textureID = LoadTGA("Image/GO_DeliveryTruck.tga");
+
     meshList[GEO_CONVEYORBELT] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
+    //meshList[GEO_CONVEYORBELT]->textureID = LoadTGA("Image/GO_ConveyorBelt.tga");
 
     meshList[GEO_TOILET] = MeshBuilder::GenerateQuad("toilet", Color(0.8f, 0.95f, 0.9f));
     meshList[GEO_TOILET]->textureID = LoadTGA("Image//GO_Toilet.tga");
@@ -56,25 +60,25 @@ void MeshList::Init()
     meshList[GEO_WORKSTATION] = MeshBuilder::GenerateQuad("workstation", Color(0.5f, 0.2f, 0.07f));
     meshList[GEO_WORKSTATION]->textureID = LoadTGA("Image/GO_Workstation.tga");
 
-    meshList[GEO_SCRAP_PIECE];
-    meshList[GEO_SCRAP_STACK];
+    meshList[GEO_SCRAP_STACK] = MeshBuilder::GenerateQuad("scrap pile", Color(0.5f, 0.2f, 0.07f));
+    meshList[GEO_SCRAP_STACK]->textureID = LoadTGA("Image/GO_ScrapPile.tga");
 
-    meshList[GEO_ROBOT_PART_PACKAGE] = MeshBuilder::GenerateQuad("robot part - head", Color(0.3f, 0.5f, 0.5f));
-    meshList[GEO_ROBOT_PART_PACKAGE]->textureID = LoadTGA("Image/GO_RobotPart.tga");
+    meshList[GEO_ROBOT_PART_PACKAGE] = MeshBuilder::GenerateQuad("robot part", Color(0.3f, 0.5f, 0.5f));
+    meshList[GEO_ROBOT_PART_PACKAGE]->textureID = LoadTGA("Image/GO_RobotPartPackage.tga");
 
     //meshList[GEO_ROBOT_HEAD] = MeshBuilder::GenerateQuad("robot part - head", Color(0.3f, 0.5f, 0.5f), 0.7f);
     //meshList[GEO_ROBOT_BODY] = MeshBuilder::GenerateQuad("robot part - body", Color(0.3f, 0.5f, 0.5f), 0.7f);
     //meshList[GEO_ROBOT_LIMBS] = MeshBuilder::GenerateQuad("robot part - limbs", Color(0.3f, 0.5f, 0.5f), 0.7f);
     //meshList[GEO_ROBOT_CHIP] = MeshBuilder::GenerateQuad("robot part - chip", Color(0.3f, 0.5f, 0.5f), 0.7f);
-    meshList[GEO_ROBOT_STAGE1] = MeshBuilder::GenerateQuad("robot stage1", Color(0.5f, 0.5f, 0.5f));
-    meshList[GEO_ROBOT_STAGE2];
-    meshList[GEO_ROBOT_STAGE3];
+    //meshList[GEO_ROBOT_STAGE1] = MeshBuilder::GenerateQuad("robot stage1", Color(0.5f, 0.5f, 0.5f));
+    //meshList[GEO_ROBOT_STAGE2];
+    //meshList[GEO_ROBOT_STAGE3];
 
-    meshList[GEO_PYRAMID_PART];
-    meshList[GEO_PYRAMID_STACK];
-    meshList[GEO_PYRAMID_STAGE1];
-    meshList[GEO_PYRAMID_STAGE2];
-    meshList[GEO_PYRAMID_STAGE3];
+    meshList[GEO_BUILDINGBLOCK_STACK] = MeshBuilder::GenerateQuad("building blocks", Color(0.3f, 0.5f, 0.5f));
+    meshList[GEO_BUILDINGBLOCK_STACK]->textureID = LoadTGA("Image/GO_BuildingBlocks.tga");
+
+    meshList[GEO_ORNAMENT] = MeshBuilder::GenerateQuad("ornament", Color(0.3f, 0.5f, 0.5f));
+    meshList[GEO_ORNAMENT]->textureID = LoadTGA("Image/GO_Ornament.tga");
 
     meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("floor", Color(1, 1, 1), 1.f, 4.f);
     meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floor.tga");

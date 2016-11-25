@@ -15,7 +15,7 @@ public:
     virtual ~Toilet();
 
     virtual void Init();
-    virtual void Update(double dt); // Check if any robotpart is at workstation, if so add into vector
+    virtual void Update(double dt); // Check if person in the toilet is done with his business
 
     virtual void SetSprite();   // edit the mesh TexCoords
 

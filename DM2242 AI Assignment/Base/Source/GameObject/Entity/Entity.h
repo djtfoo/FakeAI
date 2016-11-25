@@ -33,8 +33,12 @@ public:
 
     virtual void RunFSM(double dt);
 
-    // setting Entity's sprite
+    // setting Entity's direction
+    //DIRECTION CheckDirection(const Vector3& velocity);   // check for direction based on velocity
+    //DIRECTION CheckDirection(const Vector3& ownPos, const Vector3& toFacePos);    // check for direction based on where to face; can be workstation or based on previous position
     void SetDirection(DIRECTION dir);
+
+    // setting Entity's sprite
     virtual void SetSprite();   // edit the mesh TexCoords
     virtual int GetStateInt();     // default just in case
     virtual int GetMaxStates(); // default just in case

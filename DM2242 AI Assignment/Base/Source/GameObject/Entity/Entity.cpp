@@ -31,6 +31,9 @@ void Entity::RunFSM(double dt)
 
 void Entity::SetDirection(DIRECTION dir)
 {
+    // if velocity == (1, 0, 0)
+    // this->m_dir = DIR_RIGHT;
+
     this->m_dir = dir;
     this->SetSprite();
 }

@@ -143,8 +143,8 @@ void Worker::DoWork()
                 }
             }
 
-            tempRobot->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_STAGE1));
-            tempRobot->SetRobotState(Robot::INCOMPLETE1);
+            tempRobot->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT));
+            tempRobot->SetState(Robot::INCOMPLETE1);
             tempRobot->SetWaypoint(1);
 
             SharedData::GetInstance()->m_goList.push_back(tempRobot);
@@ -153,7 +153,7 @@ void Worker::DoWork()
         {
             if (m_workstation->GetCurrRobot())
             {
-                m_workstation->GetCurrRobot()->SetRobotState(static_cast<Robot::ROBOT_STATE>(m_workstation->GetCurrRobot()->GetRobotState() + 1));
+                m_workstation->GetCurrRobot()->SetState(static_cast<Robot::ROBOT_STATE>(m_workstation->GetCurrRobot()->GetState() + 1));
                 m_workstation->GetCurrRobot()->SetWorkedOn(false);
                 m_workstation->SetCurrRobot(NULL);
             }
