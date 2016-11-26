@@ -117,6 +117,9 @@
     <ClCompile Include="Source\GameObject\DeliveryTruck.cpp">
       <Filter>Source Files\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="Source\GameObject\ScrapPile.cpp">
+      <Filter>Source Files\GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -216,6 +219,9 @@
       <Filter>Header Files\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Source\GameObject\DeliveryTruck.h">
+      <Filter>Header Files\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObject\ScrapPile.h">
       <Filter>Header Files\GameObject</Filter>
     </ClInclude>
   </ItemGroup>

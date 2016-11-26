@@ -60,8 +60,8 @@ void MeshList::Init()
     meshList[GEO_WORKSTATION] = MeshBuilder::GenerateQuad("workstation", Color(0.5f, 0.2f, 0.07f));
     meshList[GEO_WORKSTATION]->textureID = LoadTGA("Image/GO_Workstation.tga");
 
-    meshList[GEO_SCRAP_STACK] = MeshBuilder::GenerateQuad("scrap pile", Color(0.5f, 0.2f, 0.07f));
-    meshList[GEO_SCRAP_STACK]->textureID = LoadTGA("Image/GO_ScrapPile.tga");
+    meshList[GEO_SCRAP_PILE] = MeshBuilder::GenerateQuad("scrap pile", Color(0.5f, 0.2f, 0.07f));
+    meshList[GEO_SCRAP_PILE]->textureID = LoadTGA("Image/GO_ScrapPile.tga");
 
     meshList[GEO_ROBOT_PART_PACKAGE] = MeshBuilder::GenerateQuad("robot part", Color(0.3f, 0.5f, 0.5f));
     meshList[GEO_ROBOT_PART_PACKAGE]->textureID = LoadTGA("Image/GO_RobotPartPackage.tga");
