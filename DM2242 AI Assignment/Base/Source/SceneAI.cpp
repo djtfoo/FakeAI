@@ -373,21 +373,21 @@ void SceneAI::Render()
     }*/
 
     // DEBUG 
-    switch (debugMachine->GetState())
-    {
-    case Machine::REST:
-        std::cout << "Machine: REST             Timer: " << debugMachine->GetTimer() << std::endl;
-        break;
-    case Machine::PRODUCTION:
-        std::cout << "Machine: PRODUCTION       Timer: " << debugMachine->GetTimer() << std::endl;
-        break;
-    case Machine::BROKEN:
-        std::cout << "Machine: BROKEN           Timer: " << debugMachine->GetTimer() << std::endl;
-        break;
-    case Machine::WAITFORREFILL:
-        std::cout << "Machine: WAITFORREFILL    Timer: " << debugMachine->GetTimer() << std::endl;
-        break;
-    }
+    //switch (debugMachine->GetState())
+    //{
+    //case Machine::REST:
+    //    std::cout << "Machine: REST             Timer: " << debugMachine->GetTimer() << std::endl;
+    //    break;
+    //case Machine::PRODUCTION:
+    //    std::cout << "Machine: PRODUCTION       Timer: " << debugMachine->GetTimer() << std::endl;
+    //    break;
+    //case Machine::BROKEN:
+    //    std::cout << "Machine: BROKEN           Timer: " << debugMachine->GetTimer() << std::endl;
+    //    break;
+    //case Machine::WAITFORREFILL:
+    //    std::cout << "Machine: WAITFORREFILL    Timer: " << debugMachine->GetTimer() << std::endl;
+    //    break;
+    //}
     
 }
 

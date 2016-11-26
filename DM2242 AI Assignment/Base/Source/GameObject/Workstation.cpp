@@ -31,14 +31,14 @@ void Workstation::Update(double dt)
             }
         }
 
-        if ((m_pos - go->GetPos()).Length() < 1.05)
+        if (go->GetName() == "Robot" && go->IsActive())
         {
-            if (go->GetName() == "Robot" && go->IsActive())
+            if ((m_pos - go->GetPos()).Length() < 1.1f)
             {
                 Robot* robot = dynamic_cast<Robot*>(SharedData::GetInstance()->m_goList[i]);
                 switch (robot->GetState())
                 {
-                case Robot::INCOMPLETE1: // Body
+                case Robot::INCOMPLETE_1: // Body
                     if (GetTypeStored() == RobotPart::HEAD)
                     {
                         m_robotAtStation = true;
@@ -47,7 +47,7 @@ void Workstation::Update(double dt)
                     }
                     break;
 
-                case Robot::INCOMPLETE2: // Body + Head
+                case Robot::INCOMPLETE_2: // Body + Head
                     if (GetTypeStored() == RobotPart::LIMB)
                     {
                         m_robotAtStation = true;
@@ -56,7 +56,7 @@ void Workstation::Update(double dt)
                     }
                     break;
 
-                case Robot::INCOMPLETE3: // Body + Head + Limbs
+                case Robot::INCOMPLETE_3: // Body + Head + Limbs
                     if (GetTypeStored() == RobotPart::MICROCHIP)
                     {
                         m_robotAtStation = true;

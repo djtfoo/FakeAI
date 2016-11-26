@@ -24,6 +24,7 @@ protected:
     Entity(std::string name);
 
     DIRECTION m_dir;
+    Vector3 m_vel;
 
 public:
     virtual ~Entity();
@@ -33,9 +34,16 @@ public:
 
     virtual void RunFSM(double dt);
 
+    // setting Entity's velocity
+    Vector3 CheckVelocity(const Vector3& ownPos, const Vector3& destinationPos);    // get velocity based on destination
+    Vector3 CheckVelocity(DIRECTION dir);       // get velocity based on direction
+
+    void SetVelocity(const Vector3& velocity);
+
     // setting Entity's direction
-    //DIRECTION CheckDirection(const Vector3& velocity);   // check for direction based on velocity
-    //DIRECTION CheckDirection(const Vector3& ownPos, const Vector3& toFacePos);    // check for direction based on where to face; can be workstation or based on previous position
+    DIRECTION CheckDirection(const Vector3& velocity);   // check for direction based on velocity
+    DIRECTION CheckDirection(const Vector3& ownPos, const Vector3& toFacePos);    // check for direction based on where to face; can be workstation or based on previous position
+
     void SetDirection(DIRECTION dir);
 
     // setting Entity's sprite

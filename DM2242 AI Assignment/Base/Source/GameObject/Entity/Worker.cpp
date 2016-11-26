@@ -144,7 +144,7 @@ void Worker::DoWork()
             }
 
             tempRobot->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT));
-            tempRobot->SetState(Robot::INCOMPLETE1);
+            tempRobot->SetState(Robot::INCOMPLETE_1);
             tempRobot->SetWaypoint(1);
 
             SharedData::GetInstance()->m_goList.push_back(tempRobot);

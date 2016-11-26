@@ -4,7 +4,7 @@
 #include "Entity/Entity.h"
 #include "../MeshBuilder.h"
 
-GameObject::GameObject(std::string name, bool isEntity) : m_name(name), b_isEntity(isEntity), m_scale(1, 1, 1)
+GameObject::GameObject(std::string name, bool isEntity) : m_name(name), b_isEntity(isEntity), m_scale(1, 1, 1), b_active(true)
 {
 }
 

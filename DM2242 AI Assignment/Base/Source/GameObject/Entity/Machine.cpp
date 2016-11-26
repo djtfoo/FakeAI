@@ -105,7 +105,7 @@ int Machine::Think()
 		//else if (int(fmod(m_timer, 1.0)) == 0)
 		else if (m_overheatTimer > 0.5)
 		{
-			int RandNum = Math::RandIntMinMax(0, 100);
+			int RandNum = Math::RandIntMinMax(10, 100);
             if (RandNum < m_overheatCharge)
             {
                 m_storedTimer = m_timer;

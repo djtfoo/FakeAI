@@ -9,9 +9,9 @@ class Robot : public Entity
 public:
     enum ROBOT_STATE
     {
-        INCOMPLETE1, // body //being built in progress
-        INCOMPLETE2, // body + limbs
-        INCOMPLETE3, // body + limbs + head
+        INCOMPLETE_1, // body //being built in progress
+        INCOMPLETE_2, // body + limbs
+        INCOMPLETE_3, // body + limbs + head
 
         STARTUP,
         WORK_WITHOUTPART,
@@ -24,13 +24,16 @@ public:
 
 private:
     double m_lifetime;
+    double d_cheerCounter;
     
     ROBOT_STATE m_state;
 
 	int m_currWaypoint;
 	ConveyorBelt* m_beltToFollow;
 
-    bool m_workedOn;
+    bool b_workedOn;
+    bool b_ornamentCompleted;
+    ROBOT_STATE m_stateBeforeCheer;
 
     virtual void Sense(double dt);
     virtual int Think();
