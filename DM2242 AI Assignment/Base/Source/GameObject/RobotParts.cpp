@@ -20,7 +20,6 @@ void RobotPart::Update(double dt)
 
 	Vector3 dir = (m_beltToFollow->GetNextCheckpoint(m_currWaypoint) - m_pos).Normalized();
 	m_pos += dir * dt;
-
 }
 
 int RobotPart::GetCost()

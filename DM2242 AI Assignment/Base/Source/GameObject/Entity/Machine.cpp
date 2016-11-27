@@ -156,6 +156,7 @@ void Machine::Act(int value)
 		if (m_timer > 5)
 		{
 			m_partCreated = true;
+            m_timer = 0; 
 			CreatePart();
 		}
         break;
@@ -215,6 +216,7 @@ void Machine::CreatePart()
 		if (SharedData::GetInstance()->m_goList[i]->GetName() == "ConveyorBelt")
 		{
 			tempPart->SetBelt(dynamic_cast<ConveyorBelt*>(SharedData::GetInstance()->m_goList[i]));
+            break;
 		}
 	}
 
@@ -230,6 +232,7 @@ void Machine::CreatePart()
         m_scrapQuantity -= 4;
         //tempPart->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_BODY));
 		tempPart->SetWaypoint(0);
+        std::cout << m_scrapQuantity << " ";
         break;
 
     case RobotPart::LIMB:
