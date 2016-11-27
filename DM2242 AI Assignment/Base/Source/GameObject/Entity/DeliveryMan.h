@@ -2,6 +2,9 @@
 #define DELIVERY_MAN_H
 
 #include "Entity.h"
+#include "Pathfinder.h"
+#include "../DeliveryTruck.h"
+#include "../Ornament.h"
 
 class DeliveryMan : public Entity
 {
@@ -12,11 +15,19 @@ public:
         DRIVING,
         WALK,
         COLLECT_PRODUCT,
+
         DELIVERYMAN_STATES_TOTAL
     };
 
 private:
     DELIVERYMAN_STATE m_state;
+
+    DeliveryTruck* m_deliveryTruck;
+    Ornament* m_ornamentToCollect;
+    bool b_ornamentCompleted;
+    
+    double d_timerCounter;
+    Pathfinder* m_pathfinder;
 
     virtual void Sense(double dt);
     virtual int Think();
@@ -33,6 +44,8 @@ public:
     void SetState(DELIVERYMAN_STATE state);
     virtual int GetStateInt();
     virtual int GetMaxStates();
+
+    void AssignDeliveryTruck(DeliveryTruck* truck);
 };
 
 #endif

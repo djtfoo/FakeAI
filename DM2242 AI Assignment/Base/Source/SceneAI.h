@@ -25,6 +25,8 @@ public:
     void RenderGameObject(GameObject* go);
     void RenderEntity(Entity* entity);
 
+    void RenderDebugInfo();
+
 	//GameObject* FetchGameObject(OBJECT_TYPE ObjectType);
 	//void SpawnGameObject(OBJECT_TYPE ObjectType, GAMEOBJECT_TYPE GoType, Vector3 Position, Vector3 Scale, bool Collidable, bool Visible);
 

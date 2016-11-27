@@ -51,9 +51,6 @@ void MeshList::Init()
     meshList[GEO_DELIVERYTRUCK] = MeshBuilder::GenerateQuad("delivery truck", Color(1, 0.5f, 0.5f));
     meshList[GEO_DELIVERYTRUCK]->textureID = LoadTGA("Image/GO_DeliveryTruck.tga");
 
-    meshList[GEO_CONVEYORBELT] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
-    //meshList[GEO_CONVEYORBELT]->textureID = LoadTGA("Image/GO_ConveyorBelt.tga");
-
     meshList[GEO_TOILET] = MeshBuilder::GenerateQuad("toilet", Color(0.8f, 0.95f, 0.9f));
     meshList[GEO_TOILET]->textureID = LoadTGA("Image//GO_Toilet.tga");
 
@@ -66,19 +63,45 @@ void MeshList::Init()
     meshList[GEO_ROBOT_PART_PACKAGE] = MeshBuilder::GenerateQuad("robot part", Color(0.3f, 0.5f, 0.5f));
     meshList[GEO_ROBOT_PART_PACKAGE]->textureID = LoadTGA("Image/GO_RobotPartPackage.tga");
 
-    //meshList[GEO_ROBOT_HEAD] = MeshBuilder::GenerateQuad("robot part - head", Color(0.3f, 0.5f, 0.5f), 0.7f);
-    //meshList[GEO_ROBOT_BODY] = MeshBuilder::GenerateQuad("robot part - body", Color(0.3f, 0.5f, 0.5f), 0.7f);
-    //meshList[GEO_ROBOT_LIMBS] = MeshBuilder::GenerateQuad("robot part - limbs", Color(0.3f, 0.5f, 0.5f), 0.7f);
-    //meshList[GEO_ROBOT_CHIP] = MeshBuilder::GenerateQuad("robot part - chip", Color(0.3f, 0.5f, 0.5f), 0.7f);
-    //meshList[GEO_ROBOT_STAGE1] = MeshBuilder::GenerateQuad("robot stage1", Color(0.5f, 0.5f, 0.5f));
-    //meshList[GEO_ROBOT_STAGE2];
-    //meshList[GEO_ROBOT_STAGE3];
-
     meshList[GEO_BUILDINGBLOCK_STACK] = MeshBuilder::GenerateQuad("building blocks", Color(0.3f, 0.5f, 0.5f));
     meshList[GEO_BUILDINGBLOCK_STACK]->textureID = LoadTGA("Image/GO_BuildingBlocks.tga");
 
     meshList[GEO_ORNAMENT] = MeshBuilder::GenerateQuad("ornament", Color(0.3f, 0.5f, 0.5f));
     meshList[GEO_ORNAMENT]->textureID = LoadTGA("Image/GO_Ornament.tga");
+
+    // Conveyor Belt
+    float texWidth = 1.f / 2.f;
+    float texHeight = 1.f / 3.f;
+
+    meshList[GEO_CONVEYORBELT_HORIZONTAL] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
+    meshList[GEO_CONVEYORBELT_HORIZONTAL]->textureID = LoadTGA("Image/Conveyor Belt.tga");
+    AdjustTexCoord(GEO_CONVEYORBELT_HORIZONTAL, 0, texWidth, texHeight * 2, texHeight * 3);
+
+    meshList[GEO_CONVEYORBELT_VERTICAL] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
+    meshList[GEO_CONVEYORBELT_VERTICAL]->textureID = LoadTGA("Image/Conveyor Belt.tga");
+    AdjustTexCoord(GEO_CONVEYORBELT_VERTICAL, texWidth, texWidth * 2, texHeight, texHeight * 2);
+
+    meshList[GEO_CONVEYORBELT_TOPRIGHT] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
+    meshList[GEO_CONVEYORBELT_TOPRIGHT]->textureID = LoadTGA("Image/Conveyor Belt.tga");
+    AdjustTexCoord(GEO_CONVEYORBELT_TOPRIGHT, texWidth, texWidth * 2, texHeight * 2, texHeight * 3);
+
+    meshList[GEO_CONVEYORBELT_BOTRIGHT] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
+    meshList[GEO_CONVEYORBELT_BOTRIGHT]->textureID = LoadTGA("Image/Conveyor Belt.tga");
+    AdjustTexCoord(GEO_CONVEYORBELT_BOTRIGHT, texWidth, texWidth * 2, 0, texHeight);
+
+    meshList[GEO_CONVEYORBELT_TOPLEFT] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
+    meshList[GEO_CONVEYORBELT_TOPLEFT]->textureID = LoadTGA("Image/Conveyor Belt.tga");
+    AdjustTexCoord(GEO_CONVEYORBELT_TOPLEFT, 0, texWidth, texHeight, texHeight * 2);
+
+    meshList[GEO_CONVEYORBELT_VERTICALEND] = MeshBuilder::GenerateQuad("conveyor belt", Color(0.3f, 0.5f, 0.5f));
+    meshList[GEO_CONVEYORBELT_VERTICALEND]->textureID = LoadTGA("Image/Conveyor Belt.tga");
+    AdjustTexCoord(GEO_CONVEYORBELT_VERTICALEND, 0, texWidth, 0, texHeight);
+
+    //float texCountWidth = m_dir;
+    //float texCountHeight = GetMaxStates() - 1 - GetStateInt();
+    //float texWidth = 1.f / 4;
+    //float texHeight = 1.f / GetMaxStates();
+
 
     meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("floor", Color(1, 1, 1), 1.f, 4.f);
     meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floor.tga");
@@ -106,4 +129,22 @@ void MeshList::Exit()
 Mesh* MeshList::GetMesh(GEOMETRY_TYPE geo_type)
 {
     return meshList[geo_type];
+}
+
+void MeshList::AdjustTexCoord(GEOMETRY_TYPE geo_type, float u1, float u2, float v1, float v2)
+{
+    if (meshList[geo_type]->textureID > 0)
+    {
+        TexCoord texCoords[4] = {
+            TexCoord(u1, v1),
+            TexCoord(u2, v1),
+            TexCoord(u2, v2),
+            TexCoord(u1, v2)
+        };
+
+        glBindBuffer(GL_ARRAY_BUFFER, meshList[geo_type]->vertexBuffer);
+        for (unsigned i = 0; i < 4; ++i) {
+            glBufferSubData(GL_ARRAY_BUFFER, (sizeof(Vertex)-sizeof(TexCoord)) + (i * sizeof(Vertex)), sizeof(TexCoord), &texCoords[i]);
+        }
+    }
 }

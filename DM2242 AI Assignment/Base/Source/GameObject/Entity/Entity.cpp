@@ -99,7 +99,11 @@ float RoundOff(float num)
 
 Vector3 Entity::CheckVelocity(const Vector3& ownPos, const Vector3& destinationPos)
 {
-    Vector3 vel = (destinationPos - ownPos).Normalized();
+    Vector3 vel = (destinationPos - ownPos);
+    if (vel.IsZero())
+        return vel;
+    
+    vel.Normalize();
     vel.x = RoundOff(vel.x);
     vel.y = RoundOff(vel.y);
 

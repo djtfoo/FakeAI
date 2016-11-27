@@ -5,7 +5,7 @@
 
 class DeliveryTruck : public GameObject
 {
-    // direction
+    int m_dir;
 
 public:
     DeliveryTruck();
@@ -15,6 +15,8 @@ public:
     virtual void Update(double dt);
 
     virtual void SetSprite();
+
+    void SetDirection(int dir);
 };
 
 #endif

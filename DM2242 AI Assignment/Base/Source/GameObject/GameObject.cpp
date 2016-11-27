@@ -66,7 +66,8 @@ void GameObject::SetMesh(Mesh* mesh, bool wantNewMesh)
         this->m_mesh = mesh;
     }
 
-    this->SetSprite();
+    if (this->m_name != "ConveyorBelt")
+        this->SetSprite();
 }
 
 void GameObject::SetActive()

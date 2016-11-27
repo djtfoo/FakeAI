@@ -18,6 +18,8 @@ class OrnamentBuildingSystem
     double d_buildingBlocksTimer;   // how long to take from a stack for, then change
     int m_completedOrnamentIndex;   // which ornament the deliveryman to take from
 
+    bool b_justCompleted;
+
 public:
     OrnamentBuildingSystem();
     ~OrnamentBuildingSystem();
@@ -37,6 +39,8 @@ public:
     Vector3 GetOrnamentCoord();
 
     Ornament* GetCompletedOrnament();   // return 0 if no completed ornament available
+
+    bool IsJustCompleted(); // get whether the ornament has just been completed
 
     int GetXLaneToBlocks();
     int GetXLaneToOrnament();

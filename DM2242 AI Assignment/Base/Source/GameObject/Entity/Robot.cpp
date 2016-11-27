@@ -138,7 +138,7 @@ void Robot::Sense(double dt)
         d_timerCounter += dt;
 
     // for checking if going into cheer state
-    if (SharedData::GetInstance()->m_ornamentSystem->GetCompletedOrnament() != NULL)
+    if (SharedData::GetInstance()->m_ornamentSystem->IsJustCompleted())
     {
         b_ornamentCompleted = true;
     }
@@ -180,7 +180,7 @@ int Robot::Think()
 
     case CHEER:
         if (d_timerCounter >= 5.0)
-            return m_stateBeforeCheer;    // temp default
+            return m_stateBeforeCheer;
         break;
 
     case SHUTDOWN:
@@ -223,8 +223,8 @@ void Robot::Act(int value)
         break;
 
     case CHEER: // going into cheer state
-        SetState(CHEER);
         m_stateBeforeCheer = m_state;
+        SetState(CHEER);
         b_ornamentCompleted = false;
         m_vel.SetZero();
         break;

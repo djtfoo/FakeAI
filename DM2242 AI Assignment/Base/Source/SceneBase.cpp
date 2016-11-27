@@ -165,15 +165,27 @@ void SceneBase::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
 	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	for(unsigned i = 0; i < text.length(); ++i)
-	{
-		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(i * 1.0f + 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
-		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
 
-		mesh->Render((unsigned)text[i] * 6, 6);
-	}
+    float translationOffset = 0.f;  // stores font width of each character
+    for (unsigned i = 0; i < text.length(); ++i)
+    {
+        Mtx44 characterSpacing;
+        characterSpacing.SetToTranslation(translationOffset + 0.5f, 0.5f, 0);
+        Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
+        glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+
+        mesh->Render((unsigned)text[i] * 6, 6);
+
+        float offsetIncrease = 0.f;
+        if (mesh->fontSize[text[i]] == 0) {   // there's no font data
+            offsetIncrease = 1.f;
+        }
+        else {
+            offsetIncrease = (float)(mesh->fontSize[text[i]] / 64.f) + 0.3f;
+        }
+        translationOffset += offsetIncrease;
+    }
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
 	modelStack.PopMatrix();

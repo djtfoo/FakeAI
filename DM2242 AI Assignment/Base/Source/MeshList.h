@@ -19,9 +19,16 @@ enum GEOMETRY_TYPE
     GEO_SCRAPMAN,
     GEO_DELIVERYMAN,
 
+    // Conveyor Belt
+    GEO_CONVEYORBELT_HORIZONTAL,
+    GEO_CONVEYORBELT_VERTICAL,
+    GEO_CONVEYORBELT_TOPRIGHT,
+    GEO_CONVEYORBELT_BOTRIGHT,
+    GEO_CONVEYORBELT_TOPLEFT,
+    GEO_CONVEYORBELT_VERTICALEND,
+
     // Game Objects
     GEO_DELIVERYTRUCK,
-    GEO_CONVEYORBELT,
     GEO_TOILET,
     GEO_WORKSTATION,
 
@@ -29,11 +36,6 @@ enum GEOMETRY_TYPE
     GEO_SCRAP_PILE,
 
     GEO_ROBOT_PART_PACKAGE,
-    
-    // TO REMOVE
-    //GEO_ROBOT_STAGE1,
-    //GEO_ROBOT_STAGE2,
-    //GEO_ROBOT_STAGE3,
 
     GEO_BUILDINGBLOCK_STACK,
     GEO_ORNAMENT,
@@ -57,6 +59,8 @@ public:
 
     Mesh* meshList[NUM_GEOMETRY];
     Mesh* GetMesh(GEOMETRY_TYPE geo_type);
+
+    void AdjustTexCoord(GEOMETRY_TYPE geo_type, float u1 = 0.f, float u2 = 1.f, float v1 = 0.f, float v2 = 1.f);
 };
 
 #endif

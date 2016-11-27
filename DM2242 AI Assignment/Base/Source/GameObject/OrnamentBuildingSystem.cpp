@@ -4,6 +4,7 @@ OrnamentBuildingSystem::OrnamentBuildingSystem()
 : x_laneToBlocks(0), x_laneToOrnament(0)
 , m_buildingBlocksIndex(1), m_ornamentsIndex(2)
 , d_buildingBlocksTimer(0.0), m_completedOrnamentIndex(-1)
+, b_justCompleted(false)
 {
     for (int i = 0; i < 3; ++i)
     {
@@ -26,6 +27,9 @@ void OrnamentBuildingSystem::Init()
 
 void OrnamentBuildingSystem::Update(double dt)
 {
+    if (b_justCompleted)
+        b_justCompleted = false;
+
     d_buildingBlocksTimer += dt;
 
     // IF STACK HAS BEEN EXHAUSTED
@@ -42,6 +46,9 @@ void OrnamentBuildingSystem::Update(double dt)
     // IF ORNAMENT COMPLETED BUILDING
     if (m_ornaments[m_ornamentsIndex]->isComplete())
     {
+        // set bool for robots to cheer
+        b_justCompleted = true;
+
         // set index for deliveryman to come
         m_completedOrnamentIndex = m_ornamentsIndex;
     
@@ -108,6 +115,11 @@ Ornament* OrnamentBuildingSystem::GetCompletedOrnament()
         return NULL;
 
     return m_ornaments[m_completedOrnamentIndex];
+}
+
+bool OrnamentBuildingSystem::IsJustCompleted()
+{
+    return b_justCompleted;
 }
 
 int OrnamentBuildingSystem::GetXLaneToBlocks()

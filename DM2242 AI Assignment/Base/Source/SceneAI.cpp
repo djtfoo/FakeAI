@@ -18,6 +18,7 @@
 #include "GameObject/BuildingBlockStack.h"
 #include "GameObject/Ornament.h"
 #include "GameObject/ScrapPile.h"
+#include "GameObject/DeliveryTruck.h"
 
 SceneAI::SceneAI()
 {
@@ -44,7 +45,7 @@ void SceneAI::Init()
     ConveyorBelt* conveyor = new ConveyorBelt();
     conveyor->SetPos(Vector3(2, 12, 0));
     conveyor->Init();
-    conveyor->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_CONVEYORBELT));
+    conveyor->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_CONVEYORBELT_HORIZONTAL));
     conveyor->AddCheckpoint(Vector3(6, 12, 0));
     conveyor->AddCheckpoint(Vector3(8, 12, 0));
     conveyor->AddCheckpoint(Vector3(8, 10, 0));
@@ -71,7 +72,7 @@ void SceneAI::Init()
     SharedData::GetInstance()->m_ornamentSystem->SetLaneToOrnament(8);
 
     // Scrap Pile
-    SharedData::GetInstance()->AddGameObject(new ScrapPile(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAP_PILE), 14, 3);
+    SharedData::GetInstance()->AddGameObject(new ScrapPile(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAP_PILE), 12, 2);
 
     //===================
     // Create Entities
@@ -244,6 +245,13 @@ void SceneAI::Init()
     maintenance->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(maintenance);
 
+    // Delivery Man
+    DeliveryTruck* truck = new DeliveryTruck();
+    SharedData::GetInstance()->AddGameObject(truck, SharedData::GetInstance()->m_meshList->GetMesh(GEO_DELIVERYTRUCK), 1, 2);
+    DeliveryMan* deliveryMan = new DeliveryMan();
+    SharedData::GetInstance()->AddGameObject(deliveryMan, SharedData::GetInstance()->m_meshList->GetMesh(GEO_DELIVERYMAN), 1, 2);
+    deliveryMan->AssignDeliveryTruck(truck);
+
     // Scrap Man
     SharedData::GetInstance()->AddGameObject(new ScrapMan(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAPMAN), 11, 2);
 
@@ -347,6 +355,10 @@ void SceneAI::RenderBackground()
 void SceneAI::RenderGO(GameObject *go)
 {
 	modelStack.PushMatrix();
+    if (go->GetName() == "ConveyorBelt")
+        modelStack.Translate(0, 0, -0.5f);
+    else if (go->GetName() == "DeliveryTruck")
+        modelStack.Translate(0, -0.1f, 0.5f);
     modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
     modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
 	RenderMesh(go->GetMesh(), false);
@@ -386,23 +398,46 @@ void SceneAI::Render()
 
                 for (int idx = 0; idx < belt->m_Checkpoints.size() - 1; ++idx)
                 {
+                    GEOMETRY_TYPE geo_type = GEO_CONVEYORBELT_HORIZONTAL;   // default
+
                     int idx2 = idx + 1;
                     Vector3 spawn = belt->m_Checkpoints[idx];
                     while (spawn != belt->m_Checkpoints[idx2])
                     {
                         if (spawn.x < belt->m_Checkpoints[idx2].x)
+                        {
                             spawn.x += 1;
-                        if (spawn.x > belt->m_Checkpoints[idx2].x)
+                            if (spawn.x == belt->m_Checkpoints[idx2 + 1].x)
+                                geo_type = GEO_CONVEYORBELT_TOPRIGHT;
+                        }
+                        else if (spawn.x > belt->m_Checkpoints[idx2].x)
+                        {
                             spawn.x -= 1;
-                        if (spawn.y < belt->m_Checkpoints[idx2].y)
+                            if (geo_type == GEO_CONVEYORBELT_BOTRIGHT)
+                                geo_type = GEO_CONVEYORBELT_HORIZONTAL;
+
+                            else if (spawn.x == belt->m_Checkpoints[idx2 + 1].x)
+                                geo_type = GEO_CONVEYORBELT_TOPLEFT;
+                        }
+                        else if (spawn.y < belt->m_Checkpoints[idx2].y)
+                        {
                             spawn.y += 1;
-                        if (spawn.y > belt->m_Checkpoints[idx2].y)
+                        }
+                        else if (spawn.y > belt->m_Checkpoints[idx2].y)
+                        {
                             spawn.y -= 1;
+                            geo_type = GEO_CONVEYORBELT_VERTICAL;
+                            if (idx2 + 1 == belt->m_Checkpoints.size())
+                                geo_type = GEO_CONVEYORBELT_VERTICALEND;
+
+                            else if (spawn.y == belt->m_Checkpoints[idx2 + 1].y)
+                                geo_type = GEO_CONVEYORBELT_BOTRIGHT;
+                        }
 
                         modelStack.PushMatrix();
-                        modelStack.Translate(spawn.x, spawn.y, -1);
+                        modelStack.Translate(spawn.x, spawn.y, -0.5f);
                         modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
-                        //RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_CONVEYORBELT), false);
+                        RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(geo_type), false);
                         modelStack.PopMatrix();
 
                         // This should be moved somewhere else, Init maybe
@@ -411,10 +446,12 @@ void SceneAI::Render()
                     
                 }
             }
-
+            
             RenderGO(go);
         }
     }
+
+    RenderDebugInfo();
 
     /*// pathfinder test
     modelStack.PushMatrix();
@@ -447,6 +484,11 @@ void SceneAI::Render()
     //    break;
     //}
     
+}
+
+void SceneAI::RenderDebugInfo()
+{
+    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "ROBOTOPIA", Color(0, 0, 0), 4, 0, 56);
 }
 
 void SceneAI::Exit()
