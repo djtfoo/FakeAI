@@ -3,6 +3,7 @@
 
 #include "Entity.h"
 #include "Machine.h"
+#include "../Workstation.h"
 
 class MaintenanceMan : public Entity
 {
@@ -37,6 +38,8 @@ private:
     virtual int Think();
     virtual void Act(int value);
 
+    Workstation* m_workstation;
+
 public:
     MaintenanceMan();
     virtual ~MaintenanceMan();
@@ -48,6 +51,8 @@ public:
     void SetState(MAINTENANCEMAN_STATE state);
     virtual int GetStateInt();
     virtual int GetMaxStates();
+
+    void SetWorkstation(Workstation* station);
 };
 
 #endif

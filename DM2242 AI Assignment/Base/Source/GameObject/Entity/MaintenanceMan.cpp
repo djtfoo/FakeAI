@@ -27,11 +27,22 @@ void MaintenanceMan::Update(double dt)
         {
             Vector3 dir = (m_targetMachine->GetPos() - m_pos).Normalized();
             m_pos += dir * dt;
-        }
 
-        if ((m_pos - m_targetMachine->GetPos()).Length() < 1.001)
+            if ((m_pos - m_targetMachine->GetPos()).Length() < 1.001)
+            {
+                m_doingWork = true;
+            }
+        }
+    }
+    else
+    {
+        Vector3 temp = m_workstation->GetPos();
+        temp.y -= 1;
+
+        if (temp != m_pos)
         {
-            m_doingWork = true;
+            Vector3 dir = (temp - m_pos).Normalized();
+            m_pos += dir * dt;
         }
     }
 }
@@ -42,8 +53,6 @@ void MaintenanceMan::Sense(double dt)
 
     if ((m_state == REFILL || m_state == REPAIR) && m_doingWork)
         m_timer += dt;
-    else if (m_state == REPAIR)
-        m_timer += dt;
 }
 
 int MaintenanceMan::Think()
@@ -53,13 +62,45 @@ int MaintenanceMan::Think()
     {
 
     case IDLE:
-        return ScanMachines();
+    {
+        Vector3 temp = m_workstation->GetPos();
+        temp.y -= 1;
+
+        if ((m_pos - temp).Length() < 1.001)
+        {
+            return ScanMachines();
+        }
+        else
+        {
+            return IDLE;
+        }
         break;
-        
+    }
+
     case REFILL:
-        break;
+        if (m_targetMachine && !m_targetMachine->IsEmpty())
+        {
+            m_targetMachine = NULL;
+            m_doingWork = false;
+            return IDLE;
+        }
+        else if (m_targetMachine && m_targetMachine->IsEmpty())
+        {
+            return REFILL;
+        }
+            break;
 
     case REPAIR:
+        if (m_targetMachine && !m_targetMachine->IsBroken())
+        {
+            m_targetMachine = NULL;
+            m_doingWork = false;
+            return IDLE;
+        }
+        else if (m_targetMachine && m_targetMachine->IsBroken())
+        {
+            return REPAIR;
+        }
         break;
 
     case BREAK:
@@ -75,18 +116,22 @@ void MaintenanceMan::Act(int value)
     switch (value)
     {
     case IDLE:
+        SetState(IDLE);
         DoIdle();
         break;
 
     case REPAIR:
+        SetState(REPAIR);
         DoRepair();
         break;
 
     case REFILL:
+        SetState(REFILL);
         DoRefill();
         break;
 
     case BREAK:
+        SetState(BREAK);
         DoBreak();
         break;
     }
@@ -105,14 +150,19 @@ int MaintenanceMan::ScanMachines()
         {
             Machine* machine = dynamic_cast<Machine*>(go);
 
+            if (machine->GetIsBeingWorkedOn())
+                continue;
+
             if (machine->GetState() == Machine::BROKEN)
             {
                 m_targetMachine = machine;
+                m_targetMachine->SetIsBeingWorkedOn(true);
                 return REPAIR;
             }
             else if (machine->GetState() == Machine::WAITFORREFILL)
             {
                 m_targetMachine = machine;
+                m_targetMachine->SetIsBeingWorkedOn(true);
                 return REFILL;
             }
         }
@@ -127,7 +177,7 @@ void MaintenanceMan::DoIdle()
 }
 
 void MaintenanceMan::DoRepair()
-{
+{       
     if (m_timer > 4)
     {
         m_targetMachine->SetIsBroken(false);
@@ -140,6 +190,7 @@ void MaintenanceMan::DoRefill()
     if (m_timer > 4)
     {
         m_targetMachine->SetIsEmpty(false);
+        m_targetMachine->Refill();
         m_timer = 0;
     }
 }
@@ -168,4 +219,9 @@ int MaintenanceMan::GetStateInt()
 int MaintenanceMan::GetMaxStates()
 {
     return MAINTENANCEMAN_STATES_TOTAL;
+}
+
+void MaintenanceMan::SetWorkstation(Workstation* station)
+{
+    m_workstation = station;
 }

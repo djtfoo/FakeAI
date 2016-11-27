@@ -188,8 +188,42 @@ void SceneAI::Init()
     tempWorker->SetWorkstation(tempStation);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
-    // Maintenance Man
-    SharedData::GetInstance()->AddGameObject(new MaintenanceMan(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_MAINTENANCEMAN), 12, 5);
+    // Maintenance Man + Assosiated Workstation ( 1 )
+    tempStation = new Workstation();
+    tempStation->Init();
+    tempStation->SetActive();
+    tempStation->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKSTATION));
+    tempStation->SetPos(Vector3(13, 6, 0));
+    SharedData::GetInstance()->m_goList.push_back(tempStation);
+
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[8][2] = true;
+
+    MaintenanceMan* maintenance = new MaintenanceMan();
+    maintenance->Init();
+    maintenance->SetActive();
+    maintenance->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MAINTENANCEMAN));
+    maintenance->SetPos(Vector3(13, 5, 0));
+    maintenance->SetWorkstation(tempStation);
+    SharedData::GetInstance()->m_goList.push_back(maintenance);
+
+
+    // Maintenance Man + Assosiated Workstation ( 2 )
+    tempStation = new Workstation();
+    tempStation->Init();
+    tempStation->SetActive();
+    tempStation->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKSTATION));
+    tempStation->SetPos(Vector3(11, 6, 0));
+    SharedData::GetInstance()->m_goList.push_back(tempStation);
+
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[8][2] = true;
+
+    maintenance = new MaintenanceMan();
+    maintenance->Init();
+    maintenance->SetActive();
+    maintenance->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MAINTENANCEMAN));
+    maintenance->SetPos(Vector3(11, 5, 0));
+    maintenance->SetWorkstation(tempStation);
+    SharedData::GetInstance()->m_goList.push_back(maintenance);
 
     // Scrap Man
     SharedData::GetInstance()->AddGameObject(new ScrapMan(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAPMAN), 11, 2);

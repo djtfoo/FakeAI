@@ -29,6 +29,7 @@ private:
 	bool m_partCreated;
 	bool m_isBroken;
     bool m_isEmpty;
+    bool m_isBeingWorkedOn;
 
     MACHINE_STATE m_state;
 
@@ -64,10 +65,16 @@ public:
 	void SetIsBroken(bool status);
     void SetIsEmpty(bool status);
 
+    void SetIsBeingWorkedOn(bool status);
+    bool GetIsBeingWorkedOn();
+
     MACHINE_STATE GetState();
     void SetState(MACHINE_STATE state);
     virtual int GetStateInt();
     virtual int GetMaxStates();
+
+    void Refill();
+
 };
 
 #endif

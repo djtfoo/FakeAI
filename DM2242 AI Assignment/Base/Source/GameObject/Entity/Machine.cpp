@@ -23,6 +23,7 @@ void Machine::Init()
 	m_isBroken = false;
 	m_isEmpty = false;
 	m_partCreated = false;
+    m_isBeingWorkedOn = false;
 }
 
 void Machine::Update(double dt)
@@ -152,11 +153,11 @@ void Machine::Act(int value)
 
     case PRODUCTION:
         SetState(PRODUCTION);
-		//if (m_timer > 5)
-		//{
-		//	m_partCreated = true;
-		//	CreatePart();
-		//}
+		if (m_timer > 5)
+		{
+			m_partCreated = true;
+			CreatePart();
+		}
         break;
     case WAITFORREFILL:
         SetState(WAITFORREFILL);
@@ -281,4 +282,19 @@ int Machine::GetStateInt()
 int Machine::GetMaxStates()
 {
     return MACHINE_STATES_TOTAL;
+}
+
+void Machine::Refill()
+{
+    m_scrapQuantity = m_maxScrapQuantity; 
+}
+
+void Machine::SetIsBeingWorkedOn(bool status)
+{
+    m_isBeingWorkedOn = status;
+}
+
+bool Machine::GetIsBeingWorkedOn()
+{
+    return m_isBeingWorkedOn;
 }
