@@ -36,11 +36,6 @@ void Machine::Update(double dt)
 
 	case PRODUCTION:
 		//m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_MACHINE_PRODUCTION);
-        if (m_timer > 5)
-        {
-            m_partCreated = true;
-            CreatePart();
-        }
 		break;
 
 	case BROKEN:

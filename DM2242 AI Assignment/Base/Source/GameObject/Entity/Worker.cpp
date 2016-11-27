@@ -16,10 +16,19 @@ void Worker::Init()
     m_timer = 0;
 	m_breakCharge = 0;
     m_workCompleted = false;
-    m_atWorkstation = false;
+    m_atWorkstation = true;
+    m_breakDone = false;
     m_inToilet = false;
+    m_doOnce = false;
+    m_toiletIdx = 0;
 
 	m_workstation = NULL;
+}
+
+void Worker::SetPos(Vector3 pos)
+{
+    m_pos = pos;
+    m_origSpawn = m_pos;
 }
 
 void Worker::Update(double dt)
@@ -35,15 +44,49 @@ void Worker::Update(double dt)
 		break;
 	}
 
+    if (m_state == BREAK)
+    {
+        Vector3 dir = (m_toilet->GetQueuePosition(m_toiletIdx) - m_pos).Normalized();
+        m_pos += dir * dt;
 
+        if ((m_pos - m_toilet->GetPos()).Length() < 0.1)
+        {
+            m_inToilet = true;
+            m_toilet->SetOccupied(true);
+        }
+        else
+            m_inToilet = false;
+    }
+
+    if (m_state == IDLE && !m_atWorkstation)
+    {
+        if (m_origSpawn != m_pos)
+        {
+            Vector3 dir = (m_origSpawn - m_pos).Normalized();
+            m_pos += dir * dt;
+
+            if ((m_pos - m_origSpawn).Length() < 0.1)
+                m_atWorkstation = true;
+        }
+    }
 }
 
 void Worker::Sense(double dt)
 {
-    m_breakCharge += dt * Math::RandFloatMinMax(1, 2);
-
-    if (m_state == WORK || m_state == BREAK)
+    if (m_state == WORK)
         m_timer += dt;
+
+    else if (m_state == BREAK && m_inToilet)
+        m_timer += dt;
+    else
+    {
+        m_timer += dt;
+        if (m_timer > 1)
+        {
+            m_timer = 0;
+            m_breakCharge += Math::RandFloatMinMax(0, 100);
+        }
+    }
 }
 
 int Worker::Think()
@@ -52,9 +95,8 @@ int Worker::Think()
     {
 
     case IDLE:
-        if (m_breakCharge >= 100)
-            //return BREAK;
-            ;
+        if (m_breakCharge >= 1000)
+            return BREAK;     
         else if (IsAbleToWork())
             return WORK;
         else
@@ -75,11 +117,8 @@ int Worker::Think()
         break;
 
     case BREAK:
-        if (m_inToilet == false)
-        {
-            m_timer = 0.0;
+        if (m_breakDone)
             return IDLE;
-        }
         else
             return BREAK;
         break;
@@ -104,18 +143,22 @@ void Worker::Act(int value)
         DoWork();
         break;
 
-    //case BREAK:
-    //    m_state = BREAK;
-    //    DoBreak();
-    //    break;
+    case BREAK:
+        SetState(BREAK);
+        DoBreak();
+        break;
     }
 }
 
 void Worker::DoIdle()
 {
-    if (m_pos != m_workstation->GetPos())
+    if ((m_pos - m_origSpawn).Length() < 0.1)
     {
         // Set bool to move back to workplace
+        m_atWorkstation = true;
+    }
+    else
+    {
         m_atWorkstation = false;
     }
 }
@@ -166,8 +209,24 @@ void Worker::DoWork()
 
 void Worker::DoBreak()
 {
-    if (m_timer > 5)
-        m_inToilet = false;
+    if (!m_doOnce)
+    {
+        m_toiletIdx = m_toilet->AddToQueue(this);
+        m_doOnce = true;
+    }
+
+    if (m_toilet->CheckIfChange())
+        m_toiletIdx--;
+
+    if (m_timer > 4)
+    {
+        m_breakCharge = 0;
+        m_breakDone = true;
+        m_timer = 0;
+        m_toilet->RemoveFromQueue();
+        m_doOnce = false;
+        m_toilet->SetOccupied(false);
+    }
 }
 
 bool Worker::IsPartAtWorkstation()
@@ -194,6 +253,9 @@ void Worker::SetWorkstation(Workstation* station)
 
 bool Worker::IsAbleToWork()
 {
+    if (!m_atWorkstation)
+        return false;
+
     switch (m_workstation->GetTypeStored())
     {
     case RobotPart::BODY:
@@ -236,4 +298,14 @@ int Worker::GetStateInt()
 int Worker::GetMaxStates()
 {
     return WORKER_STATES_TOTAL;
+}
+
+void Worker::SetToilet(Toilet* toilet)
+{
+    m_toilet = toilet;
+}
+
+Toilet* Worker::GetToilet()
+{
+    return m_toilet;
 }

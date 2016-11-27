@@ -3,7 +3,7 @@
 
 #include "Toilet.h"
 
-Toilet::Toilet() : GameObject("Toilet"), b_occupied(false)
+Toilet::Toilet() : GameObject("Toilet")
 {
 }
 
@@ -13,12 +13,25 @@ Toilet::~Toilet()
 
 void Toilet::Init()
 {
-    //m_scale.Set();
+    b_occupied = false;
 }
 
 void Toilet::Update(double dt)
 {
+    m_change = false;
+}
 
+bool Toilet::IsOccupied()
+{
+    return b_occupied;
+}
+
+void Toilet::SetOccupied(bool status)
+{
+    b_occupied = status;
+
+    if (!status)
+        m_change = true;
 }
 
 void Toilet::SetSprite()
@@ -46,4 +59,31 @@ void Toilet::SetSprite()
             glBufferSubData(GL_ARRAY_BUFFER, (sizeof(Vertex)-sizeof(TexCoord)) + (i * sizeof(Vertex)), sizeof(TexCoord), &texCoords[i]);
         }
     }
+}
+
+
+Vector3 Toilet::GetQueuePosition(int idx)
+{
+    return Vector3(m_pos.x, m_pos.y - idx, m_pos.z);
+}
+
+int Toilet::AddToQueue(GameObject* object)
+{
+    m_ToiletQueue.push(object);
+    return m_ToiletQueue.size() - 1;
+}
+
+void Toilet::RemoveFromQueue()
+{
+    m_ToiletQueue.pop();
+}
+
+int Toilet::GetToiletIdx()
+{
+    return m_ToiletQueue.size() - 1;
+}
+
+bool Toilet::CheckIfChange()
+{
+    return m_change;
 }

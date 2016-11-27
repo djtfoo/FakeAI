@@ -55,7 +55,7 @@ void SceneAI::Init()
     SharedData::GetInstance()->m_goList.push_back(conveyor);
 
     // Toilet
-    SharedData::GetInstance()->AddGameObject(new Toilet(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_TOILET), 14, 14);
+    //SharedData::GetInstance()->AddGameObject(new Toilet(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_TOILET), 14, 14);
 
     // Building Blocks Pile
     SharedData::GetInstance()->AddGameObject(new BuildingBlockStack(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_BUILDINGBLOCK_STACK), 6, 5);
@@ -73,6 +73,16 @@ void SceneAI::Init()
     //===================
     // Create Entities
     //===================
+
+    // Toilet
+    Toilet* tempToilet = new Toilet();
+    tempToilet->Init();
+    tempToilet->SetPos(Vector3(14.f, 14.f, 0));
+    tempToilet->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TOILET));
+    SharedData::GetInstance()->m_goList.push_back(tempToilet);
+
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[14][14] = true;
+
 
     // Machine
     debugMachine = new Machine();
@@ -129,6 +139,7 @@ void SceneAI::Init()
     tempWorker->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER));
     tempWorker->SetPos(Vector3(6, 13, 0));
     tempWorker->SetWorkstation(tempStation);
+    tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
     // Worker + Assosiated Workstation ( 2 )
@@ -148,6 +159,7 @@ void SceneAI::Init()
     tempWorker->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER));
     tempWorker->SetPos(Vector3(9, 9, 0));
     tempWorker->SetWorkstation(tempStation);
+    tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
     // Worker + Assosiated Workstation ( 3 )
@@ -167,6 +179,7 @@ void SceneAI::Init()
     tempWorker->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER));
     tempWorker->SetPos(Vector3(5, 8, 0));
     tempWorker->SetWorkstation(tempStation);
+    tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
     // Worker + Assosiated Workstation ( 4 )
@@ -186,6 +199,7 @@ void SceneAI::Init()
     tempWorker->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER));
     tempWorker->SetPos(Vector3(2, 6, 0));
     tempWorker->SetWorkstation(tempStation);
+    tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
     // Maintenance Man + Assosiated Workstation ( 1 )
@@ -204,6 +218,7 @@ void SceneAI::Init()
     maintenance->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MAINTENANCEMAN));
     maintenance->SetPos(Vector3(13, 5, 0));
     maintenance->SetWorkstation(tempStation);
+    maintenance->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(maintenance);
 
 
@@ -223,6 +238,7 @@ void SceneAI::Init()
     maintenance->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MAINTENANCEMAN));
     maintenance->SetPos(Vector3(11, 5, 0));
     maintenance->SetWorkstation(tempStation);
+    maintenance->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(maintenance);
 
     // Scrap Man

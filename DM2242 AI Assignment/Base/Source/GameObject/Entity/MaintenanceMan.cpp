@@ -17,6 +17,8 @@ void MaintenanceMan::Init()
     m_state = IDLE;
     m_targetMachine = NULL;
     m_doingWork = false;
+    m_breakDone = false;
+    m_toiletIdx = 0;
 }
 
 void MaintenanceMan::Update(double dt)
@@ -45,6 +47,12 @@ void MaintenanceMan::Update(double dt)
             m_pos += dir * dt;
         }
     }
+
+    if (m_state == BREAK)
+    {
+        Vector3 dir = (m_toilet->GetQueuePosition(m_toiletIdx) - m_pos).Normalized();
+        m_pos += dir * dt;
+    }
 }
 
 void MaintenanceMan::Sense(double dt)
@@ -72,6 +80,9 @@ int MaintenanceMan::Think()
         }
         else
         {
+            if (m_breakCharge >= 100)
+                return BREAK;
+
             return IDLE;
         }
         break;
@@ -104,6 +115,10 @@ int MaintenanceMan::Think()
         break;
 
     case BREAK:
+        if (m_breakDone)
+            return IDLE;
+        else
+            return BREAK;
         break;
 
     }
@@ -197,7 +212,12 @@ void MaintenanceMan::DoRefill()
 
 void MaintenanceMan::DoBreak()
 {
-
+    if (m_timer > 4)
+    {
+        m_breakCharge = 0;
+        m_breakDone = true;
+        m_timer = 0;
+    }
 }
 
 MaintenanceMan::MAINTENANCEMAN_STATE MaintenanceMan::GetState()
@@ -224,4 +244,14 @@ int MaintenanceMan::GetMaxStates()
 void MaintenanceMan::SetWorkstation(Workstation* station)
 {
     m_workstation = station;
+}
+
+void MaintenanceMan::SetToilet(Toilet* toilet)
+{
+    m_toilet = toilet;
+}
+
+Toilet* MaintenanceMan::GetToilet()
+{
+    return m_toilet;
 }

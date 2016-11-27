@@ -1,7 +1,7 @@
 #ifndef TOILET_H
 #define TOILET_H
 
-#include "Entity/Worker.h"
+#include "GameObject.h"
 #include <queue>
 
 class Toilet : public GameObject
@@ -9,6 +9,7 @@ class Toilet : public GameObject
     std::queue<GameObject*> m_ToiletQueue;
 
     bool b_occupied;
+    bool m_change;
 
 public:
     Toilet();
@@ -19,7 +20,16 @@ public:
 
     virtual void SetSprite();   // edit the mesh TexCoords
 
+    void SetOccupied(bool status);
     bool IsOccupied();      // gets whether someone is in the toilet
+
+    Vector3 GetQueuePosition(int idx);
+    int GetToiletIdx();
+
+    int AddToQueue(GameObject* object);
+    void RemoveFromQueue();
+
+    bool CheckIfChange();
 };
 
 #endif

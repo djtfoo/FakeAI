@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "Machine.h"
 #include "../Workstation.h"
+#include "../Toilet.h"
 
 class MaintenanceMan : public Entity
 {
@@ -27,6 +28,8 @@ private:
     Machine* m_targetMachine;
 
     bool m_doingWork;
+    bool m_breakDone;
+    int m_toiletIdx;
 
     int ScanMachines();
     void DoIdle();
@@ -39,6 +42,7 @@ private:
     virtual void Act(int value);
 
     Workstation* m_workstation;
+    Toilet* m_toilet;
 
 public:
     MaintenanceMan();
@@ -53,6 +57,9 @@ public:
     virtual int GetMaxStates();
 
     void SetWorkstation(Workstation* station);
+
+    void SetToilet(Toilet* toilet);
+    Toilet* GetToilet();
 };
 
 #endif
