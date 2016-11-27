@@ -11,10 +11,18 @@ void Workstation::Init()
     m_robotAtStation = false;
     m_currRobot = NULL;
     m_partToStore = RobotPart::HEAD;
+
+    m_robotPrevPos.SetZero();
 }
 
 void Workstation::Update(double dt)
 {
+    if (m_currRobot == NULL && !m_robots.empty())
+    {
+        m_currRobot = m_robots.back();
+        m_robots.pop_back();
+    }
+
     for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
     {
         GameObject* go = dynamic_cast<GameObject*>(SharedData::GetInstance()->m_goList[i]);
@@ -36,35 +44,53 @@ void Workstation::Update(double dt)
             if ((m_pos - go->GetPos()).Length() < 1.1f)
             {
                 Robot* robot = dynamic_cast<Robot*>(SharedData::GetInstance()->m_goList[i]);
-                switch (robot->GetState())
+
+                if (!robot->IsWorkedOn())
                 {
-                case Robot::INCOMPLETE_1: // Body
-                    if (GetTypeStored() == RobotPart::HEAD)
+                    switch (robot->GetState())
                     {
-                        m_robotAtStation = true;
-                        m_currRobot = robot;
-                        robot->SetWorkedOn(true);
-                    }
-                    break;
+                    case Robot::INCOMPLETE_1: // Body
+                        if (GetTypeStored() == RobotPart::HEAD)
+                        {
+                            m_robotAtStation = true;
+                            //m_currRobot = robot;
+                            robot->SetWorkedOn(true);
 
-                case Robot::INCOMPLETE_2: // Body + Head
-                    if (GetTypeStored() == RobotPart::LIMB)
-                    {
-                        m_robotAtStation = true;
-                        m_currRobot = robot;
-                        robot->SetWorkedOn(true);
-                    }
-                    break;
+                            m_robotPrevPos = robot->GetPos();
+                            robot->SetPos(Vector3(this->m_pos.x, this->m_pos.y, 1.f));
+                            m_robots.push_back(robot);
+                        }
+                        break;
 
-                case Robot::INCOMPLETE_3: // Body + Head + Limbs
-                    if (GetTypeStored() == RobotPart::MICROCHIP)
-                    {
-                        m_robotAtStation = true;
-                        m_currRobot = robot;
-                        robot->SetWorkedOn(true);
+                    case Robot::INCOMPLETE_2: // Body + Head
+                        if (GetTypeStored() == RobotPart::LIMB)
+                        {
+                            m_robotAtStation = true;
+                            //m_currRobot = robot;
+                            robot->SetWorkedOn(true);
+
+                            m_robotPrevPos = robot->GetPos();
+                            robot->SetPos(Vector3(this->m_pos.x, this->m_pos.y, 1.f));
+                            m_robots.push_back(robot);
+                        }
+                        break;
+
+                    case Robot::INCOMPLETE_3: // Body + Head + Limbs
+                        if (GetTypeStored() == RobotPart::MICROCHIP)
+                        {
+                            m_robotAtStation = true;
+                            //m_currRobot = robot;
+                            robot->SetWorkedOn(true);
+
+                            m_robotPrevPos = robot->GetPos();
+                            robot->SetPos(Vector3(this->m_pos.x, this->m_pos.y, 1.f));
+                            m_robots.push_back(robot);
+                        }
+                        break;
                     }
-                    break;
                 }
+
+                
             }
         }
     }
@@ -105,7 +131,12 @@ RobotPart::ROBOT_PART Workstation::GetTypeStored()
 
 bool Workstation::IfRobotAtStation()
 {
-    return m_robotAtStation;
+    if (m_currRobot == NULL)
+        return false;
+
+    return true;
+
+    //return m_robotAtStation;
 }
 
 Robot* Workstation::GetCurrRobot()
@@ -116,4 +147,9 @@ Robot* Workstation::GetCurrRobot()
 void Workstation::SetCurrRobot(Robot* robot)
 {
     m_currRobot = robot;
+}
+
+Vector3 Workstation::GetRobotPrevPos()
+{
+    return m_robotPrevPos;
 }

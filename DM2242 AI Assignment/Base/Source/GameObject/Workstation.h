@@ -9,7 +9,7 @@
 
 class Workstation : public GameObject
 {
-public: 
+public:
     Workstation();
     virtual ~Workstation();
 
@@ -28,12 +28,17 @@ public:
     Robot* GetCurrRobot();
     void SetCurrRobot(Robot* robot);
 
+    Vector3 GetRobotPrevPos();
+
 private:
     std::vector<RobotPart*> m_RobotPartStorage;
     bool m_robotAtStation;
     RobotPart::ROBOT_PART m_partToStore;
     Robot* m_currRobot;
 
+    std::vector<Robot*> m_robots;   // robots that have arrived at the Workstation
+
+    Vector3 m_robotPrevPos;
 };
 
 #endif

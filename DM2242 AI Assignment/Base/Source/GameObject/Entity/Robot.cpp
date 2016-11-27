@@ -246,9 +246,19 @@ void Robot::SetWaypoint(int idx)
 	m_currWaypoint = idx;
 }
 
+Vector3 Robot::GetWaypoint()
+{
+    return m_beltToFollow->GetNextCheckpoint(m_currWaypoint);
+}
+
 void Robot::SetWorkedOn(bool status)
 {
     b_workedOn = status;
+}
+
+bool Robot::IsWorkedOn()
+{
+    return b_workedOn;
 }
 
 Robot::ROBOT_STATE Robot::GetState()

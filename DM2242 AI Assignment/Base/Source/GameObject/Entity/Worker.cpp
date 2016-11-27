@@ -36,11 +36,9 @@ void Worker::Update(double dt)
 	switch (m_state)
 	{
 	case IDLE:
-		//m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER);
 		break;
 
 	case WORK:
-		//m_mesh = SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER_WORKING);
 		break;
 	}
 
@@ -113,7 +111,7 @@ int Worker::Think()
 
     case IDLE:
         if (m_breakCharge >= 2000)
-            return BREAK;     
+            return BREAK;
         else if (IsAbleToWork())
             return WORK;
         else
@@ -192,7 +190,6 @@ void Worker::DoWork()
 
         if (m_workstation->GetTypeStored() == RobotPart::BODY)
         {
-
             Robot* tempRobot = new Robot();
             tempRobot->Init();
             tempRobot->SetActive();
@@ -219,6 +216,8 @@ void Worker::DoWork()
             {
                 m_workstation->GetCurrRobot()->SetState(static_cast<Robot::ROBOT_STATE>(m_workstation->GetCurrRobot()->GetState() + 1));
                 m_workstation->GetCurrRobot()->SetWorkedOn(false);
+                m_workstation->GetCurrRobot()->SetPos(m_workstation->GetRobotPrevPos());
+                //m_workstation->GetCurrRobot()->SetVelocity(CheckVelocity(m_pos, m_workstation->GetCurrRobot()->GetWaypoint()));
                 m_workstation->SetCurrRobot(NULL);
             }
         }

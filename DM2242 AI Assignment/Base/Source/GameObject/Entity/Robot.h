@@ -52,8 +52,10 @@ public:
 
 	void SetBelt(ConveyorBelt* belt);
 	void SetWaypoint(int idx);
+    Vector3 GetWaypoint();
 
     void SetWorkedOn(bool status);
+    bool IsWorkedOn();
 
     virtual void Init();
     virtual void Update(double dt);
