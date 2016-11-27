@@ -231,8 +231,7 @@ void Machine::CreatePart()
     case RobotPart::BODY:
         m_scrapQuantity -= 4;
         //tempPart->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_BODY));
-		tempPart->SetWaypoint(0);
-        std::cout << m_scrapQuantity << " ";
+        tempPart->SetWaypoint(0);
         break;
 
     case RobotPart::LIMB:
