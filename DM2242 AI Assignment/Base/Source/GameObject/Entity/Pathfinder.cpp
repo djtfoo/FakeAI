@@ -14,9 +14,22 @@ void Pathfinder::Update(double dt)
 
 }
 
-bool Pathfinder::hasFinishedMovement()
+bool Pathfinder::hasReachedNode(const Vector3& pos)
 {
-    return true;
+    std::vector<Node>::iterator it = foundPath.end() - 1;
+
+    if ((it->GetPosition() - pos).Length() < 0.1)
+        return true;
+
+    return false;
+}
+
+bool Pathfinder::hasReachedDestination(const Vector3& pos)
+{
+    if (hasReachedNode(pos) && foundPath.size() == 1)
+        return true;
+
+    return false;
 }
 
 void Pathfinder::ReceiveCurrentPos(const Vector3& pos)
@@ -80,6 +93,17 @@ void Pathfinder::FindPathAStar()
 
 void Pathfinder::FindPathGreedyBestFirst()
 {
+    // ALGORITHM:
+    // start off with the starting position
+    // get all neighbours of current Node
+    // check if any of the neighbours are the destination or in closed list; else...
+    // ...add all neighbours to open list if they're not a collidable grid
+    // get the "best" Node from open list (aka the one with the lowest F value)
+    // add current Node to closed list & remove from open list
+    // aka the closed list contains the taken path
+    // consider searching for the "best" Node from the end of the list
+
+
     Node* startNode = new Node((int)position.y, (int)position.x);
     startNode->cost = 0;
     startNode->distToGoal = GetDistToGoal(startNode);
@@ -99,23 +123,14 @@ void Pathfinder::FindPathGreedyBestFirst()
 
     while (b_pathNotFound)
     {
-        // check if neighbour is a collidable grid
-
-        // check its neighbours for way to proceed with best path
+        // get its neighbours
         std::vector<Node*> neighbours;
         Node* neighbour;
 
-        if (currentNode->col + 1 < SharedData::GetInstance()->m_gridMap->GetColumns())
+        if (currentNode->row - 1 >= 0)
         {
-            neighbour = new Node(currentNode->row, currentNode->col + 1);
-            neighbour->cost = currentNode->cost + GetMovementCost(currentNode, neighbour);
-            neighbour->distToGoal = GetDistToGoal(neighbour);
-            neighbours.push_back(neighbour);
-        }
-        
-        if (currentNode->row + 1 < SharedData::GetInstance()->m_gridMap->GetRows())
-        {
-            neighbour = new Node(currentNode->row + 1, currentNode->col);
+            neighbour = new Node(currentNode->row - 1, currentNode->col);
+            neighbour->parent = currentNode;
             neighbour->cost = currentNode->cost + GetMovementCost(currentNode, neighbour);
             neighbour->distToGoal = GetDistToGoal(neighbour);
             neighbours.push_back(neighbour);
@@ -124,55 +139,95 @@ void Pathfinder::FindPathGreedyBestFirst()
         if (currentNode->col - 1 >= 0)
         {
             neighbour = new Node(currentNode->row, currentNode->col - 1);
+            neighbour->parent = currentNode;
             neighbour->cost = currentNode->cost + GetMovementCost(currentNode, neighbour);
             neighbour->distToGoal = GetDistToGoal(neighbour);
             neighbours.push_back(neighbour);
         }
-
-        if (currentNode->row - 1 >= 0)
+        
+        if (currentNode->row + 1 < SharedData::GetInstance()->m_gridMap->GetRows())
         {
-            neighbour = new Node(currentNode->row - 1, currentNode->col);
+            neighbour = new Node(currentNode->row + 1, currentNode->col);
+            neighbour->parent = currentNode;
             neighbour->cost = currentNode->cost + GetMovementCost(currentNode, neighbour);
             neighbour->distToGoal = GetDistToGoal(neighbour);
             neighbours.push_back(neighbour);
         }
 
-        // "best" Node (Node with lowest F Value)
-        int lowestFValue = 999, lowestFValueIndex = 0;
+        if (currentNode->col + 1 < SharedData::GetInstance()->m_gridMap->GetColumns())
+        {
+            neighbour = new Node(currentNode->row, currentNode->col + 1);
+            neighbour->parent = currentNode;
+            neighbour->cost = currentNode->cost + GetMovementCost(currentNode, neighbour);
+            neighbour->distToGoal = GetDistToGoal(neighbour);
+            neighbours.push_back(neighbour);
+        }
 
+        // check the neighbours - if they're destination or not; else if non-collidable, add to open list
         for (unsigned i = 0; i < neighbours.size(); ++i)
         {
+            //bool b_neighbourInClosedList = false;
+            //// check if it is in closed list - if it is, don't add to open list, add to closed list
+            //for (unsigned j = 0; j < closedList.size(); ++j)
+            //{
+            //    if (neighbours[i]->row == closedList[j]->row && neighbours[i]->col == closedList[j]->col)
+            //    {
+            //        b_neighbourInClosedList = true;
+            //        break;
+            //    }
+            //}
+            //
+            //if (b_neighbourInClosedList)
+            //{
+            //    closedList.push_back(neighbours[i]);
+            //    break;
+            //}
+
             // check if it is the goal - if it is, get the path and break
             if (neighbours[i]->row == destinationRow && neighbours[i]->col == destinationCol)
             {
                 // path found
-                lowestFValueIndex = i;
+                currentNode = neighbours[i];
                 b_pathNotFound = false;
                 break;
             }
 
-            // check for collision
+            // check for collision, if no collision add to open list
             if (!SharedData::GetInstance()->m_gridMap->m_collisionGrid[neighbours[i]->row][neighbours[i]->col])
             {
-                if (neighbours[i]->GetFValue() < lowestFValue)
-                {
-                    lowestFValueIndex = i;
-                    lowestFValue = neighbours[i]->GetFValue();
-                }
+                openList.push_back(neighbours[i]);
             }
         }
 
-        neighbours[lowestFValueIndex]->parent = currentNode;
-        currentNode = neighbours[lowestFValueIndex];
+        if (!b_pathNotFound)     // path has been found, can stop here
+            break;      // out of while loop
 
-        // push the neighbours into closed list;
+
+        // "best" Node (Node with lowest F Value)
+        int lowestFValue = 999, lowestFValueIndex = 0;
+        
+        for (unsigned i = openList.size() - 1; i > 0; --i)  // don't need check openList[0] as it's starting Node
+        {
+            if (openList[i]->GetFValue() < lowestFValue)
+            {
+                lowestFValueIndex = i;
+                lowestFValue = openList[i]->GetFValue();
+            }
+        }
+
+        // current Node shall be the lowest F value Node
+        currentNode = openList[lowestFValueIndex];
+
+        // push the current Node into closed list
+        closedList.push_back(currentNode);
+
+        // remove the current Node from open list
+        openList.erase(openList.begin() + lowestFValueIndex);
+
+
+        // empty neighbours vector
         for (int i = neighbours.size() - 1; i >= 0; --i)
         {
-            if (i != lowestFValueIndex)
-            {
-                // is not the current Node; put into closed list
-                closedList.push_back(neighbours[i]);
-            }
             neighbours.pop_back();
         }
     }
@@ -185,6 +240,13 @@ void Pathfinder::FindPathGreedyBestFirst()
     }
 
     delete currentNode;
+
+    // clear openList Nodes
+    while (!openList.empty())
+    {
+        delete openList.back();
+        openList.pop_back();
+    }
 
     // clear closedList Nodes
     while (!closedList.empty())

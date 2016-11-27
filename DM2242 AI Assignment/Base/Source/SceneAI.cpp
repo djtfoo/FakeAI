@@ -63,9 +63,12 @@ void SceneAI::Init()
     SharedData::GetInstance()->AddGameObject(new BuildingBlockStack(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_BUILDINGBLOCK_STACK), 8, 5);
 
     // Ornaments
-    SharedData::GetInstance()->AddGameObject(new Ornament(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_ORNAMENT), 6, 1);
-    SharedData::GetInstance()->AddGameObject(new Ornament(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_ORNAMENT), 7, 1);
-    SharedData::GetInstance()->AddGameObject(new Ornament(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_ORNAMENT), 8, 1);
+    SharedData::GetInstance()->AddGameObject(new Ornament(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_ORNAMENT), 6, 1, true);
+    SharedData::GetInstance()->AddGameObject(new Ornament(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_ORNAMENT), 7, 1, true);
+    SharedData::GetInstance()->AddGameObject(new Ornament(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_ORNAMENT), 8, 1, true);
+
+    SharedData::GetInstance()->m_ornamentSystem->SetLaneToBlock(6);
+    SharedData::GetInstance()->m_ornamentSystem->SetLaneToOrnament(8);
 
     // Scrap Pile
     SharedData::GetInstance()->AddGameObject(new ScrapPile(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAP_PILE), 14, 3);
@@ -318,9 +321,10 @@ void SceneAI::Update(double dt)
         {
             Entity* entity = dynamic_cast<Entity*>(go);
             entity->RunFSM(dt);
-            //entity->SetSprite();
         }
     }
+
+    SharedData::GetInstance()->m_ornamentSystem->Update(dt);
 
     // DEBUG 
 
@@ -343,7 +347,7 @@ void SceneAI::RenderBackground()
 void SceneAI::RenderGO(GameObject *go)
 {
 	modelStack.PushMatrix();
-	modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
+    modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
     modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
 	RenderMesh(go->GetMesh(), false);
 	modelStack.PopMatrix();

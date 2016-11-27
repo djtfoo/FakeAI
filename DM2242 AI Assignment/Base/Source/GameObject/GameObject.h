@@ -33,7 +33,7 @@ public:
     bool IsEntity();
 
     void SetPos(const Vector3& pos);
-    void SetMesh(Mesh* mesh);
+    void SetMesh(Mesh* mesh, bool wantNewMesh = false);
     void SetActive();
     void SetInactive();
 

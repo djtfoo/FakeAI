@@ -126,4 +126,7 @@ void main(){
 		else
 			color = vec4( fragmentColor, 1 );
 	}
+	
+	if (color.w == 0.f)
+		discard;
 }

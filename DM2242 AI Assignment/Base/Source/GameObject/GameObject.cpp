@@ -47,7 +47,7 @@ void GameObject::SetPos(const Vector3& pos)
     this->m_pos = pos;
 }
 
-void GameObject::SetMesh(Mesh* mesh)
+void GameObject::SetMesh(Mesh* mesh, bool wantNewMesh)
 {
     /*this->m_mesh = mesh;
     if (this->b_isEntity)
@@ -56,18 +56,17 @@ void GameObject::SetMesh(Mesh* mesh)
         entity->SetSprite();
     }*/
 
-    if (this->b_isEntity)
+    if (this->b_isEntity || wantNewMesh)
     {
         this->m_mesh = MeshBuilder::GenerateQuad(this->GetName(), Color(1, 0.5f, 0));
         this->m_mesh->textureID = mesh->textureID;
-        Entity* entity = dynamic_cast<Entity*>(this);
-        entity->SetSprite();
     }
     else
     {
         this->m_mesh = mesh;
-        this->SetSprite();
     }
+
+    this->SetSprite();
 }
 
 void GameObject::SetActive()

@@ -26,6 +26,7 @@
     <ClCompile Include="Source\GameObject\Entity\Worker.cpp" />
     <ClCompile Include="Source\GameObject\GameObject.cpp" />
     <ClCompile Include="Source\GameObject\Ornament.cpp" />
+    <ClCompile Include="Source\GameObject\OrnamentBuildingSystem.cpp" />
     <ClCompile Include="Source\GameObject\RobotParts.cpp" />
     <ClCompile Include="Source\GameObject\ScrapPile.cpp" />
     <ClCompile Include="Source\GameObject\Toilet.cpp" />
@@ -59,6 +60,7 @@
     <ClInclude Include="Source\GameObject\Entity\Worker.h" />
     <ClInclude Include="Source\GameObject\GameObject.h" />
     <ClInclude Include="Source\GameObject\Ornament.h" />
+    <ClInclude Include="Source\GameObject\OrnamentBuildingSystem.h" />
     <ClInclude Include="Source\GameObject\RobotParts.h" />
     <ClInclude Include="Source\GameObject\ScrapPile.h" />
     <ClInclude Include="Source\GameObject\Toilet.h" />

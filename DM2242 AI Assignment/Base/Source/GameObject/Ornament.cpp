@@ -68,6 +68,11 @@ void Ornament::SetSprite()
     }
 }
 
+void Ornament::AddPart()
+{
+    ++m_partCount;
+}
+
 bool Ornament::isComplete()
 {
     if (m_stage == STAGE_COMPLETE)

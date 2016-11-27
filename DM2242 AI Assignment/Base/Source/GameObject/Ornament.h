@@ -30,6 +30,7 @@ public:
 
     virtual void SetSprite();   // edit the mesh TexCoords
 
+    void AddPart();
     bool isComplete();      // check if ornament has finished building
 };
 

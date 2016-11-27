@@ -35,6 +35,8 @@ private:
 
 	int m_currWaypoint;
 	ConveyorBelt* m_beltToFollow;
+
+    Vector3 m_velocity;
 };
 
 #endif

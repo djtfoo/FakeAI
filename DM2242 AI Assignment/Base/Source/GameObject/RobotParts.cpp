@@ -11,6 +11,7 @@ RobotPart::~RobotPart()
 void RobotPart::Init()
 {
 	m_currWaypoint = 0;
+    m_velocity.SetZero();
 }
 
 void RobotPart::Update(double dt)
@@ -18,8 +19,15 @@ void RobotPart::Update(double dt)
     // Temporary
     // m_pos.x += dt;
 
-	Vector3 dir = (m_beltToFollow->GetNextCheckpoint(m_currWaypoint) - m_pos).Normalized();
-	m_pos += dir * dt;
+    // must give it velocity...
+    // set dir and fix it; don't need update it every frame
+
+    if (m_velocity.IsZero())
+    {
+        m_velocity = (m_beltToFollow->GetNextCheckpoint(m_currWaypoint) - m_pos).Normalized();
+    }
+
+	m_pos += m_velocity * dt;
 }
 
 int RobotPart::GetCost()

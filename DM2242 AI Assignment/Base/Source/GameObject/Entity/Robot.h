@@ -3,6 +3,7 @@
 
 #include "Entity.h"
 #include "../ConveyorBelt.h"
+#include "Pathfinder.h"
 
 class Robot : public Entity
 {
@@ -24,7 +25,12 @@ public:
 
 private:
     double m_lifetime;
-    double d_cheerCounter;
+    double d_timerCounter;  // used for a pause when facing objects, as well as for cheer
+    
+    //bool b_reachedLane; // maybe
+    bool b_reachedDestination;
+
+    Pathfinder* m_pathfinder;
     
     ROBOT_STATE m_state;
 
