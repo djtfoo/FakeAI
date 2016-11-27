@@ -39,6 +39,7 @@ void Machine::Update(double dt)
         if (m_timer > 5)
         {
             m_partCreated = true;
+            m_timer = 0;
             CreatePart();
         }
 		break;
@@ -156,7 +157,7 @@ void Machine::Act(int value)
 		if (m_timer > 5)
 		{
 			m_partCreated = true;
-            m_timer = 0; 
+            m_timer = 0.0;
 			CreatePart();
 		}
         break;

@@ -1,4 +1,5 @@
 #include "Robot.h"
+#include "../../SharedData.h"
 
 Robot::Robot() : Entity("Robot")
 {
@@ -6,12 +7,17 @@ Robot::Robot() : Entity("Robot")
 
 Robot::~Robot()
 {
+    if (m_pathfinder)
+        delete m_pathfinder;
 }
 
 void Robot::Init()
 {
+    m_pathfinder = new Pathfinder();
+
     m_lifetime = 0.0;
-    d_cheerCounter = 0.0;
+    d_timerCounter = 0.0;
+    b_reachedDestination = false;
 
 	m_currWaypoint = 0;
     b_workedOn = false;
@@ -58,11 +64,57 @@ void Robot::Update(double dt)
         break;
         
     case WORK_WITHOUTPART:
-        m_pos += m_vel * dt;
+        if (!b_reachedDestination)
+        {
+            m_pos += m_vel * dt;
+            if (m_pathfinder->hasReachedNode(this->m_pos))
+            {
+                // reached destination; can get a part and move on.
+                if (m_pathfinder->hasReachedDestination(this->m_pos))
+                {
+                    m_pathfinder->foundPath.pop_back();
+
+                    m_vel.SetZero();
+                    SetDirection(DIR_UP);
+
+                    b_reachedDestination = true;
+                }
+                else
+                {
+                    m_pathfinder->foundPath.pop_back();
+
+                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()) );
+                    SetDirection(CheckDirection(m_vel));
+                }
+            }
+        }
         break;
 
     case WORK_WITHPART:
-        m_pos += m_vel * dt;
+        if (!b_reachedDestination)
+        {
+            m_pos += m_vel * dt;
+            if (m_pathfinder->hasReachedNode(this->m_pos))
+            {
+                // reached destination; can get a part and move on.
+                if (m_pathfinder->hasReachedDestination(this->m_pos))
+                {
+                    m_pathfinder->foundPath.pop_back();
+
+                    m_vel.SetZero();
+                    SetDirection(DIR_DOWN);
+
+                    b_reachedDestination = true;
+                }
+                else
+                {
+                    m_pathfinder->foundPath.pop_back();
+
+                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()) );
+                    SetDirection(CheckDirection(m_vel));
+                }
+            }
+        }
         break;
 
     case CHEER:
@@ -72,7 +124,6 @@ void Robot::Update(double dt)
         break;
     }
 
-
 }
 
 void Robot::Sense(double dt)
@@ -80,13 +131,17 @@ void Robot::Sense(double dt)
     if (m_state > INCOMPLETE_3)
         m_lifetime += dt;
 
-    if (m_state == CHEER)
-        d_cheerCounter += dt;
+    if ((m_state == WORK_WITHOUTPART || m_state == WORK_WITHPART) && b_reachedDestination)
+        d_timerCounter += dt;
 
-    //if (ornament completed)
-    //{
-    //    b_ornamentCompleted = true;
-    //}
+    if (m_state == CHEER)
+        d_timerCounter += dt;
+
+    // for checking if going into cheer state
+    if (SharedData::GetInstance()->m_ornamentSystem->GetCompletedOrnament() != NULL)
+    {
+        b_ornamentCompleted = true;
+    }
 }
 
 int Robot::Think()
@@ -102,6 +157,9 @@ int Robot::Think()
         if (m_lifetime >= 120.0)    // change to Markov
             return SHUTDOWN;
 
+        if (d_timerCounter >= 0.5)
+            return WORK_WITHPART;
+
         if (b_ornamentCompleted)
             return CHEER;
         break;
@@ -110,13 +168,19 @@ int Robot::Think()
         if (m_lifetime >= 120.0)    // change to Markov
             return SHUTDOWN;
 
+        if (d_timerCounter >= 0.5)
+        {
+            SharedData::GetInstance()->m_ornamentSystem->AddPart();
+            return WORK_WITHOUTPART;
+        }
+
         if (b_ornamentCompleted)
             return CHEER;
         break;
 
     case CHEER:
-        if (d_cheerCounter >= 5.0)
-            return WORK_WITHPART;    // temp default
+        if (d_timerCounter >= 5.0)
+            return m_stateBeforeCheer;    // temp default
         break;
 
     case SHUTDOWN:
@@ -131,14 +195,31 @@ void Robot::Act(int value)
     switch (value)
     {
     case WORK_WITHOUTPART:
+        d_timerCounter = 0.0;
+        b_reachedDestination = false;
         SetState(WORK_WITHOUTPART);
+        
         // Pathfind to the building block stack
+        m_pathfinder->ReceiveCurrentPos(this->m_pos);
+        m_pathfinder->ReceiveDestination(SharedData::GetInstance()->m_ornamentSystem->GetBuildingBlockCoord() + Vector3(0, -1, 0));
+        m_pathfinder->FindPathGreedyBestFirst();
+
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()) );
+        SetDirection(CheckDirection(m_vel));
         break;
 
     case WORK_WITHPART: // when robot finished cheering and is to continue work
-        d_cheerCounter = 0.0;
-        SetState(m_stateBeforeCheer);
-        // set velocity
+        d_timerCounter = 0.0;
+        b_reachedDestination = false;
+        SetState(WORK_WITHPART);
+
+        // Pathfind to the ornament block stack
+        m_pathfinder->ReceiveCurrentPos(this->m_pos);
+        m_pathfinder->ReceiveDestination(SharedData::GetInstance()->m_ornamentSystem->GetOrnamentCoord() + Vector3(0, 1, 0));
+        m_pathfinder->FindPathGreedyBestFirst();
+
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()) );
+        SetDirection(CheckDirection(m_vel));
         break;
 
     case CHEER: // going into cheer state

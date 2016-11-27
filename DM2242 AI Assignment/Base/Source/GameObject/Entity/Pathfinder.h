@@ -8,8 +8,6 @@ struct Node
 {
     Node* parent;
 
-    //const Vector3 position;
-    
     // position in GridMap
     int row;
     int col;
@@ -27,6 +25,11 @@ struct Node
     int GetFValue()
     {
         return cost + distToGoal;
+    }
+
+    Vector3 GetPosition()
+    {
+        return Vector3(col, row, 0.f);
     }
 };
 
@@ -52,9 +55,11 @@ public:
 
     void Update(double dt);
 
-    bool hasFinishedMovement();
-    void ReceiveCurrentPos(const Vector3& pos);
-    void ReceiveDestination(const Vector3& pos);    // when movementNodes is empty or state changes, receive new destination
+    bool hasReachedNode(const Vector3& pos);    // reached the next node to go to; time to recalculate path
+    bool hasReachedDestination(const Vector3& pos); // check if node reached is the destination
+
+    void ReceiveCurrentPos(const Vector3& pos);     // get the Entity's current position
+    void ReceiveDestination(const Vector3& pos);    // when movementNodes is empty or state changes, receive the Entity's new destination
     void FindPathAStar();   // main loop to find path with A*; call this when entity is to change path (e.g. due to movement nodes being empty or change in state)
     void FindPathGreedyBestFirst();     // main loop to find path with Greedy Best First Search
 

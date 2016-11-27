@@ -14,6 +14,9 @@ void SharedData::Init()
     m_meshList->Init();
 
     m_gridMap = new GridMap(15, 15);
+
+    m_ornamentSystem = new OrnamentBuildingSystem();
+    //m_ornamentSystem->Init();
 }
 
 void SharedData::Exit()
@@ -32,6 +35,13 @@ void SharedData::Exit()
         m_gridMap = NULL;
     }
 
+    if (m_ornamentSystem)
+    {
+        m_ornamentSystem->Exit();
+        delete m_ornamentSystem;
+        m_ornamentSystem = NULL;
+    }
+
     //Cleanup GameObjects
     while (m_goList.size() > 0)
     {
@@ -41,24 +51,33 @@ void SharedData::Exit()
     }
 }
 
-void SharedData::AddGameObject(GameObject* go, Mesh* mesh, int col, int row)
+void SharedData::AddGameObject(GameObject* go, Mesh* mesh, int col, int row, bool wantNewMesh)
 {
     // add to m_goList
     go->Init();
     go->SetPos(Vector3(col * 1.f, row * 1.f, 0));
-    go->SetMesh(mesh);
+    go->SetMesh(mesh, wantNewMesh);
     m_goList.push_back(go);
 
     // add collision to gridmap
     m_gridMap->m_collisionGrid[row][col] = true;
+
+    if (go->GetName() == "Building Block Stack")
+    {
+        SharedData::GetInstance()->m_ornamentSystem->SetBuildingBlockStack(dynamic_cast<BuildingBlockStack*>(go));
+    }
+    else if (go->GetName() == "Ornament")
+    {
+        SharedData::GetInstance()->m_ornamentSystem->SetOrnament(dynamic_cast<Ornament*>(go));
+    }
 }
 
-void SharedData::AddGameObject(GameObject* go, Mesh* mesh, const Vector3& pos)
+void SharedData::AddGameObject(GameObject* go, Mesh* mesh, const Vector3& pos, bool wantNewMesh)
 {
     // add to m_goList
     go->Init();
     go->SetPos(pos);
-    go->SetMesh(mesh);
+    go->SetMesh(mesh, wantNewMesh);
     m_goList.push_back(go);
 
     // add collision to gridmap
