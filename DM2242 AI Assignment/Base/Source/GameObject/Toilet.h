@@ -3,10 +3,12 @@
 
 #include "GameObject.h"
 #include <queue>
+#include <vector>
 
 class Toilet : public GameObject
 {
     std::queue<GameObject*> m_ToiletQueue;
+    std::vector<GameObject*> m_ToiletVec;
 
     bool b_occupied;
     bool m_change;

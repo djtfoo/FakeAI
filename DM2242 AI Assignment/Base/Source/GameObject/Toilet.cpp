@@ -2,6 +2,7 @@
 #include "../Utility.h"
 
 #include "Toilet.h"
+#include "Entity\Worker.h"
 
 Toilet::Toilet() : GameObject("Toilet")
 {
@@ -14,11 +15,12 @@ Toilet::~Toilet()
 void Toilet::Init()
 {
     b_occupied = false;
+    m_change = false;
 }
 
 void Toilet::Update(double dt)
 {
-    m_change = false;
+
 }
 
 bool Toilet::IsOccupied()
@@ -30,8 +32,10 @@ void Toilet::SetOccupied(bool status)
 {
     b_occupied = status;
 
-    if (!status)
+    if (status == false)
         m_change = true;
+    else
+        m_change = false;
 }
 
 void Toilet::SetSprite()
@@ -71,15 +75,22 @@ int Toilet::AddToQueue(GameObject* object)
 {
     m_ToiletQueue.push(object);
     return m_ToiletQueue.size() - 1;
+
+    //m_ToiletVec.push_back(object);
+    //return m_ToiletVec.size() - 1;
 }
 
 void Toilet::RemoveFromQueue()
 {
     m_ToiletQueue.pop();
+    //int size = m_ToiletVec.size();
+    //m_ToiletVec.erase(m_ToiletVec.begin(), m_ToiletVec.begin()+1);
+    //m_ToiletVec.resize(size-1);
 }
 
 int Toilet::GetToiletIdx()
 {
+    //return m_ToiletVec.size() - 1;
     return m_ToiletQueue.size() - 1;
 }
 

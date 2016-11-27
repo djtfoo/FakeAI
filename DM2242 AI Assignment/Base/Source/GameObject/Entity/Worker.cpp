@@ -46,8 +46,23 @@ void Worker::Update(double dt)
 
     if (m_state == BREAK)
     {
-        Vector3 dir = (m_toilet->GetQueuePosition(m_toiletIdx) - m_pos).Normalized();
-        m_pos += dir * dt;
+        if ((m_pos - m_toilet->GetPos()).Length() < 3)
+        {
+            if (!m_doOnce && m_state == BREAK)
+            {
+                m_toiletIdx = m_toilet->AddToQueue(this);
+                std::cout << "ADDED" << std::endl;
+                m_doOnce = true;
+            }
+
+            Vector3 dir = (m_toilet->GetQueuePosition(m_toiletIdx) - m_pos).Normalized();
+            m_pos += dir * dt;
+        }
+        else
+        {
+            Vector3 dir = (m_toilet->GetPos() - m_pos).Normalized();
+            m_pos += dir * dt;
+        }
 
         if ((m_pos - m_toilet->GetPos()).Length() < 0.1)
         {
@@ -66,7 +81,10 @@ void Worker::Update(double dt)
             m_pos += dir * dt;
 
             if ((m_pos - m_origSpawn).Length() < 0.1)
+            {
                 m_atWorkstation = true;
+                m_doOnce = false;
+            }
         }
     }
 }
@@ -75,16 +93,15 @@ void Worker::Sense(double dt)
 {
     if (m_state == WORK)
         m_timer += dt;
-
     else if (m_state == BREAK && m_inToilet)
         m_timer += dt;
-    else
+    else if (m_state == IDLE)
     {
         m_timer += dt;
         if (m_timer > 1)
         {
             m_timer = 0;
-            m_breakCharge += Math::RandFloatMinMax(0, 100);
+            m_breakCharge += Math::RandFloatMinMax(0, 200);
         }
     }
 }
@@ -95,7 +112,7 @@ int Worker::Think()
     {
 
     case IDLE:
-        if (m_breakCharge >= 1000)
+        if (m_breakCharge >= 2000)
             return BREAK;     
         else if (IsAbleToWork())
             return WORK;
@@ -118,7 +135,11 @@ int Worker::Think()
 
     case BREAK:
         if (m_breakDone)
+        {
+            m_breakDone = false;
+            m_breakCharge = 0;
             return IDLE;
+        }
         else
             return BREAK;
         break;
@@ -209,12 +230,6 @@ void Worker::DoWork()
 
 void Worker::DoBreak()
 {
-    if (!m_doOnce)
-    {
-        m_toiletIdx = m_toilet->AddToQueue(this);
-        m_doOnce = true;
-    }
-
     if (m_toilet->CheckIfChange())
         m_toiletIdx--;
 
@@ -224,7 +239,8 @@ void Worker::DoBreak()
         m_breakDone = true;
         m_timer = 0;
         m_toilet->RemoveFromQueue();
-        m_doOnce = false;
+        std::cout << "POPPED" << std::endl;
+        
         m_toilet->SetOccupied(false);
     }
 }
