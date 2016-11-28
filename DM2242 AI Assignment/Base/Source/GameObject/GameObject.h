@@ -39,6 +39,50 @@ public:
 
     virtual void SetSprite();   // edit the mesh TexCoords
     // if a GameObject doesn't have different sprites, don't need define, can use GameObject's default
+
+    // Wrapper function to assist in rounding off of velocity value
+    float SmallRoundOff(float num)
+    {
+        if (num > Math::EPSILON)    // positive
+        {
+            if (num > 0.5f)
+                return 1.f;
+
+            else
+                return 0.f;
+        }
+        else    // negative
+        {
+            if (num < -0.5f)
+                return -1.f;
+
+            else
+                return 0.f;
+        }
+    }
+
+    float RoundOff(float num)
+    {
+        float value = floor(num);
+        float remainder = num - value;
+
+        if (num > Math::EPSILON)    // positive
+        {
+            if (remainder > 0.5f)
+                return 1.f + value;
+
+            else
+                return value;
+        }
+        else    // negative
+        {
+            if (remainder < -0.5f)
+                return -1.f + value;
+
+            else
+                return value;
+        }
+    }
 };
 
 #endif

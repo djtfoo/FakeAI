@@ -71,9 +71,6 @@ void SceneAI::Init()
     SharedData::GetInstance()->m_ornamentSystem->SetLaneToBlock(6);
     SharedData::GetInstance()->m_ornamentSystem->SetLaneToOrnament(8);
 
-    // Scrap Pile
-    SharedData::GetInstance()->AddGameObject(new ScrapPile(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAP_PILE), 12, 2);
-
     //===================
     // Create Entities
     //===================
@@ -245,16 +242,23 @@ void SceneAI::Init()
     maintenance->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(maintenance);
 
-    // Delivery Man
+    // Delivery Man + Delivery Truck
     DeliveryTruck* truck = new DeliveryTruck();
     SharedData::GetInstance()->AddGameObject(truck, SharedData::GetInstance()->m_meshList->GetMesh(GEO_DELIVERYTRUCK), 1, 2);
     DeliveryMan* deliveryMan = new DeliveryMan();
     SharedData::GetInstance()->AddGameObject(deliveryMan, SharedData::GetInstance()->m_meshList->GetMesh(GEO_DELIVERYMAN), 1, 2);
     deliveryMan->AssignDeliveryTruck(truck);
 
-    // Scrap Man
-    SharedData::GetInstance()->AddGameObject(new ScrapMan(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAPMAN), 11, 2);
 
+    // Scrap Pile
+    ScrapPile* pile = new ScrapPile();
+    SharedData::GetInstance()->AddGameObject(pile, SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAP_PILE), 12, 2);
+
+    // Scrap Man
+    ScrapMan* scrapMan = new ScrapMan();
+    SharedData::GetInstance()->AddGameObject(scrapMan, SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAPMAN), 11, 2);
+    scrapMan->AssignScrapPile(pile);
+    
     // pathfinder test
     //pathfinderTest.ReceiveCurrentPos(Vector3(rand() % 20, rand() % 20, 0));
     ////pathfinderTest.ReceiveCurrentPos(Vector3(2, 17, 0));

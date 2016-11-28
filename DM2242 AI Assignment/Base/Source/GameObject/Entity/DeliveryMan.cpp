@@ -225,19 +225,23 @@ void DeliveryMan::Act(int value)
         break;
 
     case COLLECT_PRODUCT:
-        b_reachedDestination = false;
-        SetState(COLLECT_PRODUCT);
+    {
+                            b_reachedDestination = false;
+                            SetState(COLLECT_PRODUCT);
 
-        m_ornamentToCollect->RemoveOrnament();
+                            m_ornamentToCollect->RemoveOrnament();
 
-        // Pathfind to the delivery truck
-        m_pathfinder->ReceiveCurrentPos(this->m_pos);
-        m_pathfinder->ReceiveDestination(m_deliveryTruck->GetPos() + Vector3(1, 0, 0));
-        m_pathfinder->FindPathGreedyBestFirst();
+                            // Pathfind to the delivery truck
+                            m_pathfinder->ReceiveCurrentPos(this->m_pos);
+                            Vector3 pos = m_deliveryTruck->GetPos();
+                            m_pathfinder->ReceiveDestination(Vector3(RoundOff(pos.x), RoundOff(pos.y), pos.z));
+                            m_pathfinder->FindPathGreedyBestFirst();
 
-        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
-        SetDirection(CheckDirection(m_vel));
-        break;
+                            SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+                            SetDirection(CheckDirection(m_vel));
+                            break;
+    }
+
     }
 }
 

@@ -154,7 +154,7 @@ int Robot::Think()
         break;
 
     case WORK_WITHOUTPART:
-        if (m_lifetime >= 120.0)    // change to Markov
+        if (m_lifetime >= 60.0)    // change to Markov
             return SHUTDOWN;
 
         if (d_timerCounter >= 0.5)
@@ -165,7 +165,7 @@ int Robot::Think()
         break;
 
     case WORK_WITHPART:
-        if (m_lifetime >= 120.0)    // change to Markov
+        if (m_lifetime >= 60.0)    // change to Markov
             return SHUTDOWN;
 
         if (d_timerCounter >= 0.5)
@@ -179,6 +179,9 @@ int Robot::Think()
         break;
 
     case CHEER:
+        if (m_lifetime >= 60.0)    // change to Markov
+            return SHUTDOWN;
+
         if (d_timerCounter >= 5.0)
             return m_stateBeforeCheer;
         break;

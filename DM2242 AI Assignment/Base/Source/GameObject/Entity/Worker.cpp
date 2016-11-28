@@ -54,7 +54,10 @@ void Worker::Update(double dt)
                 m_doOnce = true;
             }
 
-            Vector3 dir = (m_toilet->GetQueuePosition(m_toiletIdx) - m_pos).Normalized();
+            Vector3 dir = (m_toilet->GetQueuePosition(m_toiletIdx) - m_pos);
+            if (!dir.IsZero())
+                dir.Normalize();
+
             m_pos += dir * dt;
         }
         else

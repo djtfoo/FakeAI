@@ -76,27 +76,6 @@ int Entity::GetMaxStates()
     return 1;
 }
 
-// Wrapper function to assist in rounding off of velocity value
-float RoundOff(float num)
-{
-    if (num > Math::EPSILON)    // positive
-    {
-        if (num > 0.5f)
-            return 1.f;
-
-        else
-            return 0.f;
-    }
-    else    // negative
-    {
-        if (num < -0.5f)
-            return -1.f;
-
-        else
-            return 0.f;
-    }
-}
-
 Vector3 Entity::CheckVelocity(const Vector3& ownPos, const Vector3& destinationPos)
 {
     Vector3 vel = (destinationPos - ownPos);
@@ -104,8 +83,8 @@ Vector3 Entity::CheckVelocity(const Vector3& ownPos, const Vector3& destinationP
         return vel;
     
     vel.Normalize();
-    vel.x = RoundOff(vel.x);
-    vel.y = RoundOff(vel.y);
+    vel.x = SmallRoundOff(vel.x);
+    vel.y = SmallRoundOff(vel.y);
 
     return vel;
 }
