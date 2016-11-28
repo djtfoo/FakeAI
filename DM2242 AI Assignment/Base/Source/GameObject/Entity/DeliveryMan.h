@@ -23,8 +23,10 @@ private:
     DELIVERYMAN_STATE m_state;
 
     DeliveryTruck* m_deliveryTruck;
+    Ornament* m_completedOrnaments[3];
     Ornament* m_ornamentToCollect;
-    bool b_ornamentCompleted;
+
+    bool b_reachedDestination;
     
     double d_timerCounter;
     Pathfinder* m_pathfinder;
@@ -46,6 +48,9 @@ public:
     virtual int GetMaxStates();
 
     void AssignDeliveryTruck(DeliveryTruck* truck);
+
+    void AddCompletedOrnament(Ornament* ornament);
+    Ornament* GetOrnamentToCollect();
 };
 
 #endif

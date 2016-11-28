@@ -160,7 +160,7 @@ int Robot::Think()
         if (d_timerCounter >= 0.5)
             return WORK_WITHPART;
 
-        if (b_ornamentCompleted)
+        if (b_ornamentCompleted && m_lifetime > 6.0)   // so they don't cheer so early
             return CHEER;
         break;
 
@@ -227,6 +227,8 @@ void Robot::Act(int value)
         SetState(CHEER);
         b_ornamentCompleted = false;
         m_vel.SetZero();
+
+        m_pathfinder->EmptyPath();
         break;
 
     case SHUTDOWN:
