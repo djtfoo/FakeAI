@@ -9,6 +9,11 @@ Pathfinder::~Pathfinder()
 {
 }
 
+bool Pathfinder::IsPathEmpty()
+{
+    return foundPath.empty();
+}
+
 void Pathfinder::EmptyPath()
 {
     while (!foundPath.empty())
@@ -115,9 +120,9 @@ void Pathfinder::FindPathGreedyBestFirst()
     Node* startNode = new Node((int)position.y, (int)position.x);
     startNode->cost = 0;
     startNode->distToGoal = GetDistToGoal(startNode);
-    openList.push_back(startNode);
+    closedList.push_back(startNode);
 
-    Node* currentNode = startNode;  // replaces openList
+    Node* currentNode = startNode;
 
     int destinationRow = (int)(destination.y);
     int destinationCol = (int)(destination.x);
@@ -174,23 +179,23 @@ void Pathfinder::FindPathGreedyBestFirst()
         // check the neighbours - if they're destination or not; else if non-collidable, add to open list
         for (unsigned i = 0; i < neighbours.size(); ++i)
         {
-            //bool b_neighbourInClosedList = false;
-            //// check if it is in closed list - if it is, don't add to open list, add to closed list
-            //for (unsigned j = 0; j < closedList.size(); ++j)
-            //{
-            //    if (neighbours[i]->row == closedList[j]->row && neighbours[i]->col == closedList[j]->col)
-            //    {
-            //        b_neighbourInClosedList = true;
-            //        break;
-            //    }
-            //}
-            //
-            //if (b_neighbourInClosedList)
-            //{
-            //    closedList.push_back(neighbours[i]);
-            //    break;
-            //}
-
+            bool b_neighbourInClosedList = false;
+            // check if it is in closed list - if it is, don't add to open list, add to closed list
+            for (unsigned j = 0; j < closedList.size(); ++j)
+            {
+                if (neighbours[i]->row == closedList[j]->row && neighbours[i]->col == closedList[j]->col)
+                {
+                    b_neighbourInClosedList = true;
+                    break;
+                }
+            }
+            
+            if (b_neighbourInClosedList)
+            {
+                closedList.push_back(neighbours[i]);
+                continue;
+            }
+            
             // check if it is the goal - if it is, get the path and break
             if (neighbours[i]->row == destinationRow && neighbours[i]->col == destinationCol)
             {
@@ -242,24 +247,32 @@ void Pathfinder::FindPathGreedyBestFirst()
 
     // reconstruct path
     // puh Nodes along path
+    std::cout << "Found Path: " << std::endl;
     for (Node* curr = currentNode; curr != NULL; curr = curr->parent)
     {
         foundPath.push_back(Node(curr->row, curr->col));
+
+        std::cout << "Coord[" << curr->col << "," << curr->row << "]" << std::endl;
     }
+    std::cout << std::endl;
+
+    //foundPath.pop_back();   // the starting Node unnecessary
 
     delete currentNode;
 
     // clear openList Nodes
     while (!openList.empty())
     {
-        delete openList.back();
+        if (openList.back() != 0)
+            delete openList.back();
         openList.pop_back();
     }
 
     // clear closedList Nodes
     while (!closedList.empty())
     {
-        delete closedList.back();
+        if (closedList.back() != 0)
+            delete closedList.back();
         closedList.pop_back();
     }
 }

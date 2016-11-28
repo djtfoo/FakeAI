@@ -55,7 +55,8 @@ public:
 
     void Update(double dt);
 
-    void EmptyPath();
+    bool IsPathEmpty(); // check whether there is a path or not
+    void EmptyPath();   // empty the path of Nodes
 
     bool hasReachedNode(const Vector3& pos);    // reached the next node to go to; time to recalculate path
     bool hasReachedDestination(const Vector3& pos); // check if node reached is the destination

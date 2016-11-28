@@ -147,6 +147,8 @@ void SceneAI::Init()
     tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[13][6] = true;
+
     // Worker + Assosiated Workstation ( 2 )
     tempStation = new Workstation();
     tempStation->Init();
@@ -166,6 +168,8 @@ void SceneAI::Init()
     tempWorker->SetWorkstation(tempStation);
     tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
+
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[9][9] = true;
 
     // Worker + Assosiated Workstation ( 3 )
     tempStation = new Workstation();
@@ -187,6 +191,8 @@ void SceneAI::Init()
     tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[8][5] = true;
+
     // Worker + Assosiated Workstation ( 4 )
     tempStation = new Workstation();
     tempStation->Init();
@@ -207,6 +213,8 @@ void SceneAI::Init()
     tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[6][2] = true;
+
     // Maintenance Man + Assosiated Workstation ( 1 )
     tempStation = new Workstation();
     tempStation->Init();
@@ -226,6 +234,7 @@ void SceneAI::Init()
     maintenance->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(maintenance);
 
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[5][13] = true;
 
     // Maintenance Man + Assosiated Workstation ( 2 )
     tempStation = new Workstation();
@@ -246,6 +255,7 @@ void SceneAI::Init()
     maintenance->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(maintenance);
 
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[5][11] = true;
 
     // Scrap Man + Assosiated Scrap Pile ( 1 )
     ScrapPile* pile = new ScrapPile();

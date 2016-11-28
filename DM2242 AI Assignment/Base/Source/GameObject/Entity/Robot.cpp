@@ -69,6 +69,8 @@ void Robot::Update(double dt)
             m_pos += m_vel * dt;
             if (m_pathfinder->hasReachedNode(this->m_pos))
             {
+                //m_pos = m_pathfinder->foundPath.back().GetPosition();   // set to the grid so it's less marginal error
+
                 // reached destination; can get a part and move on.
                 if (m_pathfinder->hasReachedDestination(this->m_pos))
                 {
@@ -202,12 +204,15 @@ void Robot::Act(int value)
         b_reachedDestination = false;
         SetState(WORK_WITHOUTPART);
         
-        // Pathfind to the building block stack
-        m_pathfinder->ReceiveCurrentPos(this->m_pos);
-        m_pathfinder->ReceiveDestination(SharedData::GetInstance()->m_ornamentSystem->GetBuildingBlockCoord() + Vector3(0, -1, 0));
-        m_pathfinder->FindPathGreedyBestFirst();
+        if (m_pathfinder->IsPathEmpty())
+        {
+            // Pathfind to the building block stack
+            m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+            m_pathfinder->ReceiveDestination(SharedData::GetInstance()->m_ornamentSystem->GetBuildingBlockCoord() + Vector3(0, -1, 0));
+            m_pathfinder->FindPathGreedyBestFirst();
+        }
 
-        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()) );
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
         SetDirection(CheckDirection(m_vel));
         break;
 
@@ -216,12 +221,15 @@ void Robot::Act(int value)
         b_reachedDestination = false;
         SetState(WORK_WITHPART);
 
-        // Pathfind to the ornament block stack
-        m_pathfinder->ReceiveCurrentPos(this->m_pos);
-        m_pathfinder->ReceiveDestination(SharedData::GetInstance()->m_ornamentSystem->GetOrnamentCoord() + Vector3(0, 1, 0));
-        m_pathfinder->FindPathGreedyBestFirst();
+        if (m_pathfinder->IsPathEmpty())
+        {
+            // Pathfind to the ornament block stack
+            m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+            m_pathfinder->ReceiveDestination(SharedData::GetInstance()->m_ornamentSystem->GetOrnamentCoord() + Vector3(0, 1, 0));
+            m_pathfinder->FindPathGreedyBestFirst();
+        }
 
-        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()) );
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
         SetDirection(CheckDirection(m_vel));
         break;
 
@@ -231,7 +239,7 @@ void Robot::Act(int value)
         b_ornamentCompleted = false;
         m_vel.SetZero();
 
-        m_pathfinder->EmptyPath();
+        //m_pathfinder->EmptyPath();
         break;
 
     case SHUTDOWN:

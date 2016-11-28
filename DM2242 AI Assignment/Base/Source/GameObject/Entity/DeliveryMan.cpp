@@ -183,7 +183,7 @@ void DeliveryMan::Act(int value)
         SetState(IDLE);
 
         // Pathfind to outside the screen
-        m_pathfinder->ReceiveCurrentPos(this->m_pos);
+        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
         m_pathfinder->ReceiveDestination(Vector3(0, Math::RandIntMinMax(0, 3), 0));
         m_pathfinder->FindPathGreedyBestFirst();
 
@@ -199,7 +199,7 @@ void DeliveryMan::Act(int value)
         b_reachedDestination = false;
 
         // Pathfind to coordinate near the ornaments
-        m_pathfinder->ReceiveCurrentPos(this->m_pos);
+        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
         m_pathfinder->ReceiveDestination(Vector3(4.f, 1.f, 0));
         m_pathfinder->FindPathGreedyBestFirst();
 
@@ -216,7 +216,7 @@ void DeliveryMan::Act(int value)
         m_deliveryTruck->SetDirection(DIR_UP);
 
         // Pathfind to the completed ornament
-        m_pathfinder->ReceiveCurrentPos(this->m_pos);
+        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
         m_pathfinder->ReceiveDestination(m_ornamentToCollect->GetPos() + Vector3(0, -1, 0));
         m_pathfinder->FindPathGreedyBestFirst();
 
@@ -232,7 +232,7 @@ void DeliveryMan::Act(int value)
                             m_ornamentToCollect->RemoveOrnament();
 
                             // Pathfind to the delivery truck
-                            m_pathfinder->ReceiveCurrentPos(this->m_pos);
+                            m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
                             Vector3 pos = m_deliveryTruck->GetPos();
                             m_pathfinder->ReceiveDestination(Vector3(RoundOff(pos.x), RoundOff(pos.y), pos.z));
                             m_pathfinder->FindPathGreedyBestFirst();

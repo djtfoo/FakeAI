@@ -254,7 +254,7 @@ void ScrapMan::Act(int value)
                           SetState(COLLECT_ROBOT);
 
                           // Pathfind to the shutdown robot
-                          m_pathfinder->ReceiveCurrentPos(this->m_pos);
+                          m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
                           Vector3 pos = m_robotToPickUp->GetPos();
                           m_pathfinder->ReceiveDestination(Vector3(RoundOff(pos.x), RoundOff(pos.y), pos.z));
                           m_pathfinder->FindPathGreedyBestFirst();
@@ -270,7 +270,7 @@ void ScrapMan::Act(int value)
                             b_reachedDestination = false;
 
                             // Pathfind to the ScrapMan's workstation
-                            m_pathfinder->ReceiveCurrentPos(this->m_pos);
+                            m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
                             m_pathfinder->ReceiveDestination(m_pile->GetPos() + Vector3(-1, 0, 0));
                             m_pathfinder->FindPathGreedyBestFirst();
 
