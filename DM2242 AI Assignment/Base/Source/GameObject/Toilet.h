@@ -26,7 +26,7 @@ public:
     bool IsOccupied();      // gets whether someone is in the toilet
 
     Vector3 GetQueuePosition(int idx);
-    int GetToiletIdx();
+    int GetToiletSize();
 
     int AddToQueue(GameObject* object);
     void RemoveFromQueue();

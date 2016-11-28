@@ -24,6 +24,8 @@ void Machine::Init()
 	m_isEmpty = false;
 	m_partCreated = false;
     m_isBeingWorkedOn = false;
+
+    randNum = 0;
 }
 
 void Machine::Update(double dt)
@@ -65,7 +67,7 @@ void Machine::Sense(double dt)
 
 	if (m_state == PRODUCTION)
 	{
-		m_overheatCharge += dt;
+		m_overheatCharge += dt * 0.85;
 		m_overheatTimer += dt;
 	}
 }
@@ -101,8 +103,8 @@ int Machine::Think()
 		//else if (int(fmod(m_timer, 1.0)) == 0)
 		else if (m_overheatTimer > 0.5)
 		{
-			int RandNum = Math::RandIntMinMax(10, 100);
-            if (RandNum < m_overheatCharge)
+			randNum = Math::RandIntMinMax(10, 100);
+            if (randNum < m_overheatCharge)
             {
                 m_storedTimer = m_timer;
                 return BROKEN;
@@ -291,4 +293,14 @@ void Machine::SetIsBeingWorkedOn(bool status)
 bool Machine::GetIsBeingWorkedOn()
 {
     return m_isBeingWorkedOn;
+}
+
+int Machine::GetMaxScrapQuantity()
+{
+    return m_maxScrapQuantity;
+}
+
+int Machine::GetPartToCreate()
+{
+    return (int)m_partToCreate;
 }

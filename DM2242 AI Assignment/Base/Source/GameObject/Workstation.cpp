@@ -10,7 +10,7 @@ void Workstation::Init()
 {
     m_robotAtStation = false;
     m_currRobot = NULL;
-    m_partToStore = RobotPart::HEAD;
+    m_partToStore = RobotPart::NIL;
 
     m_robotPrevPos.SetZero();
 }
@@ -152,4 +152,9 @@ void Workstation::SetCurrRobot(Robot* robot)
 Vector3 Workstation::GetRobotPrevPos()
 {
     return m_robotPrevPos;
+}
+
+int Workstation::GetStoredAmount()
+{
+    return m_RobotPartStorage.size();
 }

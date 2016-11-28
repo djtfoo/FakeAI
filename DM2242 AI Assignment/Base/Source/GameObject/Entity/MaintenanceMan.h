@@ -64,6 +64,8 @@ public:
 
     void SetToilet(Toilet* toilet);
     Toilet* GetToilet();
+
+    double GetBreakCharge();
 };
 
 #endif

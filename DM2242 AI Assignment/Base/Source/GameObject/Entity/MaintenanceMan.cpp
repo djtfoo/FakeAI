@@ -38,11 +38,11 @@ void MaintenanceMan::Update(double dt)
         // Check if toilet is close, if so add to queue and walk to it
         if ((m_pos - m_toilet->GetPos()).Length() < 3)
         {
-            if (m_toiletIdx < 0)
+            if (!m_doOnce)
             {
                 m_toiletIdx = m_toilet->AddToQueue(this);
                 std::cout << "ADDED" << std::endl;
-                //m_doOnce = true;
+                m_doOnce = true;
             }
 
             Vector3 dir = (m_toilet->GetQueuePosition(m_toiletIdx) - m_pos);
@@ -84,13 +84,19 @@ void MaintenanceMan::Update(double dt)
     else
     {
         // Move to workstation if no TargetMachine
-        Vector3 temp = m_workstation->GetPos();
-        temp.y -= 1;
-
-        if (temp != m_pos)
+        if ((m_origSpawn - m_pos).Length() > 0.1)
         {
-            Vector3 dir = (temp - m_pos).Normalized();
+            Vector3 dir = (m_origSpawn - m_pos);
+
+            if (!dir.IsZero())
+                dir.Normalize();
+
             m_pos += dir * dt;
+
+            if ((m_pos - m_origSpawn).Length() < 0.1)
+            {
+                
+            }
         }
     }
 
@@ -123,8 +129,11 @@ int MaintenanceMan::Think()
     case IDLE:
     {
         if (m_breakCharge >= 2000)
+        {
+            m_doOnce = false;
             return BREAK;
-
+        }
+     
         Vector3 temp = m_workstation->GetPos();
         temp.y -= 1;
 
@@ -176,8 +185,12 @@ int MaintenanceMan::Think()
             return IDLE;
         }
         else
+        {
+            m_targetMachine = NULL;
+            m_doingWork = false;
             return BREAK;
-        break;
+        }
+            break;
 
     }
 
@@ -271,7 +284,7 @@ void MaintenanceMan::DoRefill()
 void MaintenanceMan::DoBreak()
 {
     if (m_toilet->CheckIfChange())
-        m_toiletIdx--;
+        m_toiletIdx = Math::Max(--m_toiletIdx, 0);
 
     if (m_timer > 4)
     {
@@ -280,7 +293,7 @@ void MaintenanceMan::DoBreak()
         m_timer = 0;
         m_toilet->RemoveFromQueue();
         std::cout << "POPPED" << std::endl;
-
+ 
         m_toilet->SetOccupied(false);
     }
 }
@@ -319,4 +332,9 @@ void MaintenanceMan::SetToilet(Toilet* toilet)
 Toilet* MaintenanceMan::GetToilet()
 {
     return m_toilet;
+}
+
+double MaintenanceMan::GetBreakCharge()
+{
+    return m_breakCharge;
 }

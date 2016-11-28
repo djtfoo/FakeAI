@@ -246,6 +246,17 @@ void SceneAI::Init()
     maintenance->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(maintenance);
 
+
+    // Scrap Man + Assosiated Scrap Pile ( 1 )
+    ScrapPile* pile = new ScrapPile();
+    SharedData::GetInstance()->AddGameObject(pile, SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAP_PILE), 12, 2);
+
+    ScrapMan* scrapMan = new ScrapMan();
+    SharedData::GetInstance()->AddGameObject(scrapMan, SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAPMAN), 11, 2);
+    scrapMan->SetPos(Vector3(11, 2, 0));
+    scrapMan->AssignScrapPile(pile);
+    scrapMan->SetToilet(tempToilet);
+
     // Delivery Man + Delivery Truck
     DeliveryTruck* truck = new DeliveryTruck();
     SharedData::GetInstance()->AddGameObject(truck, SharedData::GetInstance()->m_meshList->GetMesh(GEO_DELIVERYTRUCK), 1, 2);
@@ -253,15 +264,14 @@ void SceneAI::Init()
     SharedData::GetInstance()->AddGameObject(deliveryMan, SharedData::GetInstance()->m_meshList->GetMesh(GEO_DELIVERYMAN), 1, 2);
     deliveryMan->AssignDeliveryTruck(truck);
 
+    //// Scrap Pile
+    //ScrapPile* pile = new ScrapPile();
+    //SharedData::GetInstance()->AddGameObject(pile, SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAP_PILE), 12, 2);
 
-    // Scrap Pile
-    ScrapPile* pile = new ScrapPile();
-    SharedData::GetInstance()->AddGameObject(pile, SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAP_PILE), 12, 2);
-
-    // Scrap Man
-    ScrapMan* scrapMan = new ScrapMan();
-    SharedData::GetInstance()->AddGameObject(scrapMan, SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAPMAN), 11, 2);
-    scrapMan->AssignScrapPile(pile);
+    //// Scrap Man
+    //ScrapMan* scrapMan = new ScrapMan();
+    //SharedData::GetInstance()->AddGameObject(scrapMan, SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAPMAN), 11, 2);
+    //scrapMan->AssignScrapPile(pile);
     
     // pathfinder test
     //pathfinderTest.ReceiveCurrentPos(Vector3(rand() % 20, rand() % 20, 0));
@@ -549,11 +559,181 @@ void SceneAI::RenderDebugInfo()
 
 
     // SPECIFIC INFO
+    if (SharedData::GetInstance()->m_goList[index_renderDebugInfo]->GetName() == "Machine")
+    {
+        Machine* machine = dynamic_cast<Machine*>(SharedData::GetInstance()->m_goList[index_renderDebugInfo]);
+
+        // State
+        std::string stateStr = "";
+        switch (machine->GetState())
+        {
+        case Machine::REST:
+            stateStr = "Rest";
+            break;
+
+        case Machine::PRODUCTION:
+            stateStr = "Production";
+            break;
+
+        case Machine::WAITFORREFILL:
+            stateStr = "Refill";
+            break;
+
+        case Machine::BROKEN:
+            stateStr = "Broken";
+            break;
+        }
+
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State: " + stateStr, Color(0, 0, 0), 2, 18, 0);
+
+        // Overheat Charge
+        ss.str("");
+        ss << "Breakdown: " << (int)machine->GetOverheatCharge() << " > " << machine->randNum;
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 37, 0);
+
+        // Scrap Quantity
+        ss.str("");
+        ss << "Scrap: " << machine->GetScrapQuantity() << " / " << machine->GetMaxScrapQuantity() << " Cost: " << machine->GetPartToCreate();
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 57, 0);
+    }
+    else if (SharedData::GetInstance()->m_goList[index_renderDebugInfo]->GetName() == "Worker")
+    {
+        Worker* worker = dynamic_cast<Worker*>(SharedData::GetInstance()->m_goList[index_renderDebugInfo]);
+
+        // State
+        std::string stateStr = "";
+        switch (worker->GetState())
+        {
+        case Worker::IDLE:
+            stateStr = "Idle";
+            break;
+
+        case Worker::WORK:
+            stateStr = "Work";
+            break;
+
+        case Worker::BREAK:
+            stateStr = "Break";
+            break;
+        }
+
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State: " + stateStr, Color(0, 0, 0), 2, 18, 0);
+
+        // Break Charge
+        ss.str("");
+        ss << "Break: " << (int)worker->GetBreakCharge() << " / 2000" ;
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 32, 0);
+
+        // Timer
+        ss.str("");
+        ss.precision(2);
+        ss << "Timer: " << worker->m_timer;
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 57, 0);
+    }
+    else if (SharedData::GetInstance()->m_goList[index_renderDebugInfo]->GetName() == "Maintenance Man")
+    {
+        MaintenanceMan* maintenanceman = dynamic_cast<MaintenanceMan*>(SharedData::GetInstance()->m_goList[index_renderDebugInfo]);
+
+        // State
+        std::string stateStr = "";
+        switch (maintenanceman->GetState())
+        {
+        case MaintenanceMan::IDLE:
+            stateStr = "Idle";
+            break;
+
+        case MaintenanceMan::REPAIR:
+            stateStr = "Repair";
+            break;
+
+        case MaintenanceMan::REFILL:
+            stateStr = "Refill";
+            break;
+
+        case MaintenanceMan::BREAK:
+            stateStr = "Break";
+            break;
+        }
+
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State: " + stateStr, Color(0, 0, 0), 2, 35, 0);
+
+        // Break Charge
+        ss.str("");
+        ss << "Break: " << (int)maintenanceman->GetBreakCharge() << " / 2000";
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 55, 0);
+    }
+    else if (SharedData::GetInstance()->m_goList[index_renderDebugInfo]->GetName() == "Toilet")
+    {
+        Toilet* toilet = dynamic_cast<Toilet*>(SharedData::GetInstance()->m_goList[index_renderDebugInfo]);
+
+        // Occupy
+        ss.str("");
+
+        if (toilet->IsOccupied())
+            ss << "Occupied: TRUE";
+        else
+            ss << "Occupied: FALSE";
+
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 18, 0);
+    
+        // Queue size
+        ss.str("");
+        ss << "Queue Size: " << toilet->GetToiletSize(); 
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 38, 0);
+    }
+    else if (SharedData::GetInstance()->m_goList[index_renderDebugInfo]->GetName() == "Workstation")
+    {
+        Workstation* station = dynamic_cast<Workstation*>(SharedData::GetInstance()->m_goList[index_renderDebugInfo]);
+
+        // Occupy
+        ss.str("");
+        ss << "Type: ";
+
+        switch (station->GetTypeStored())
+        {
+        case RobotPart::HEAD:
+            ss << "Head";
+            break;
+
+        case RobotPart::BODY:
+            ss << "Body";
+            break;
+
+        case RobotPart::LIMB:
+            ss << "Limb";
+            break;
+
+        case RobotPart::MICROCHIP:
+            ss << "Chip";
+            break;
+
+        default:
+            ss << "NULL";
+            break;
+        }
+
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 22, 0);
+
+        // Number Stored
+        ss.str("");
+        ss << "Stored Amount: " << station->GetStoredAmount();
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 35, 0);
+
+        // Robot on station
+        ss.str("");
+
+        if (station->IfRobotAtStation())
+            ss << "Robot Present: TRUE";
+        else
+            ss << "Robot Present: FALSE";
+
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 55, 0);
+    }
 
     // name
     RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT),
         "Viewing: " + SharedData::GetInstance()->m_goList[index_renderDebugInfo]->GetName(),
-        Color(0, 0, 0), 3, 0, 0);
+        Color(0, 0, 0), 2, 0, 0);
 }
 
 void SceneAI::Exit()

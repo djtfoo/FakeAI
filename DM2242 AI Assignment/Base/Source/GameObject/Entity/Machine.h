@@ -54,11 +54,13 @@ public:
     virtual void Update(double dt);
 
     void SetPartToCreate(RobotPart::ROBOT_PART part);
+    int GetPartToCreate();
 	void SetSpawnLocation(const Vector3& location);
 
     double GetTimer();
     double GetOverheatCharge();
     int GetScrapQuantity();
+    int GetMaxScrapQuantity();
     bool IsBroken();
     bool IsEmpty();
 
@@ -75,6 +77,8 @@ public:
 
     void Refill();
 
+    // DEBUG UI
+    float randNum;
 };
 
 #endif

@@ -77,9 +77,13 @@ void Worker::Update(double dt)
 
     if (m_state == IDLE && !m_atWorkstation)
     {
-        if (m_origSpawn != m_pos)
+        if ((m_origSpawn - m_pos).Length() > 0.1)
         {
-            Vector3 dir = (m_origSpawn - m_pos).Normalized();
+            Vector3 dir = (m_origSpawn - m_pos);
+
+            if (!dir.IsZero())
+                dir.Normalize();
+
             m_pos += dir * dt;
 
             if ((m_pos - m_origSpawn).Length() < 0.1)
@@ -234,7 +238,7 @@ void Worker::DoWork()
 void Worker::DoBreak()
 {
     if (m_toilet->CheckIfChange())
-        m_toiletIdx--;
+        m_toiletIdx = Math::Max(--m_toiletIdx, 0);
 
     if (m_timer > 4)
     {
@@ -327,4 +331,9 @@ void Worker::SetToilet(Toilet* toilet)
 Toilet* Worker::GetToilet()
 {
     return m_toilet;
+}
+
+double Worker::GetBreakCharge()
+{
+    return m_breakCharge;
 }

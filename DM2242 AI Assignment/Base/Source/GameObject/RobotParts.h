@@ -9,6 +9,7 @@ class RobotPart : public GameObject
 public:
     enum ROBOT_PART
     {
+        NIL = 0,
         HEAD = 2,
         BODY = 4,
         LIMB = 3,

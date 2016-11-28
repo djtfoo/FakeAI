@@ -89,10 +89,10 @@ void Toilet::RemoveFromQueue()
     //m_ToiletVec.resize(size-1);
 }
 
-int Toilet::GetToiletIdx()
+int Toilet::GetToiletSize()
 {
     //return m_ToiletVec.size() - 1;
-    return m_ToiletQueue.size() - 1;
+    return m_ToiletQueue.size();
 }
 
 bool Toilet::CheckIfChange()

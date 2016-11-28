@@ -30,6 +30,8 @@ public:
 
     Vector3 GetRobotPrevPos();
 
+    int GetStoredAmount();
+
 private:
     std::vector<RobotPart*> m_RobotPartStorage;
     bool m_robotAtStation;

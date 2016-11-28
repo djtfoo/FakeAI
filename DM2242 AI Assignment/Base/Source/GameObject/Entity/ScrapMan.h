@@ -5,6 +5,7 @@
 #include "Pathfinder.h"
 #include "../ScrapPile.h"
 #include "Robot.h"
+#include "../Toilet.h"
 
 class ScrapMan : public Entity
 {
@@ -37,12 +38,22 @@ private:
     virtual int Think();
     virtual void Act(int value);
 
+    // Toilet 
+    bool m_breakDone;
+    bool m_inToilet;
+    bool m_doOnce;
+    bool m_atWorkstation;
+    int m_toiletIdx;
+    Vector3 m_origSpawn;
+    Toilet* m_toilet;
+
 public:
     ScrapMan();
     virtual ~ScrapMan();
 
     virtual void Init();
     virtual void Update(double dt);
+    virtual void SetPos(Vector3 pos);
 
     SCRAPMAN_STATE GetState();
     void SetState(SCRAPMAN_STATE state);
@@ -50,6 +61,10 @@ public:
     virtual int GetMaxStates();
 
     void AssignScrapPile(ScrapPile* pile);
+
+    // Toilet 
+    void SetToilet(Toilet* toilet);
+    Toilet* GetToilet();
 };
 
 #endif

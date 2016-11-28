@@ -18,7 +18,7 @@ public:
     };
 
 private:
-    double m_timer;
+
     double m_breakCharge;
     bool m_workCompleted;
     bool m_inToilet;
@@ -65,6 +65,10 @@ public:
 
     void SetToilet(Toilet* toilet);
     Toilet* GetToilet();
+
+    double GetBreakCharge();
+
+    double m_timer;
 };
 
 #endif
