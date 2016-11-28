@@ -41,6 +41,8 @@ void DeliveryMan::Update(double dt)
         if (!m_vel.IsZero())
         {
             m_pos += m_vel * dt;
+            m_deliveryTruck->SetMoving(true);
+
             if (m_pathfinder->hasReachedNode(this->m_pos))
             {
                 // reached destination; can get a part and move on.
@@ -49,6 +51,8 @@ void DeliveryMan::Update(double dt)
                     m_pathfinder->foundPath.pop_back();
 
                     m_vel.SetZero();
+
+                    m_deliveryTruck->SetMoving(false);
                 }
                 else
                 {
@@ -68,6 +72,8 @@ void DeliveryMan::Update(double dt)
 
     case DRIVING:
         m_pos += m_vel * dt;
+        m_deliveryTruck->SetMoving(true);
+
         if (m_pathfinder->hasReachedNode(this->m_pos))
         {
             // reached destination; can get a part and move on.
@@ -78,6 +84,8 @@ void DeliveryMan::Update(double dt)
                 m_vel.SetZero();
 
                 b_reachedDestination = true;
+
+                m_deliveryTruck->SetMoving(false);
             }
             else
             {
@@ -95,6 +103,7 @@ void DeliveryMan::Update(double dt)
 
     case WALK:
         m_pos += m_vel * dt;
+
         if (m_pathfinder->hasReachedNode(this->m_pos))
         {
             // reached destination; can get a part and move on.

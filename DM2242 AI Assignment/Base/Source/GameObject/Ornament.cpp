@@ -87,3 +87,8 @@ void Ornament::RemoveOrnament()
     m_stage = STAGE_1;
     SetSprite();
 }
+
+int Ornament::GetPartCount()
+{
+    return m_partCount;
+}

@@ -34,6 +34,9 @@ public:
     bool isComplete();      // check if ornament has finished building
 
     void RemoveOrnament();
+    
+    // Getters
+    int GetPartCount();
 };
 
 #endif

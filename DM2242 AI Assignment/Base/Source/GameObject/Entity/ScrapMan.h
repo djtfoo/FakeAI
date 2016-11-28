@@ -28,6 +28,9 @@ private:
     SCRAPMAN_STATE m_state;
 
     Robot* m_robotToPickUp;
+    // for debug rendering
+    bool b_gotRobot;
+    bool b_breakingDownRobot;
 
     Pathfinder* m_pathfinder;
     bool b_reachedDestination;
@@ -67,6 +70,11 @@ public:
     Toilet* GetToilet();
 
     void DoBreak();
+
+    // Getters
+    Pathfinder* GetPathfinder();
+    bool GotRobot();
+    bool IsBreakingRobot();
 };
 
 #endif

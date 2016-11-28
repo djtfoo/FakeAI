@@ -3,7 +3,7 @@
 
 #include "DeliveryTruck.h"
 
-DeliveryTruck::DeliveryTruck() : GameObject("DeliveryTruck"), m_dir(2)
+DeliveryTruck::DeliveryTruck() : GameObject("DeliveryTruck"), m_dir(2), b_moving(false)
 {
 }
 
@@ -46,4 +46,14 @@ void DeliveryTruck::SetDirection(int dir)
 {
     this->m_dir = dir;
     this->SetSprite();
+}
+
+void DeliveryTruck::SetMoving(bool moving)
+{
+    this->b_moving = moving;
+}
+
+bool DeliveryTruck::IsMoving()
+{
+    return b_moving;
 }

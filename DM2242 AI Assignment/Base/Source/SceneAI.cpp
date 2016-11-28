@@ -621,10 +621,8 @@ void SceneAI::RenderDebugInfo()
         {
             if (!pathfinder->IsPathEmpty())
             {
-                std::cout << "HEY";
                 for (std::vector<Node>::iterator it = pathfinder->foundPath.begin(); it != pathfinder->foundPath.end(); ++it)
                 {
-                    std::cout << "HEY" << std::endl;
                     modelStack.PushMatrix();
                     modelStack.Translate((*it).col, (*it).row, -0.5f);
                     RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
@@ -674,10 +672,8 @@ void SceneAI::RenderDebugInfo()
         {
             if (!pathfinder->IsPathEmpty())
             {
-                std::cout << "HEY";
                 for (std::vector<Node>::iterator it = pathfinder->foundPath.begin(); it != pathfinder->foundPath.end(); ++it)
                 {
-                    std::cout << "HEY" << std::endl;
                     modelStack.PushMatrix();
                     modelStack.Translate((*it).col, (*it).row, -0.5f);
                     RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
@@ -781,7 +777,7 @@ void SceneAI::RenderDebugInfo()
             break;
 
         case Robot::STARTUP:
-            stateStr = "Start Up";
+            stateStr = "Starting Up";
             break;
 
         case Robot::WORK_WITHOUTPART:
@@ -825,10 +821,8 @@ void SceneAI::RenderDebugInfo()
         {
             if (!pathfinder->IsPathEmpty())
             {
-                std::cout << "HEY";
                 for (std::vector<Node>::iterator it = pathfinder->foundPath.begin(); it != pathfinder->foundPath.end(); ++it)
                 {
-                    std::cout << "HEY" << std::endl;
                     modelStack.PushMatrix();
                     modelStack.Translate((*it).col, (*it).row, -0.5f);
                     RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
@@ -883,10 +877,8 @@ void SceneAI::RenderDebugInfo()
         {
             if (!pathfinder->IsPathEmpty())
             {
-                std::cout << "HEY";
                 for (std::vector<Node>::iterator it = pathfinder->foundPath.begin(); it != pathfinder->foundPath.end(); ++it)
                 {
-                    std::cout << "HEY" << std::endl;
                     modelStack.PushMatrix();
                     modelStack.Translate((*it).col, (*it).row, -0.5f);
                     RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
@@ -898,12 +890,128 @@ void SceneAI::RenderDebugInfo()
     }
 
     //DELIVERY TRUCK - moving or not moving
+    if (SharedData::GetInstance()->m_goList[index_renderDebugInfo]->GetName() == "DeliveryTruck")
+    {
+        DeliveryTruck* deliverytruck = dynamic_cast<DeliveryTruck*>(SharedData::GetInstance()->m_goList[index_renderDebugInfo]);
+
+        std::string isMoving = "";
+
+        if (deliverytruck->IsMoving())
+            isMoving = "Yes";
+        else
+            isMoving = "No";
+
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "Moving: " + isMoving, Color(0, 0, 0), 2, 30, 0);
+    }
 
     //SCRAP MAN
+    if (SharedData::GetInstance()->m_goList[index_renderDebugInfo]->GetName() == "Scrap Man")
+    {
+        ScrapMan* scrapman = dynamic_cast<ScrapMan*>(SharedData::GetInstance()->m_goList[index_renderDebugInfo]);
+
+        // State
+        std::string stateStr = "";
+        switch (scrapman->GetState())
+        {
+        case ScrapMan::IDLE:
+            stateStr = "Idle";
+            break;
+
+        case ScrapMan::COLLECT_ROBOT:
+            stateStr = "Work";
+            break;
+
+        case ScrapMan::BREAKDOWN_ROBOT:
+            stateStr = "Work";
+            break;
+
+        case ScrapMan::BREAK:
+            stateStr = "Break";
+            break;
+        }
+
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State: " + stateStr, Color(0, 0, 0), 2, 22, 0);
+
+        // Holding on to Robot
+        //if (scrapman->GetState() == ScrapMan::COLLECT_ROBOT || scrapman->GetState() == ScrapMan::BREAKDOWN_ROBOT)   // working
+        //{
+            std::stringstream ss;
+
+            ss << "Holding Robot: ";
+            if (scrapman->GotRobot())
+                ss << "Yes";
+            else
+                ss << "No";
+            RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 38, 0);
+
+            if (scrapman->IsBreakingRobot())
+            {
+                ss.str("");
+                ss << "Breaking Robot...";
+                RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 60, 0);
+            }
+
+        //}
+
+        Pathfinder* pathfinder = scrapman->GetPathfinder();
+        if (pathfinder)
+        {
+            if (!pathfinder->IsPathEmpty())
+            {
+                for (std::vector<Node>::iterator it = pathfinder->foundPath.begin(); it != pathfinder->foundPath.end(); ++it)
+                {
+                    modelStack.PushMatrix();
+                    modelStack.Translate((*it).col, (*it).row, -0.5f);
+                    RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
+                    modelStack.PopMatrix();
+                }
+            }
+        }   // end of pathfinder
+
+    }
 
     //BUILDING BLOCK STACK - selected or not, and if selected, the timer left
+    if (SharedData::GetInstance()->m_goList[index_renderDebugInfo]->GetName() == "Building Block Stack")
+    {
+        BuildingBlockStack* stack = dynamic_cast<BuildingBlockStack*>(SharedData::GetInstance()->m_goList[index_renderDebugInfo]);
+
+        std::string str = "Being Used: ";
+
+        if (SharedData::GetInstance()->m_ornamentSystem->GetBuildingBlockCoord() == stack->GetPos())
+        {
+            str += "Yes";
+
+            std::stringstream ss;
+            ss << "Time Left: " << 20.0 - SharedData::GetInstance()->m_ornamentSystem->GetBuildingBlocksTimer();
+            RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 55, 0);
+        }
+        else
+        {
+            str += "No";
+        }
+
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), str, Color(0, 0, 0), 2, 35, 0);
+    }
 
     //ORNAMENT - selected or not, and if selected, the stage of completion and how many parts
+    if (SharedData::GetInstance()->m_goList[index_renderDebugInfo]->GetName() == "Ornament")
+    {
+        Ornament* ornament = dynamic_cast<Ornament*>(SharedData::GetInstance()->m_goList[index_renderDebugInfo]);
+
+        std::stringstream ss;
+        ss << "Parts: " << ornament->GetPartCount() << " / 11";
+        if (ornament->isComplete())
+            ss << " [COMPLETED]";
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 25, 0);
+
+        std::string str2 = "To Be Built: ";
+
+        if (SharedData::GetInstance()->m_ornamentSystem->GetOrnamentCoord() == ornament->GetPos())
+            str2 += "Yes";
+        else
+            str2 += "No";
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), str2, Color(0, 0, 0), 2, 57, 0);
+    }
 
     // name
     RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT),

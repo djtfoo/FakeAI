@@ -136,3 +136,8 @@ void OrnamentBuildingSystem::AddPart()
 {
     m_ornaments[m_ornamentsIndex]->AddPart();
 }
+
+double OrnamentBuildingSystem::GetBuildingBlocksTimer()
+{
+    return d_buildingBlocksTimer;
+}

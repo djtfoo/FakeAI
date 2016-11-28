@@ -46,6 +46,9 @@ public:
     int GetXLaneToOrnament();
 
     void AddPart();
+
+    // Getters
+    double GetBuildingBlocksTimer();
 };
 
 #endif

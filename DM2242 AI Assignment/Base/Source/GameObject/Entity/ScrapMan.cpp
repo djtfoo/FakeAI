@@ -24,6 +24,8 @@ void ScrapMan::Init()
     m_state = IDLE;
 
     m_robotToPickUp = NULL;
+    b_gotRobot = false;
+    b_breakingDownRobot = false;
 
     m_pile = NULL;
 
@@ -235,6 +237,7 @@ void ScrapMan::Sense(double dt)
     if (m_state == BREAKDOWN_ROBOT && b_reachedDestination)
     {
         d_timerCounter += dt;
+        b_breakingDownRobot = true;
     }
 
     if (m_state == BREAK && m_inToilet)
@@ -286,6 +289,8 @@ void ScrapMan::Act(int value)
     case IDLE:
         SetState(IDLE);
         b_reachedDestination = false;
+        b_gotRobot = false;
+        b_breakingDownRobot = false;
         d_timerCounter = 0.0;
 
         // pathfind to workstation
@@ -302,6 +307,7 @@ void ScrapMan::Act(int value)
     case COLLECT_ROBOT:
     {
                           SetState(COLLECT_ROBOT);
+                          b_gotRobot = false;
 
                           // Pathfind to the shutdown robot
                           m_pathfinder->EmptyPath();
@@ -319,6 +325,7 @@ void ScrapMan::Act(int value)
     {
                             SetState(BREAKDOWN_ROBOT);
                             b_reachedDestination = false;
+                            b_gotRobot = true;
 
                             // Pathfind to the ScrapMan's workstation
                             m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
@@ -399,4 +406,19 @@ void ScrapMan::DoBreak()
 
         m_toilet->SetOccupied(false);
     }
+}
+
+Pathfinder* ScrapMan::GetPathfinder()
+{
+    return m_pathfinder;
+}
+
+bool ScrapMan::GotRobot()
+{
+    return b_gotRobot;
+}
+
+bool ScrapMan::IsBreakingRobot()
+{
+    return b_breakingDownRobot;
 }

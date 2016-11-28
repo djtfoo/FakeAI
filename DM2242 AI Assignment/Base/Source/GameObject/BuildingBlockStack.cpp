@@ -10,10 +10,8 @@ BuildingBlockStack::~BuildingBlockStack()
 
 void BuildingBlockStack::Init()
 {
-
 }
 
 void BuildingBlockStack::Update(double dt)
 {
-
 }

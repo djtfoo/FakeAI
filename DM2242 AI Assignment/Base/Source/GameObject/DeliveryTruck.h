@@ -7,6 +7,8 @@ class DeliveryTruck : public GameObject
 {
     int m_dir;
 
+    bool b_moving;
+
 public:
     DeliveryTruck();
     virtual ~DeliveryTruck();
@@ -16,7 +18,12 @@ public:
 
     virtual void SetSprite();
 
+    // Setters
     void SetDirection(int dir);
+    void SetMoving(bool moving);
+
+    // Getters
+    bool IsMoving();
 };
 
 #endif
