@@ -80,3 +80,10 @@ bool Ornament::isComplete()
 
     return false;
 }
+
+void Ornament::RemoveOrnament()
+{
+    m_partCount = 0;
+    m_stage = STAGE_1;
+    SetSprite();
+}

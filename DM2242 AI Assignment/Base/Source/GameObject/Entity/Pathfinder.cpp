@@ -9,6 +9,14 @@ Pathfinder::~Pathfinder()
 {
 }
 
+void Pathfinder::EmptyPath()
+{
+    while (!foundPath.empty())
+    {
+        foundPath.pop_back();
+    }
+}
+
 void Pathfinder::Update(double dt)
 {
 
