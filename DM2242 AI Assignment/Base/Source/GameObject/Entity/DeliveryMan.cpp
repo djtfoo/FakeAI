@@ -91,6 +91,7 @@ void DeliveryMan::Update(double dt)
         }
 
         m_deliveryTruck->SetPos(m_pos);
+        std::cout << "Position: " << m_deliveryTruck->GetPos() << std::endl;
         break;
 
     case WALK:
@@ -199,7 +200,7 @@ void DeliveryMan::Act(int value)
 
         // Pathfind to coordinate near the ornaments
         m_pathfinder->ReceiveCurrentPos(this->m_pos);
-        m_pathfinder->ReceiveDestination(Vector3(4, 1, 0));
+        m_pathfinder->ReceiveDestination(Vector3(4.f, 1.f, 0));
         m_pathfinder->FindPathGreedyBestFirst();
 
         SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()) );
@@ -231,7 +232,7 @@ void DeliveryMan::Act(int value)
 
         // Pathfind to the delivery truck
         m_pathfinder->ReceiveCurrentPos(this->m_pos);
-        m_pathfinder->ReceiveDestination(m_deliveryTruck->GetPos() + Vector3(0, -1, 0));
+        m_pathfinder->ReceiveDestination(m_deliveryTruck->GetPos() + Vector3(1, 0, 0));
         m_pathfinder->FindPathGreedyBestFirst();
 
         SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
