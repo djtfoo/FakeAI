@@ -18,15 +18,57 @@ void MaintenanceMan::Init()
     m_targetMachine = NULL;
     m_doingWork = false;
     m_breakDone = false;
+    m_inToilet = false;
+    m_doOnce = false;
     m_toiletIdx = 0;
+    
+    m_toilet = NULL;
+}
+
+void MaintenanceMan::SetPos(Vector3 pos)
+{
+    m_pos = pos;
+    m_origSpawn = m_pos;
 }
 
 void MaintenanceMan::Update(double dt)
 {
-    if (m_targetMachine)
+    if (m_state == BREAK)
+    {
+        // Check if toilet is close, if so add to queue and walk to it
+        if ((m_pos - m_toilet->GetPos()).Length() < 3)
+        {
+            if (!m_doOnce && m_state == BREAK)
+            {
+                m_toiletIdx = m_toilet->AddToQueue(this);
+                std::cout << "ADDED" << std::endl;
+                m_doOnce = true;
+            }
+
+            Vector3 dir = (m_toilet->GetQueuePosition(m_toiletIdx) - m_pos).Normalized();
+            m_pos += dir * dt;
+        }
+        else
+        {
+            // Move to general area of toilet
+            Vector3 dir = (m_toilet->GetPos() - m_pos).Normalized();
+            m_pos += dir * dt;
+        }
+
+        // If close to toilet set inToilet to true
+        if ((m_pos - m_toilet->GetPos()).Length() < 0.1)
+        {
+            m_inToilet = true;
+            m_toilet->SetOccupied(true);
+        }
+        else
+            m_inToilet = false;
+    }
+    else if (m_targetMachine)
     {
         if (!m_doingWork)
         {
+            // Move Towards TargetMachine, then do work
             Vector3 dir = (m_targetMachine->GetPos() - m_pos).Normalized();
             m_pos += dir * dt;
 
@@ -38,6 +80,7 @@ void MaintenanceMan::Update(double dt)
     }
     else
     {
+        // Move to workstation if no TargetMachine
         Vector3 temp = m_workstation->GetPos();
         temp.y -= 1;
 
@@ -48,19 +91,24 @@ void MaintenanceMan::Update(double dt)
         }
     }
 
-    if (m_state == BREAK)
-    {
-        Vector3 dir = (m_toilet->GetQueuePosition(m_toiletIdx) - m_pos).Normalized();
-        m_pos += dir * dt;
-    }
+    
 }
 
 void MaintenanceMan::Sense(double dt)
 {
-    m_breakCharge += dt * Math::RandFloatMinMax(1, 2);
-
     if ((m_state == REFILL || m_state == REPAIR) && m_doingWork)
         m_timer += dt;
+    else if (m_state == BREAK && m_inToilet)
+        m_timer += dt;
+    else if (m_state == IDLE)
+    {
+        m_timer += dt;
+        if (m_timer > 1)
+        {
+            m_timer = 0;
+            m_breakCharge += Math::RandFloatMinMax(0, 200);
+        }
+    }
 }
 
 int MaintenanceMan::Think()
@@ -71,18 +119,19 @@ int MaintenanceMan::Think()
 
     case IDLE:
     {
+        if (m_breakCharge >= 2000)
+            return BREAK;
+
         Vector3 temp = m_workstation->GetPos();
         temp.y -= 1;
 
+        // Check if at workstation
         if ((m_pos - temp).Length() < 1.001)
         {
             return ScanMachines();
         }
         else
         {
-            if (m_breakCharge >= 100)
-                return BREAK;
-
             return IDLE;
         }
         break;
@@ -116,7 +165,11 @@ int MaintenanceMan::Think()
 
     case BREAK:
         if (m_breakDone)
+        {
+            m_breakDone = false;
+            m_breakCharge = 0;
             return IDLE;
+        }
         else
             return BREAK;
         break;
@@ -212,11 +265,18 @@ void MaintenanceMan::DoRefill()
 
 void MaintenanceMan::DoBreak()
 {
+    if (m_toilet->CheckIfChange())
+        m_toiletIdx--;
+
     if (m_timer > 4)
     {
         m_breakCharge = 0;
         m_breakDone = true;
         m_timer = 0;
+        m_toilet->RemoveFromQueue();
+        std::cout << "POPPED" << std::endl;
+
+        m_toilet->SetOccupied(false);
     }
 }
 

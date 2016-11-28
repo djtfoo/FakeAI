@@ -30,6 +30,7 @@ bool Toilet::IsOccupied()
 
 void Toilet::SetOccupied(bool status)
 {
+    SetSprite();
     b_occupied = status;
 
     if (status == false)

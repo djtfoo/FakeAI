@@ -23,6 +23,7 @@ void Worker::Init()
     m_toiletIdx = 0;
 
 	m_workstation = NULL;
+    m_toilet = NULL;
 }
 
 void Worker::SetPos(Vector3 pos)

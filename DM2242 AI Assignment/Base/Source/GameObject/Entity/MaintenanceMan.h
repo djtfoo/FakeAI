@@ -29,7 +29,10 @@ private:
 
     bool m_doingWork;
     bool m_breakDone;
+    bool m_inToilet;
+    bool m_doOnce;
     int m_toiletIdx;
+    Vector3 m_origSpawn;
 
     int ScanMachines();
     void DoIdle();
@@ -50,6 +53,7 @@ public:
 
     virtual void Init();
     virtual void Update(double dt);
+    virtual void SetPos(Vector3 pos);
 
     MAINTENANCEMAN_STATE GetState();
     void SetState(MAINTENANCEMAN_STATE state);
