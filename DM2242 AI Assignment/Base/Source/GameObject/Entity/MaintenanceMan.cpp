@@ -8,10 +8,15 @@ MaintenanceMan::MaintenanceMan() : Entity("Maintenance Man")
 
 MaintenanceMan::~MaintenanceMan()
 {
+    if (m_pathfinder)
+        delete m_pathfinder;
 }
 
 void MaintenanceMan::Init()
 {
+    m_pathfinder = new Pathfinder();
+    b_reachedDestination = false;
+
     m_breakCharge = Math::RandFloatMinMax(-1000, 1000);
     m_timer = 0;
     m_state = IDLE;
@@ -36,12 +41,12 @@ void MaintenanceMan::Update(double dt)
     if (m_state == BREAK)
     {
         // Check if toilet is close, if so add to queue and walk to it
-        if ((m_pos - m_toilet->GetPos()).Length() < 3)
+        if ((m_pos - m_toilet->GetPos()).Length() < 4)  // within toilet range
         {
-            if (!m_doOnce)
+            if (!m_doOnce && m_state == BREAK)
             {
                 m_toiletIdx = m_toilet->AddToQueue(this);
-                std::cout << "ADDED" << std::endl;
+                //std::cout << "ADDED" << std::endl;
                 m_doOnce = true;
             }
 
@@ -53,12 +58,32 @@ void MaintenanceMan::Update(double dt)
         }
         else
         {
-            // Move to general area of toilet
-            Vector3 dir = (m_toilet->GetPos() - m_pos).Normalized();
-            m_pos += dir * dt;
+            //pathfind to toilet
+            m_pos += m_vel * dt;
+            if (m_pathfinder->hasReachedNode(this->m_pos))
+            {
+                // reached destination; can get a part and move on.
+                if (m_pathfinder->hasReachedDestination(this->m_pos))
+                {
+                    m_pathfinder->foundPath.pop_back();
+
+                    m_vel.SetZero();
+
+                    b_reachedDestination = true;
+                }
+                else
+                {
+                    m_pathfinder->foundPath.pop_back();
+
+                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+                    SetDirection(CheckDirection(m_vel));
+                }
+            }
+
+            //Vector3 dir = (m_toilet->GetPos() - m_pos).Normalized();
+            //m_pos += dir * dt;
         }
 
-        // If close to toilet set inToilet to true
         if ((m_pos - m_toilet->GetPos()).Length() < 0.1)
         {
             m_inToilet = true;
@@ -66,14 +91,38 @@ void MaintenanceMan::Update(double dt)
         }
         else
             m_inToilet = false;
+
     }
-    else if (m_targetMachine)
+    else if (m_targetMachine)   // there is work to do
     {
         if (!m_doingWork)
         {
             // Move Towards TargetMachine, then do work
-            Vector3 dir = (m_targetMachine->GetPos() - m_pos).Normalized();
-            m_pos += dir * dt;
+            //Vector3 dir = (m_targetMachine->GetPos() - m_pos).Normalized();
+            //m_pos += dir * dt;
+
+            // follow found path to TargetMachine
+            m_pos += m_vel * dt;
+            if (m_pathfinder->hasReachedNode(this->m_pos))
+            {
+                // reached destination; can get a part and move on.
+                if (m_pathfinder->hasReachedDestination(this->m_pos))
+                {
+                    m_pathfinder->foundPath.pop_back();
+
+                    m_vel.SetZero();
+
+                    b_reachedDestination = true;
+                    m_doingWork = true;
+                }
+                else
+                {
+                    m_pathfinder->foundPath.pop_back();
+
+                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+                    SetDirection(CheckDirection(m_vel));
+                }
+            }
 
             if ((m_pos - m_targetMachine->GetPos()).Length() < 1.001)
             {
@@ -81,17 +130,39 @@ void MaintenanceMan::Update(double dt)
             }
         }
     }
-    else
+    else    // idle state
     {
         // Move to workstation if no TargetMachine
         if ((m_origSpawn - m_pos).Length() > 0.1)
         {
-            Vector3 dir = (m_origSpawn - m_pos);
+            // pathfind to workstation
+            m_pos += m_vel * dt;
+            if (m_pathfinder->hasReachedNode(this->m_pos))
+            {
+                // reached destination; can get a part and move on.
+                if (m_pathfinder->hasReachedDestination(this->m_pos))
+                {
+                    m_pathfinder->foundPath.pop_back();
 
-            if (!dir.IsZero())
-                dir.Normalize();
+                    m_vel.SetZero();
 
-            m_pos += dir * dt;
+                    b_reachedDestination = true;
+                }
+                else
+                {
+                    m_pathfinder->foundPath.pop_back();
+
+                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+                    SetDirection(CheckDirection(m_vel));
+                }
+            }
+
+            //Vector3 dir = (m_origSpawn - m_pos);
+            //
+            //if (!dir.IsZero())
+            //    dir.Normalize();
+            //
+            //m_pos += dir * dt;
 
             if ((m_pos - m_origSpawn).Length() < 0.1)
             {
@@ -101,6 +172,24 @@ void MaintenanceMan::Update(double dt)
     }
 
     
+    switch (m_state)
+    {
+    case IDLE:
+        DoIdle();
+        break;
+
+    case REPAIR:
+        DoRepair();
+        break;
+
+    case REFILL:
+        DoRefill();
+        break;
+
+    case BREAK:
+        DoBreak();
+        break;
+    }
 }
 
 void MaintenanceMan::Sense(double dt)
@@ -122,7 +211,6 @@ void MaintenanceMan::Sense(double dt)
 
 int MaintenanceMan::Think()
 {
- 
     switch (m_state)
     {
 
@@ -140,12 +228,11 @@ int MaintenanceMan::Think()
         // Check if at workstation
         if ((m_pos - temp).Length() < 1.2)
         {
-            return ScanMachines();
+            int value = ScanMachines();
+            if (value != IDLE)
+                return value;
         }
-        else
-        {
-            return IDLE;
-        }
+
         break;
     }
 
@@ -157,10 +244,10 @@ int MaintenanceMan::Think()
             m_doingWork = false;
             return IDLE;
         }
-        else if (m_targetMachine && m_targetMachine->IsEmpty())
-        {
-            return REFILL;
-        }
+        //else if (m_targetMachine && m_targetMachine->IsEmpty())
+        //{
+        //    return REFILL;
+        //}
             break;
 
     case REPAIR:
@@ -171,10 +258,10 @@ int MaintenanceMan::Think()
             m_doingWork = false;
             return IDLE;
         }
-        else if (m_targetMachine && m_targetMachine->IsBroken())
-        {
-            return REPAIR;
-        }
+        //else if (m_targetMachine && m_targetMachine->IsBroken())
+        //{
+        //    return REPAIR;
+        //}
         break;
 
     case BREAK:
@@ -182,15 +269,14 @@ int MaintenanceMan::Think()
         {
             m_breakDone = false;
             m_breakCharge = 0;
-            return IDLE;
+            return MAINTENANCEMAN_STATES_TOTAL;
         }
         else
         {
             m_targetMachine = NULL;
             m_doingWork = false;
-            return BREAK;
         }
-            break;
+        break;
 
     }
 
@@ -203,22 +289,77 @@ void MaintenanceMan::Act(int value)
     {
     case IDLE:
         SetState(IDLE);
-        DoIdle();
+        b_reachedDestination = false;
+        //DoIdle();
+
+        // pathfind to workstation
+        m_pathfinder->EmptyPath();
+        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+        m_pathfinder->ReceiveDestination(m_origSpawn);
+        m_pathfinder->FindPathGreedyBestFirst();
+
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+        SetDirection(CheckDirection(m_vel));
         break;
 
     case REPAIR:
         SetState(REPAIR);
-        DoRepair();
+        b_reachedDestination = false;
+        //DoRepair();
+
+        // pathfind to target machine
+        m_pathfinder->EmptyPath();
+        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+        m_pathfinder->ReceiveDestination(m_targetMachine->GetPos());
+        m_pathfinder->FindPathGreedyBestFirst();
+
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+        SetDirection(CheckDirection(m_vel));
         break;
 
     case REFILL:
         SetState(REFILL);
-        DoRefill();
+        b_reachedDestination = false;
+        //DoRefill();
+
+        // pathfind to target machine
+        m_pathfinder->EmptyPath();
+        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+        m_pathfinder->ReceiveDestination(m_targetMachine->GetPos());
+        m_pathfinder->FindPathGreedyBestFirst();
+
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+        SetDirection(CheckDirection(m_vel));
         break;
 
     case BREAK:
         SetState(BREAK);
-        DoBreak();
+        b_reachedDestination = false;
+        //DoBreak();
+
+        // pathfind to toilet
+        m_pathfinder->EmptyPath();
+        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+        m_pathfinder->ReceiveDestination(m_toilet->GetPos());
+        m_pathfinder->FindPathGreedyBestFirst();
+
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+        SetDirection(CheckDirection(m_vel));
+        break;
+
+    case MAINTENANCEMAN_STATES_TOTAL:   // going back to workstation from toilet
+        SetState(IDLE);
+        b_reachedDestination = false;
+        //DoIdle();
+
+        // pathfind to workstation
+        m_pathfinder->EmptyPath();
+        m_pathfinder->ReceiveCurrentPos(Vector3(14, 14, m_pos.z));
+        m_pathfinder->ReceiveDestination(m_origSpawn);
+        m_pathfinder->FindPathGreedyBestFirst();
+
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+        SetDirection(CheckDirection(m_vel));
         break;
     }
 }
@@ -292,7 +433,7 @@ void MaintenanceMan::DoBreak()
         m_breakDone = true;
         m_timer = 0;
         m_toilet->RemoveFromQueue();
-        std::cout << "POPPED" << std::endl;
+        //std::cout << "POPPED" << std::endl;
  
         m_toilet->SetOccupied(false);
     }
@@ -337,4 +478,9 @@ Toilet* MaintenanceMan::GetToilet()
 double MaintenanceMan::GetBreakCharge()
 {
     return m_breakCharge;
+}
+
+Pathfinder* MaintenanceMan::GetPathfinder()
+{
+    return m_pathfinder;
 }

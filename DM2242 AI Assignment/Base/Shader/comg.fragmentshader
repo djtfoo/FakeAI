@@ -135,6 +135,6 @@ void main(){
 		
 	else if (highlighted)
 	{
-		color = 0.5f * (color + vec4(1, 1, 0, 0.5));
+		color = 0.5f * (color + vec4(1, 1, 0, 1));
 	}
 }

@@ -50,13 +50,35 @@ void ScrapMan::Update(double dt)
         // Move back to orig pos
         if ((m_origSpawn - m_pos).Length() > 0.1)
         {
-            m_atWorkstation = false;
-            Vector3 dir = (m_origSpawn - m_pos);
+            //m_atWorkstation = false;
+            //Vector3 dir = (m_origSpawn - m_pos);
+            //
+            //if (!dir.IsZero())
+            //    dir.Normalize();
+            //
+            //m_pos += dir * dt;
 
-            if (!dir.IsZero())
-                dir.Normalize();
+            // follow found path back to workstation
+            m_pos += m_vel * dt;
+            if (m_pathfinder->hasReachedNode(this->m_pos))
+            {
+                // reached destination; can get a part and move on.
+                if (m_pathfinder->hasReachedDestination(this->m_pos))
+                {
+                    m_pathfinder->foundPath.pop_back();
 
-            m_pos += dir * dt;
+                    m_vel.SetZero();
+
+                    b_reachedDestination = true;
+                }
+                else
+                {
+                    m_pathfinder->foundPath.pop_back();
+
+                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+                    SetDirection(CheckDirection(m_vel));
+                }
+            }
 
             if ((m_pos - m_origSpawn).Length() < 0.1)
             {
@@ -121,12 +143,12 @@ void ScrapMan::Update(double dt)
 
     case BREAK:
         // Check if toilet is close, if so add to queue and walk to it
-        if ((m_pos - m_toilet->GetPos()).Length() < 3)
+        if ((m_pos - m_toilet->GetPos()).Length() < 4)  // within toilet range
         {
-            if (!m_doOnce)
+            if (!m_doOnce && m_state == BREAK)
             {
                 m_toiletIdx = m_toilet->AddToQueue(this);
-                std::cout << "ADDED" << std::endl;
+                //std::cout << "ADDED" << std::endl;
                 m_doOnce = true;
             }
 
@@ -138,12 +160,33 @@ void ScrapMan::Update(double dt)
         }
         else
         {
-            // Move to general area of toilet
-            Vector3 dir = (m_toilet->GetPos() - m_pos).Normalized();
-            m_pos += dir * dt;
+            //pathfind to toilet
+
+            m_pos += m_vel * dt;
+            if (m_pathfinder->hasReachedNode(this->m_pos))
+            {
+                // reached destination; can get a part and move on.
+                if (m_pathfinder->hasReachedDestination(this->m_pos))
+                {
+                    m_pathfinder->foundPath.pop_back();
+
+                    m_vel.SetZero();
+
+                    b_reachedDestination = true;
+                }
+                else
+                {
+                    m_pathfinder->foundPath.pop_back();
+
+                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+                    SetDirection(CheckDirection(m_vel));
+                }
+            }
+
+            //Vector3 dir = (m_toilet->GetPos() - m_pos).Normalized();
+            //m_pos += dir * dt;
         }
 
-        // If close to toilet set inToilet to true
         if ((m_pos - m_toilet->GetPos()).Length() < 0.1)
         {
             m_inToilet = true;
@@ -151,6 +194,8 @@ void ScrapMan::Update(double dt)
         }
         else
             m_inToilet = false;
+
+        DoBreak();
 
         break;
     }
@@ -168,7 +213,7 @@ void ScrapMan::Sense(double dt)
             {
                 d_timerCounter = 0;
                 d_breakCharge += Math::RandFloatMinMax(0, 200);
-                std::cout << d_breakCharge << std::endl;
+                //std::cout << d_breakCharge << std::endl;
             }
         }
         // check whether there's any broken down Robots
@@ -229,10 +274,6 @@ int ScrapMan::Think()
             d_breakCharge = 0;
             return IDLE;
         }
-        else
-        {
-            return BREAK;
-        }
     }
 
     return -1;
@@ -247,6 +288,15 @@ void ScrapMan::Act(int value)
         b_reachedDestination = false;
         d_timerCounter = 0.0;
 
+        // pathfind to workstation
+        m_pathfinder->EmptyPath();
+        m_pathfinder->ReceiveCurrentPos(Vector3(14, 14, m_pos.z));
+        m_pathfinder->ReceiveDestination(m_origSpawn);
+        m_pathfinder->FindPathGreedyBestFirst();
+
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+        SetDirection(CheckDirection(m_vel));
+
         break;
 
     case COLLECT_ROBOT:
@@ -254,6 +304,7 @@ void ScrapMan::Act(int value)
                           SetState(COLLECT_ROBOT);
 
                           // Pathfind to the shutdown robot
+                          m_pathfinder->EmptyPath();
                           m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
                           Vector3 pos = m_robotToPickUp->GetPos();
                           m_pathfinder->ReceiveDestination(Vector3(RoundOff(pos.x), RoundOff(pos.y), pos.z));
@@ -282,19 +333,17 @@ void ScrapMan::Act(int value)
 
     case BREAK:
         SetState(BREAK);
-        if (m_toilet->CheckIfChange())
-            m_toiletIdx = Math::Max(--m_toiletIdx, 0);
+        b_reachedDestination = false;
+        //DoBreak();
 
-        if (d_timerCounter > 4)
-        {
-            d_breakCharge = 0;
-            m_breakDone = true;
-            d_timerCounter = 0;
-            m_toilet->RemoveFromQueue();
-            std::cout << "POPPED" << std::endl;
+        // pathfind to toilet
+        m_pathfinder->EmptyPath();
+        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+        m_pathfinder->ReceiveDestination(m_toilet->GetPos());
+        m_pathfinder->FindPathGreedyBestFirst();
 
-            m_toilet->SetOccupied(false);
-        }
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+        SetDirection(CheckDirection(m_vel));
         break;
     }
 }
@@ -333,4 +382,21 @@ void ScrapMan::SetToilet(Toilet* toilet)
 Toilet* ScrapMan::GetToilet()
 {
     return m_toilet;
+}
+
+void ScrapMan::DoBreak()
+{
+    if (m_toilet->CheckIfChange())
+        m_toiletIdx = Math::Max(--m_toiletIdx, 0);
+
+    if (d_timerCounter > 4)
+    {
+        d_breakCharge = 0;
+        m_breakDone = true;
+        d_timerCounter = 0;
+        m_toilet->RemoveFromQueue();
+        //std::cout << "POPPED" << std::endl;
+
+        m_toilet->SetOccupied(false);
+    }
 }

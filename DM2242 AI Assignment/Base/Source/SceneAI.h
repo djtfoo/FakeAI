@@ -37,9 +37,6 @@ public:
 
     // Machine pointer for debug info
     Machine* debugMachine;
-
-protected:
-    Pathfinder pathfinderTest;
 };
 
 #endif

@@ -93,8 +93,8 @@ void Application::Init()
 	//m_height = mode->height;
 	//m_width = mode->width;
 	
-    m_width = 800;
-	m_height = 600;
+    m_width = 1000;
+	m_height = 800;
 	m_window = glfwCreateWindow(m_width, m_height, "Robotopia", NULL, NULL);
 
 	//If the window couldn't be created

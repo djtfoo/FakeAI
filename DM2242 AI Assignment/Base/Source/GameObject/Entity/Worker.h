@@ -32,6 +32,7 @@ private:
     Toilet* m_toilet;
 
     Pathfinder* m_pathfinder;
+    bool b_reachedDestination;
 
     WORKER_STATE m_state;
 
@@ -66,9 +67,11 @@ public:
     void SetToilet(Toilet* toilet);
     Toilet* GetToilet();
 
-    double GetBreakCharge();
-
     double m_timer;
+
+    // Getters
+    double GetBreakCharge();
+    Pathfinder* GetPathfinder();
 };
 
 #endif

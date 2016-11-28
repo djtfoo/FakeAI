@@ -64,6 +64,10 @@ public:
     void SetState(ROBOT_STATE state);
     virtual int GetStateInt();
     virtual int GetMaxStates();
+
+    // Getters
+    double GetLifetime();
+    Pathfinder* GetPathfinder();
 };
 
 #endif

@@ -294,3 +294,13 @@ int Robot::GetMaxStates()
 {
     return ROBOT_STATES_TOTAL;
 }
+
+double Robot::GetLifetime()
+{
+    return m_lifetime;
+}
+
+Pathfinder* Robot::GetPathfinder()
+{
+    return m_pathfinder;
+}

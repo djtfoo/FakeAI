@@ -111,7 +111,10 @@ void MeshList::Init()
     meshList[GEO_TEXT]->LoadFontData("Image//Fonts/FontData_FFF Forward.csv");
     meshList[GEO_TEXT]->material.kAmbient.Set(1, 0, 0);
 
-    meshList[GEO_PATHFINDING_NODE] = MeshBuilder::GenerateQuad("pathfinding node", Color(1, 1, 1), 0.3f);
+    meshList[GEO_PATHFINDING_NODE] = MeshBuilder::GenerateQuad("pathfinding node", Color(1, 1, 1), 0.25f);
+
+    meshList[GEO_HIGHLIGHTBOX] = MeshBuilder::GenerateQuad("highlight box", Color(1, 1, 1));
+    meshList[GEO_HIGHLIGHTBOX]->textureID = LoadTGA("Image//highlight_box.tga");
 }
 
 void MeshList::Exit()

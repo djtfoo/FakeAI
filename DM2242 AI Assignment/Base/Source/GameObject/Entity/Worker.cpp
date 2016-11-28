@@ -8,10 +8,14 @@ Worker::Worker() : Entity("Worker")
 
 Worker::~Worker()
 {
+    if (m_pathfinder)
+        delete m_pathfinder;
 }
 
 void Worker::Init()
 {
+    m_pathfinder = new Pathfinder();
+
     m_state = IDLE;
     m_timer = 0;
     m_breakCharge = Math::RandFloatMinMax(-1000, 1000);
@@ -34,23 +38,14 @@ void Worker::SetPos(Vector3 pos)
 
 void Worker::Update(double dt)
 {
-	switch (m_state)
-	{
-	case IDLE:
-		break;
-
-	case WORK:
-		break;
-	}
-
     if (m_state == BREAK)
     {
-        if ((m_pos - m_toilet->GetPos()).Length() < 3)
+        if ((m_pos - m_toilet->GetPos()).Length() < 4)  // within toilet range
         {
             if (!m_doOnce && m_state == BREAK)
             {
                 m_toiletIdx = m_toilet->AddToQueue(this);
-                std::cout << "ADDED" << std::endl;
+                //std::cout << "ADDED" << std::endl;
                 m_doOnce = true;
             }
 
@@ -62,8 +57,31 @@ void Worker::Update(double dt)
         }
         else
         {
-            Vector3 dir = (m_toilet->GetPos() - m_pos).Normalized();
-            m_pos += dir * dt;
+            //pathfind to toilet
+
+            m_pos += m_vel * dt;
+            if (m_pathfinder->hasReachedNode(this->m_pos))
+            {
+                // reached destination; can get a part and move on.
+                if (m_pathfinder->hasReachedDestination(this->m_pos))
+                {
+                    m_pathfinder->foundPath.pop_back();
+
+                    m_vel.SetZero();
+
+                    b_reachedDestination = true;
+                }
+                else
+                {
+                    m_pathfinder->foundPath.pop_back();
+
+                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+                    SetDirection(CheckDirection(m_vel));
+                }
+            }
+
+            //Vector3 dir = (m_toilet->GetPos() - m_pos).Normalized();
+            //m_pos += dir * dt;
         }
 
         if ((m_pos - m_toilet->GetPos()).Length() < 0.1)
@@ -79,12 +97,35 @@ void Worker::Update(double dt)
     {
         if ((m_origSpawn - m_pos).Length() > 0.1)
         {
-            Vector3 dir = (m_origSpawn - m_pos);
+            // pathfind to workstation
+            m_pos += m_vel * dt;
+            if (m_pathfinder->hasReachedNode(this->m_pos))
+            {
+                // reached destination; can get a part and move on.
+                if (m_pathfinder->hasReachedDestination(this->m_pos))
+                {
+                    m_pathfinder->foundPath.pop_back();
 
-            if (!dir.IsZero())
-                dir.Normalize();
+                    m_vel.SetZero();
 
-            m_pos += dir * dt;
+                    b_reachedDestination = true;
+                }
+                else
+                {
+                    m_pathfinder->foundPath.pop_back();
+
+                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+                    SetDirection(CheckDirection(m_vel));
+                }
+            }
+
+            //Vector3 dir = (m_origSpawn - m_pos);
+            //
+            //if (!dir.IsZero())
+            //    dir.Normalize();
+            //
+            //m_pos += dir * dt;
+
 
             if ((m_pos - m_origSpawn).Length() < 0.1)
             {
@@ -92,6 +133,22 @@ void Worker::Update(double dt)
                 m_doOnce = false;
             }
         }
+    }
+
+
+    switch (m_state)
+    {
+    case IDLE:
+        DoIdle();
+        break;
+
+    case WORK:
+        DoWork();
+        break;
+
+    case BREAK:
+        DoBreak();
+        break;
     }
 }
 
@@ -122,8 +179,6 @@ int Worker::Think()
             return BREAK;
         else if (IsAbleToWork())
             return WORK;
-        else
-            return IDLE;
 
         break;
 
@@ -135,8 +190,6 @@ int Worker::Think()
             m_workCompleted = false;
             return IDLE;
         }
-        else
-            return WORK;
         break;
 
     case BREAK:
@@ -146,8 +199,6 @@ int Worker::Think()
             m_breakCharge = 0;
             return IDLE;
         }
-        else
-            return BREAK;
         break;
       
     
@@ -162,17 +213,38 @@ void Worker::Act(int value)
     {
     case IDLE:
         SetState(IDLE);
-        DoIdle();
+        b_reachedDestination = false;
+        //DoIdle();
+
+        // pathfind to workstation
+        m_pathfinder->EmptyPath();
+        m_pathfinder->ReceiveCurrentPos(Vector3(14, 14, m_pos.z));
+        m_pathfinder->ReceiveDestination(m_origSpawn);
+        m_pathfinder->FindPathGreedyBestFirst();
+
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+        SetDirection(CheckDirection(m_vel));
         break;
 
     case WORK:
         SetState(WORK);
-        DoWork();
+        //DoWork();
+        SetDirection(CheckDirection(this->m_pos, m_workstation->GetPos()));
         break;
 
     case BREAK:
         SetState(BREAK);
-        DoBreak();
+        b_reachedDestination = false;
+        //DoBreak();
+
+        // pathfind to toilet
+        m_pathfinder->EmptyPath();
+        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+        m_pathfinder->ReceiveDestination(m_toilet->GetPos());
+        m_pathfinder->FindPathGreedyBestFirst();
+
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+        SetDirection(CheckDirection(m_vel));
         break;
     }
 }
@@ -188,6 +260,8 @@ void Worker::DoIdle()
     {
         m_atWorkstation = false;
     }
+
+    SetDirection(DIR_DOWN);
 }
 
 void Worker::DoWork()
@@ -246,7 +320,7 @@ void Worker::DoBreak()
         m_breakDone = true;
         m_timer = 0;
         m_toilet->RemoveFromQueue();
-        std::cout << "POPPED" << std::endl;
+        //std::cout << "POPPED" << std::endl;
         
         m_toilet->SetOccupied(false);
     }
@@ -336,4 +410,9 @@ Toilet* Worker::GetToilet()
 double Worker::GetBreakCharge()
 {
     return m_breakCharge;
+}
+
+Pathfinder* Worker::GetPathfinder()
+{
+    return m_pathfinder;
 }

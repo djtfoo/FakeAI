@@ -91,7 +91,6 @@ void DeliveryMan::Update(double dt)
         }
 
         m_deliveryTruck->SetPos(m_pos);
-        std::cout << "Position: " << m_deliveryTruck->GetPos() << std::endl;
         break;
 
     case WALK:
@@ -296,4 +295,9 @@ Ornament* DeliveryMan::GetOrnamentToCollect()
     }
 
     return NULL;    // no ornament to collect
+}
+
+Pathfinder* DeliveryMan::GetPathfinder()
+{
+    return m_pathfinder;
 }

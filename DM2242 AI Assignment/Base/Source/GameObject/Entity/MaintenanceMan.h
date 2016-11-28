@@ -16,6 +16,7 @@ public:
         REPAIR,
         REFILL,
         BREAK,
+
         MAINTENANCEMAN_STATES_TOTAL
     };
 
@@ -26,6 +27,9 @@ private:
     MAINTENANCEMAN_STATE m_state;
 
     Machine* m_targetMachine;
+
+    Pathfinder* m_pathfinder;
+    bool b_reachedDestination;
 
     bool m_doingWork;
     bool m_breakDone;
@@ -65,7 +69,9 @@ public:
     void SetToilet(Toilet* toilet);
     Toilet* GetToilet();
 
+    // Getters
     double GetBreakCharge();
+    Pathfinder* GetPathfinder();
 };
 
 #endif

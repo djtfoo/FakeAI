@@ -65,6 +65,8 @@ public:
     // Toilet 
     void SetToilet(Toilet* toilet);
     Toilet* GetToilet();
+
+    void DoBreak();
 };
 
 #endif

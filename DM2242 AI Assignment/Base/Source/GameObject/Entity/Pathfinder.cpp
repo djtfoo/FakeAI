@@ -247,14 +247,10 @@ void Pathfinder::FindPathGreedyBestFirst()
 
     // reconstruct path
     // puh Nodes along path
-    std::cout << "Found Path: " << std::endl;
     for (Node* curr = currentNode; curr != NULL; curr = curr->parent)
     {
         foundPath.push_back(Node(curr->row, curr->col));
-
-        std::cout << "Coord[" << curr->col << "," << curr->row << "]" << std::endl;
     }
-    std::cout << std::endl;
 
     //foundPath.pop_back();   // the starting Node unnecessary
 
@@ -263,16 +259,18 @@ void Pathfinder::FindPathGreedyBestFirst()
     // clear openList Nodes
     while (!openList.empty())
     {
-        if (openList.back() != 0)
-            delete openList.back();
+        Node* node = openList.back();
+        if (node != NULL)
+            delete node;
         openList.pop_back();
     }
 
     // clear closedList Nodes
     while (!closedList.empty())
     {
-        if (closedList.back() != 0)
-            delete closedList.back();
+        Node* node = closedList.back();
+        if (node != NULL)
+            delete node;
         closedList.pop_back();
     }
 }
