@@ -27,6 +27,8 @@ FEATURES
 CONTROLS
 
 TAB - Toggle debug info on/off
+LEFT - Toggle backwards through list of GameObjects
+RIGHT - Toggle forward through list of GameObjects
 
 
 

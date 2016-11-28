@@ -66,6 +66,9 @@ void SceneBase::Init()
 	// Get a handle for our "textColor" uniform
 	m_parameters[U_TEXT_ENABLED] = glGetUniformLocation(m_programID, "textEnabled");
 	m_parameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
+
+    // for highlighting selected objects
+    m_parameters[U_HIGHLIGHTED] = glGetUniformLocation(m_programID, "highlighted");
 	
 	// Use our shader
 	glUseProgram(m_programID);
@@ -94,6 +97,9 @@ void SceneBase::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSCUTOFF], lights[0].cosCutoff);
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], lights[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], lights[0].exponent);
+
+    // for highlighting selected objects
+    glUniform1i(m_parameters[U_HIGHLIGHTED], 0);
 
 	camera.Init(Vector3(0, 0, 1), Vector3(0, 0, 0), Vector3(0, 1, 0));
 

@@ -37,6 +37,10 @@ void SceneAI::Init()
     // Initialise shared variables
     SharedData::GetInstance()->Init();
 
+    b_renderDebugInfo = true;
+    index_renderDebugInfo = 0;
+    d_keypressTimer = 0.0;
+
     //===================
     // Create GameObjects
     //===================
@@ -324,6 +328,37 @@ void SceneAI::Update(double dt)
 {
 	SceneBase::Update(dt);
 
+    d_keypressTimer += dt;
+
+    if (d_keypressTimer > 0.2)
+    if (Application::IsKeyPressed(VK_TAB))
+    {
+        b_renderDebugInfo = !b_renderDebugInfo;
+        d_keypressTimer = 0.0;
+    }
+    else if (Application::IsKeyPressed(VK_LEFT) && b_renderDebugInfo)
+    {
+        do {
+            --index_renderDebugInfo;
+            if (index_renderDebugInfo == -1) {
+                index_renderDebugInfo = SharedData::GetInstance()->m_goList.size() - 1;
+            }
+        } while (!SharedData::GetInstance()->m_goList[index_renderDebugInfo]->IsActive());
+
+        d_keypressTimer = 0.0;
+    }
+    else if (Application::IsKeyPressed(VK_RIGHT) && b_renderDebugInfo)
+    {
+        do {
+            ++index_renderDebugInfo;
+            if (index_renderDebugInfo == SharedData::GetInstance()->m_goList.size()) {
+                index_renderDebugInfo = 0;
+            }
+        } while (!SharedData::GetInstance()->m_goList[index_renderDebugInfo]->IsActive());
+
+        d_keypressTimer = 0.0;
+    }
+
     for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
     {
         GameObject* go = SharedData::GetInstance()->m_goList[i];
@@ -390,9 +425,14 @@ void SceneAI::Render()
 
     RenderBackground();
 
-    for (std::vector<GameObject*>::iterator it = SharedData::GetInstance()->m_goList.begin(); it != SharedData::GetInstance()->m_goList.end(); ++it)
+    //for (std::vector<GameObject*>::iterator it = SharedData::GetInstance()->m_goList.begin(); it != SharedData::GetInstance()->m_goList.end(); ++it)
+    //{
+    for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
     {
-        GameObject *go = (GameObject *)*it;
+        GameObject *go = SharedData::GetInstance()->m_goList[i];
+        if (i == index_renderDebugInfo && b_renderDebugInfo)
+            glUniform1i(m_parameters[U_HIGHLIGHTED], 1);
+
         if (go->IsActive())
         {
             // Special Case for conveyor belt
@@ -453,9 +493,17 @@ void SceneAI::Render()
             
             RenderGO(go);
         }
+
+        if (i == index_renderDebugInfo)
+            glUniform1i(m_parameters[U_HIGHLIGHTED], 0);
     }
 
-    RenderDebugInfo();
+    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "ROBOTOPIA", Color(0, 0, 0), 4, 0, 56);
+
+    if (b_renderDebugInfo)
+    {
+        RenderDebugInfo();
+    }
 
     /*// pathfinder test
     modelStack.PushMatrix();
@@ -492,7 +540,20 @@ void SceneAI::Render()
 
 void SceneAI::RenderDebugInfo()
 {
-    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "ROBOTOPIA", Color(0, 0, 0), 4, 0, 56);
+    // GENERIC INFO
+    std::stringstream ss;
+
+    //grid info
+    ss << "Grid: " << SharedData::GetInstance()->m_gridMap->GetRows() << " x " << SharedData::GetInstance()->m_gridMap->GetColumns();
+    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 3, 50, 57);
+
+
+    // SPECIFIC INFO
+
+    // name
+    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT),
+        "Viewing: " + SharedData::GetInstance()->m_goList[index_renderDebugInfo]->GetName(),
+        Color(0, 0, 0), 3, 0, 0);
 }
 
 void SceneAI::Exit()

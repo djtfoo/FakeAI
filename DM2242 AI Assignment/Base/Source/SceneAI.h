@@ -10,6 +10,11 @@
 
 class SceneAI : public SceneBase
 {
+private:
+    bool b_renderDebugInfo;
+    int index_renderDebugInfo;
+    double d_keypressTimer;
+
 public:
 	SceneAI();
 	~SceneAI();

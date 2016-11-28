@@ -61,6 +61,9 @@ uniform sampler2D colorTexture;
 uniform bool textEnabled;
 uniform vec3 textColor;
 
+// for highlighting
+uniform bool highlighted;
+
 void main(){
 	if(lightEnabled == true)
 	{
@@ -129,4 +132,9 @@ void main(){
 	
 	if (color.w == 0.f)
 		discard;
+		
+	else if (highlighted)
+	{
+		color = 0.5f * (color + vec4(1, 1, 0, 0.5));
+	}
 }
