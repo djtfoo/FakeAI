@@ -255,9 +255,6 @@ void Machine::SetIsBroken(bool status)
 void Machine::SetIsEmpty(bool status)
 {
     m_isEmpty = status;
-
-	// Debug, refill scrap
-	m_scrapQuantity = m_maxScrapQuantity;
 }
 
 Machine::MACHINE_STATE Machine::GetState()

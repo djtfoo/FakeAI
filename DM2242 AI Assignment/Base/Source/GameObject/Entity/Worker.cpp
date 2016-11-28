@@ -14,7 +14,7 @@ void Worker::Init()
 {
     m_state = IDLE;
     m_timer = 0;
-	m_breakCharge = 0;
+    m_breakCharge = Math::RandFloatMinMax(-1000, 1000);
     m_workCompleted = false;
     m_atWorkstation = true;
     m_breakDone = false;

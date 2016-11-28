@@ -12,7 +12,7 @@ MaintenanceMan::~MaintenanceMan()
 
 void MaintenanceMan::Init()
 {
-    m_breakCharge = 0;
+    m_breakCharge = Math::RandFloatMinMax(-1000, 1000);
     m_timer = 0;
     m_state = IDLE;
     m_targetMachine = NULL;
@@ -20,7 +20,7 @@ void MaintenanceMan::Init()
     m_breakDone = false;
     m_inToilet = false;
     m_doOnce = false;
-    m_toiletIdx = 0;
+    m_toiletIdx = -1;
     
     m_toilet = NULL;
 }
@@ -38,11 +38,11 @@ void MaintenanceMan::Update(double dt)
         // Check if toilet is close, if so add to queue and walk to it
         if ((m_pos - m_toilet->GetPos()).Length() < 3)
         {
-            if (!m_doOnce && m_state == BREAK)
+            if (m_toiletIdx < 0)
             {
                 m_toiletIdx = m_toilet->AddToQueue(this);
                 std::cout << "ADDED" << std::endl;
-                m_doOnce = true;
+                //m_doOnce = true;
             }
 
             Vector3 dir = (m_toilet->GetQueuePosition(m_toiletIdx) - m_pos).Normalized();
@@ -126,7 +126,7 @@ int MaintenanceMan::Think()
         temp.y -= 1;
 
         // Check if at workstation
-        if ((m_pos - temp).Length() < 1.001)
+        if ((m_pos - temp).Length() < 1.2)
         {
             return ScanMachines();
         }
@@ -140,6 +140,7 @@ int MaintenanceMan::Think()
     case REFILL:
         if (m_targetMachine && !m_targetMachine->IsEmpty())
         {
+            m_targetMachine->SetIsBeingWorkedOn(false);
             m_targetMachine = NULL;
             m_doingWork = false;
             return IDLE;
@@ -153,6 +154,7 @@ int MaintenanceMan::Think()
     case REPAIR:
         if (m_targetMachine && !m_targetMachine->IsBroken())
         {
+            m_targetMachine->SetIsBeingWorkedOn(false);
             m_targetMachine = NULL;
             m_doingWork = false;
             return IDLE;
