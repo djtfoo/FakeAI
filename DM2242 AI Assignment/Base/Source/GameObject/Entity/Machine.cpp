@@ -67,7 +67,7 @@ void Machine::Sense(double dt)
 
 	if (m_state == PRODUCTION)
 	{
-		m_overheatCharge += dt * 0.85;
+		m_overheatCharge += dt * 0.7;
 		m_overheatTimer += dt;
 	}
 }

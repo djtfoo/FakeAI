@@ -78,6 +78,8 @@ void Robot::Update(double dt)
                 // reached destination; can get a part and move on.
                 if (m_pathfinder->hasReachedDestination(this->m_pos))
                 {
+                    m_pos = m_pathfinder->foundPath.back().GetPosition();
+
                     m_pathfinder->foundPath.pop_back();
 
                     m_vel.SetZero();
@@ -87,6 +89,8 @@ void Robot::Update(double dt)
                 }
                 else
                 {
+                    m_pos = m_pathfinder->foundPath.back().GetPosition();
+
                     m_pathfinder->foundPath.pop_back();
 
                     SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()) );
@@ -105,6 +109,8 @@ void Robot::Update(double dt)
                 // reached destination; can get a part and move on.
                 if (m_pathfinder->hasReachedDestination(this->m_pos))
                 {
+                    m_pos = m_pathfinder->foundPath.back().GetPosition();
+
                     m_pathfinder->foundPath.pop_back();
 
                     m_vel.SetZero();
@@ -114,6 +120,8 @@ void Robot::Update(double dt)
                 }
                 else
                 {
+                    m_pos = m_pathfinder->foundPath.back().GetPosition();
+
                     m_pathfinder->foundPath.pop_back();
 
                     SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()) );
@@ -169,7 +177,11 @@ int Robot::Think()
     {
     case STARTUP:
         if (m_lifetime >= 3.0)
+        {
+            m_pos = m_beltToFollow->GetNextCheckpoint(m_currWaypoint);
+            m_pathfinder->EmptyPath();
             return WORK_WITHOUTPART;
+        }
         break;
 
     case WORK_WITHOUTPART:
@@ -256,7 +268,7 @@ void Robot::Act(int value)
         b_ornamentCompleted = false;
         m_vel.SetZero();
 
-        //m_pathfinder->EmptyPath();
+        m_pathfinder->EmptyPath();
         break;
 
     case SHUTDOWN:

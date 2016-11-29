@@ -31,7 +31,7 @@ bool Pathfinder::hasReachedNode(const Vector3& pos)
 {
     std::vector<Node>::iterator it = foundPath.end() - 1;
 
-    if ((it->GetPosition() - pos).Length() < 0.1)
+    if ((it->GetPosition() - pos).Length() < 0.03)
         return true;
 
     return false;

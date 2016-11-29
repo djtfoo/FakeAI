@@ -68,6 +68,8 @@ void Worker::Update(double dt)
                 // reached destination; can get a part and move on.
                 if (m_pathfinder->hasReachedDestination(this->m_pos))
                 {
+                    m_pos = m_pathfinder->foundPath.back().GetPosition();
+
                     m_pathfinder->foundPath.pop_back();
 
                     m_vel.SetZero();
@@ -76,6 +78,8 @@ void Worker::Update(double dt)
                 }
                 else
                 {
+                    m_pos = m_pathfinder->foundPath.back().GetPosition();
+
                     m_pathfinder->foundPath.pop_back();
 
                     SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
@@ -107,6 +111,8 @@ void Worker::Update(double dt)
                 // reached destination; can get a part and move on.
                 if (m_pathfinder->hasReachedDestination(this->m_pos))
                 {
+                    m_pos = m_pathfinder->foundPath.back().GetPosition();
+
                     m_pathfinder->foundPath.pop_back();
 
                     m_vel.SetZero();
@@ -115,6 +121,8 @@ void Worker::Update(double dt)
                 }
                 else
                 {
+                    m_pos = m_pathfinder->foundPath.back().GetPosition();
+
                     m_pathfinder->foundPath.pop_back();
 
                     SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
@@ -278,7 +286,8 @@ void Worker::DoIdle()
         m_atWorkstation = false;
     }
 
-    SetDirection(DIR_DOWN);
+    if (m_atWorkstation)
+        SetDirection(DIR_DOWN);
 }
 
 void Worker::DoWork()
