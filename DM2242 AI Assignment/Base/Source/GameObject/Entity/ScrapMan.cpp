@@ -55,7 +55,7 @@ void ScrapMan::Update(double dt)
         // Move back to orig pos
         if ((m_origSpawn - m_pos).Length() > 0.1)
         {
-            //m_atWorkstation = false;
+            m_atWorkstation = false;
             //Vector3 dir = (m_origSpawn - m_pos);
             //
             //if (!dir.IsZero())
@@ -263,7 +263,7 @@ int ScrapMan::Think()
         m_robotToPickUp->SetInactive();
         m_robotToPickUp = NULL;
         m_pile->SetScrapQuantity(m_pile->GetScrapQuantity() + 1);
-        return IDLE;
+        return 5;
     }
 
     if (m_state == IDLE && d_breakCharge > 2000)
@@ -319,6 +319,7 @@ void ScrapMan::Act(int value)
     case COLLECT_ROBOT:
     {
                           SetState(COLLECT_ROBOT);
+                          b_reachedDestination = false;
                           b_gotRobot = false;
 
                           // Pathfind to the shutdown robot
@@ -363,6 +364,16 @@ void ScrapMan::Act(int value)
 
         SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
         SetDirection(CheckDirection(m_vel));
+        break;
+
+    case 5:
+        SetState(IDLE);
+        SetDirection(DIR_DOWN);
+        b_reachedDestination = false;
+        b_gotRobot = false;
+        b_breakingDownRobot = false;
+        m_atWorkstation = true;
+        d_timerCounter = 0.0;
         break;
     }
 }

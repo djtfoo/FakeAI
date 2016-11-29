@@ -971,19 +971,19 @@ void SceneAI::RenderDebugInfo()
             break;
         }
 
-        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State: " + stateStr, Color(0, 0, 0), 2, 22, 0);
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State:" + stateStr, Color(0, 0, 0), 2, 20, 0);
 
         // Holding on to Robot
         //if (scrapman->GetState() == ScrapMan::COLLECT_ROBOT || scrapman->GetState() == ScrapMan::BREAKDOWN_ROBOT)   // working
         //{
             std::stringstream ss;
 
-            ss << "Holding Robot: ";
+            ss << "Got Robot:";
             if (scrapman->GotRobot())
                 ss << "Yes";
             else
                 ss << "No";
-            RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 34, 0);
+            RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 36, 0);
 
             if (scrapman->IsBreakingRobot())
             {

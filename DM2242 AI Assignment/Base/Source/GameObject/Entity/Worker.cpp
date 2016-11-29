@@ -163,11 +163,14 @@ void Worker::Sense(double dt)
         m_timer += dt;
     else if (m_state == IDLE)
     {
-        m_timer += dt;
-        if (m_timer > 1)
+        if (m_atWorkstation)
         {
-            m_timer = 0;
-            m_breakCharge += Math::RandFloatMinMax(0, 200);
+            m_timer += dt;
+            if (m_timer > 1)
+            {
+                m_timer = 0;
+                m_breakCharge += Math::RandFloatMinMax(0, 200);
+            }
         }
     }
 }

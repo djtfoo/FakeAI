@@ -213,7 +213,10 @@ void Pathfinder::FindPathGreedyBestFirst()
         }
 
         if (!b_pathNotFound)     // path has been found, can stop here
+        {
+            closedList.push_back(currentNode);
             break;      // out of while loop
+        }
 
 
         // "best" Node (Node with lowest F Value)
@@ -254,8 +257,8 @@ void Pathfinder::FindPathGreedyBestFirst()
 
     //foundPath.pop_back();   // the starting Node unnecessary
 
-    delete currentNode;
-    currentNode = NULL;
+    //delete currentNode;
+    //currentNode = NULL;
 
     // clear openList Nodes
     while (!openList.empty())
