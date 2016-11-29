@@ -240,7 +240,7 @@ void DeliveryMan::Act(int value)
                             m_ornamentToCollect->RemoveOrnament();
 
                             // Pathfind to the delivery truck
-                            m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+                            m_pathfinder->ReceiveCurrentPos(this->m_pos);
                             Vector3 pos = m_deliveryTruck->GetPos();
                             m_pathfinder->ReceiveDestination(Vector3(RoundOff(pos.x), RoundOff(pos.y), pos.z));
                             m_pathfinder->FindPathGreedyBestFirst();

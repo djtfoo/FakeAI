@@ -112,6 +112,7 @@ void MeshList::Init()
     meshList[GEO_TEXT]->material.kAmbient.Set(1, 0, 0);
 
     meshList[GEO_PATHFINDING_NODE] = MeshBuilder::GenerateQuad("pathfinding node", Color(1, 1, 1), 0.25f);
+    meshList[GEO_PATHFINDING_NODE]->textureID = LoadTGA("Image//node.tga");
 
     meshList[GEO_HIGHLIGHTBOX] = MeshBuilder::GenerateQuad("highlight box", Color(1, 1, 1));
     meshList[GEO_HIGHLIGHTBOX]->textureID = LoadTGA("Image//highlight_box.tga");

@@ -31,6 +31,8 @@ Vector3 ConveyorBelt::GetNextCheckpoint(int currIdx)
 
 Vector3 ConveyorBelt::GetCheckpoint(int Idx)
 {
-	if (Idx < m_Checkpoints.size())
-		return m_Checkpoints[Idx];
+    if (Idx < m_Checkpoints.size())
+        return m_Checkpoints[Idx];
+    else
+        return Vector3(0, 0, 0);
 }

@@ -164,7 +164,7 @@ void Worker::Sense(double dt)
         if (m_timer > 1)
         {
             m_timer = 0;
-            m_breakCharge += Math::RandFloatMinMax(0, 200);
+            //m_breakCharge += Math::RandFloatMinMax(0, 200);
         }
     }
 }

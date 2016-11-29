@@ -72,6 +72,7 @@ public:
     // Getters
     double GetBreakCharge();
     Pathfinder* GetPathfinder();
+    Machine* GetTargetMachine();
 };
 
 #endif

@@ -484,3 +484,8 @@ Pathfinder* MaintenanceMan::GetPathfinder()
 {
     return m_pathfinder;
 }
+
+Machine* MaintenanceMan::GetTargetMachine()
+{
+    return m_targetMachine;
+}

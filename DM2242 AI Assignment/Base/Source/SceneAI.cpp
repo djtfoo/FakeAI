@@ -37,7 +37,7 @@ void SceneAI::Init()
     // Initialise shared variables
     SharedData::GetInstance()->Init();
 
-    b_renderDebugInfo = true;
+    b_renderDebugInfo = false;
     index_renderDebugInfo = 0;
     d_keypressTimer = 0.0;
 
@@ -537,10 +537,35 @@ void SceneAI::RenderDebugInfo()
 
     //grid info
     ss << "Grid: " << SharedData::GetInstance()->m_gridMap->GetRows() << " x " << SharedData::GetInstance()->m_gridMap->GetColumns();
-    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 3, 50, 57);
+    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2.5, 30, 57.5);
+
+    //fps
+    ss.str("");
+    ss << "FPS: " << fps;
+    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2.5, 55, 57.5);
 
 
     // SPECIFIC INFO
+
+    //CONVEYOR BELT
+    if (SharedData::GetInstance()->m_goList[index_renderDebugInfo]->GetName() == "ConveyorBelt")
+    {
+        ConveyorBelt* conveyorbelt = dynamic_cast<ConveyorBelt*>(SharedData::GetInstance()->m_goList[index_renderDebugInfo]);
+
+        // Render Waypoints
+        Vector3 waypointPos;
+        int idx = 0;
+
+        for (int idx = 0; idx < conveyorbelt->m_Checkpoints.size(); ++idx)
+        {
+            waypointPos = conveyorbelt->GetCheckpoint(idx);
+            modelStack.PushMatrix();
+            modelStack.Translate(waypointPos.x, waypointPos.y, 0.5f);
+            RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
+            modelStack.PopMatrix();
+        }
+
+    }
 
     //MACHINE
     if (SharedData::GetInstance()->m_goList[index_renderDebugInfo]->GetName() == "Machine")
@@ -672,6 +697,16 @@ void SceneAI::RenderDebugInfo()
         {
             if (!pathfinder->IsPathEmpty())
             {
+                if (maintenanceman->GetTargetMachine() != NULL)
+                {
+                    // destination machine
+                    modelStack.PushMatrix();
+                    modelStack.Translate(pathfinder->foundPath.begin()->GetPosition().x, pathfinder->foundPath.begin()->GetPosition().y, 0.5f);
+                    RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_HIGHLIGHTBOX), false);
+                    modelStack.PopMatrix();
+                }
+
+                // nodes
                 for (std::vector<Node>::iterator it = pathfinder->foundPath.begin(); it != pathfinder->foundPath.end(); ++it)
                 {
                     modelStack.PushMatrix();
@@ -831,6 +866,23 @@ void SceneAI::RenderDebugInfo()
             }
         }   // end of pathfinder
 
+        if (robot->GetState() == Robot::WORK_WITHOUTPART && !pathfinder->IsPathEmpty())
+        {
+            Vector3 stackPos = pathfinder->foundPath.begin()->GetPosition() + Vector3(0, 1, 0);
+            modelStack.PushMatrix();
+            modelStack.Translate(stackPos.x, stackPos.y, 0.5f);
+            RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_HIGHLIGHTBOX), false);
+            modelStack.PopMatrix();
+        }
+        else if (robot->GetState() == Robot::WORK_WITHPART && !pathfinder->IsPathEmpty())
+        {
+            Vector3 ornamentPos = pathfinder->foundPath.begin()->GetPosition() + Vector3(0, -1, 0);
+            modelStack.PushMatrix();
+            modelStack.Translate(ornamentPos.x, ornamentPos.y, 0.5f);
+            RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_HIGHLIGHTBOX), false);
+            modelStack.PopMatrix();
+        }
+
     }
 
     //DELIVERY MAN
@@ -860,17 +912,6 @@ void SceneAI::RenderDebugInfo()
         }
 
         RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State: " + stateStr, Color(0, 0, 0), 2, 30, 0);
-
-        // Show ornament to be collected
-        if (deliveryman->GetState() == DeliveryMan::WALK)
-        {
-            Vector3 ornamentPos = deliveryman->GetOrnamentToCollect()->GetPos();
-
-            modelStack.PushMatrix();
-            modelStack.Translate(ornamentPos.x, ornamentPos.y, 1);
-            RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_HIGHLIGHTBOX), false);
-            modelStack.PopMatrix();
-        }
 
         Pathfinder* pathfinder = deliveryman->GetPathfinder();
         if (pathfinder)
