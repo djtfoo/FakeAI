@@ -17,6 +17,10 @@ void Robot::Init()
 
     m_lifetime = 0.0;
     d_timerCounter = 0.0;
+
+    d_timerForShutDown = 0.0;
+    b_toShutDown = false;
+
     b_reachedDestination = false;
 
 	m_currWaypoint = 0;
@@ -144,6 +148,19 @@ void Robot::Sense(double dt)
     {
         b_ornamentCompleted = true;
     }
+
+    if (m_lifetime >= 57.0)
+    {
+        d_timerForShutDown += dt;
+        if (d_timerForShutDown >= 3.0)
+        {
+            d_timerForShutDown = 0.0;
+
+            int randVal = Math::RandIntMinMax(60, 100);
+            if (randVal < m_lifetime)
+                b_toShutDown = true;
+        }
+    }
 }
 
 int Robot::Think()
@@ -156,7 +173,7 @@ int Robot::Think()
         break;
 
     case WORK_WITHOUTPART:
-        if (m_lifetime >= 60.0)    // change to Markov
+        if (b_toShutDown)    // change to Markov
             return SHUTDOWN;
 
         if (d_timerCounter >= 0.5)
@@ -167,7 +184,7 @@ int Robot::Think()
         break;
 
     case WORK_WITHPART:
-        if (m_lifetime >= 60.0)    // change to Markov
+        if (b_toShutDown)    // change to Markov
             return SHUTDOWN;
 
         if (d_timerCounter >= 0.5)
@@ -181,7 +198,7 @@ int Robot::Think()
         break;
 
     case CHEER:
-        if (m_lifetime >= 60.0)    // change to Markov
+        if (b_toShutDown)    // change to Markov
             return SHUTDOWN;
 
         if (d_timerCounter >= 5.0)
@@ -245,6 +262,8 @@ void Robot::Act(int value)
     case SHUTDOWN:
         SetState(SHUTDOWN);
         m_vel.SetZero();
+
+        b_toShutDown = false;
         break;
     }
 }

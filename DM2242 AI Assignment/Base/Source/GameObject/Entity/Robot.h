@@ -26,6 +26,9 @@ public:
 private:
     double m_lifetime;
     double d_timerCounter;  // used for a pause when facing objects, as well as for cheer
+
+    double d_timerForShutDown;
+    bool b_toShutDown;
     
     //bool b_reachedLane; // maybe
     bool b_reachedDestination;

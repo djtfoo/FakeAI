@@ -255,13 +255,17 @@ void Pathfinder::FindPathGreedyBestFirst()
     //foundPath.pop_back();   // the starting Node unnecessary
 
     delete currentNode;
+    currentNode = NULL;
 
     // clear openList Nodes
     while (!openList.empty())
     {
         Node* node = openList.back();
         if (node != NULL)
+        {
             delete node;
+            node = NULL;
+        }
         openList.pop_back();
     }
 
@@ -270,7 +274,10 @@ void Pathfinder::FindPathGreedyBestFirst()
     {
         Node* node = closedList.back();
         if (node != NULL)
+        {
             delete node;
+            node = NULL;
+        }
         closedList.pop_back();
     }
 }
