@@ -632,14 +632,14 @@ void SceneAI::RenderDebugInfo()
 
         // Break Charge
         ss.str("");
-        ss << "Break: " << (int)worker->GetBreakCharge() << " / 2000" ;
+        ss << "Break: " << (int)worker->GetBreakCharge() << " / 2000   " << (int)worker->randNum << " > 50";
         RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 32, 0);
 
         // Timer
         ss.str("");
         ss.precision(2);
         ss << "Timer: " << worker->m_timer;
-        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 57, 0);
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 62, 0);
 
         Pathfinder* pathfinder = worker->GetPathfinder();
         if (pathfinder)
@@ -684,12 +684,12 @@ void SceneAI::RenderDebugInfo()
             break;
         }
 
-        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State: " + stateStr, Color(0, 0, 0), 2, 35, 0);
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State: " + stateStr, Color(0, 0, 0), 2, 32, 0);
 
         // Break Charge
         ss.str("");
-        ss << "Break: " << (int)maintenanceman->GetBreakCharge() << " / 2000";
-        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 55, 0);
+        ss << "Break: " << (int)maintenanceman->GetBreakCharge() << " / 2000   " << (int)maintenanceman->randNum << " > 50";
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 50, 0);
 
 
         Pathfinder* pathfinder = maintenanceman->GetPathfinder();
@@ -983,7 +983,7 @@ void SceneAI::RenderDebugInfo()
                 ss << "Yes";
             else
                 ss << "No";
-            RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 38, 0);
+            RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 34, 0);
 
             if (scrapman->IsBreakingRobot())
             {
@@ -993,6 +993,14 @@ void SceneAI::RenderDebugInfo()
             }
 
         //}
+            if (scrapman->GetState() == ScrapMan::IDLE)
+            {
+                // Break Charge
+                ss.str("");
+                ss << "Break: " << (int)scrapman->GetBreakCharge() << " / 2000   " << (int)scrapman->randNum << " > 50";
+                RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 52, 0);
+            }
+
 
         Pathfinder* pathfinder = scrapman->GetPathfinder();
         if (pathfinder)

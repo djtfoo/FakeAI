@@ -36,6 +36,7 @@ private:
     bool m_inToilet;
     bool m_doOnce;
     int m_toiletIdx;
+    bool m_shouldMoveForward;
     Vector3 m_origSpawn;
 
     int ScanMachines();
@@ -73,6 +74,9 @@ public:
     double GetBreakCharge();
     Pathfinder* GetPathfinder();
     Machine* GetTargetMachine();
+
+    // DEBUG UI
+    int randNum;
 };
 
 #endif

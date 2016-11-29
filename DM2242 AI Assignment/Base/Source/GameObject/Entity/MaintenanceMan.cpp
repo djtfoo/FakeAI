@@ -26,8 +26,10 @@ void MaintenanceMan::Init()
     m_inToilet = false;
     m_doOnce = false;
     m_toiletIdx = -1;
-    
+    m_shouldMoveForward = true;
     m_toilet = NULL;
+
+    randNum = 0;
 }
 
 void MaintenanceMan::SetPos(Vector3 pos)
@@ -204,7 +206,7 @@ void MaintenanceMan::Sense(double dt)
         if (m_timer > 1)
         {
             m_timer = 0;
-            m_breakCharge += Math::RandFloatMinMax(0, 200);
+            m_breakCharge += Math::RandFloatMinMax(0, 120);
         }
     }
 }
@@ -216,11 +218,19 @@ int MaintenanceMan::Think()
 
     case IDLE:
     {
-        if (m_breakCharge >= 2000)
-        {
-            m_doOnce = false;
-            return BREAK;
-        }
+                 if (m_breakCharge >= 2000)
+                 {
+                     randNum = Math::RandIntMinMax(0, 100);
+                     if (randNum < 50)
+                     {
+                         m_breakCharge = 0;
+                     }
+                     else
+                     {
+                         m_doOnce = false;
+                         return BREAK;
+                     }
+                 }
      
         Vector3 temp = m_workstation->GetPos();
         temp.y -= 1;
@@ -425,7 +435,17 @@ void MaintenanceMan::DoRefill()
 void MaintenanceMan::DoBreak()
 {
     if (m_toilet->CheckIfChange())
-        m_toiletIdx = Math::Max(--m_toiletIdx, 0);
+    {
+        if (m_shouldMoveForward)
+        {
+            m_toiletIdx = Math::Max(--m_toiletIdx, 0);
+            m_shouldMoveForward = false;
+        }
+    }
+    else
+    {
+        m_shouldMoveForward = true;
+    }
 
     if (m_timer > 4)
     {

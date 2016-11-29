@@ -36,6 +36,9 @@ void ScrapMan::Init()
     m_origSpawn.SetZero();
     m_toilet = NULL; 
     m_atWorkstation = true;
+    m_shouldMoveForward = true;
+
+    randNum = 0;
 }
 
 void ScrapMan::SetPos(Vector3 pos)
@@ -265,8 +268,16 @@ int ScrapMan::Think()
 
     if (m_state == IDLE && d_breakCharge > 2000)
     {
-        m_doOnce = false;
-        return BREAK;
+        randNum = Math::RandIntMinMax(0, 100);
+        if (randNum < 50)
+        {
+            d_breakCharge = 0;
+        }
+        else
+        {
+            m_doOnce = false;
+            return BREAK;
+        }
     }
 
     if (m_state == BREAK)
@@ -288,6 +299,7 @@ void ScrapMan::Act(int value)
     {
     case IDLE:
         SetState(IDLE);
+        SetDirection(DIR_DOWN);
         b_reachedDestination = false;
         b_gotRobot = false;
         b_breakingDownRobot = false;
@@ -311,7 +323,7 @@ void ScrapMan::Act(int value)
 
                           // Pathfind to the shutdown robot
                           m_pathfinder->EmptyPath();
-                          m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+                          m_pathfinder->ReceiveCurrentPos(this->m_pos);
                           Vector3 pos = m_robotToPickUp->GetPos();
                           m_pathfinder->ReceiveDestination(Vector3(RoundOff(pos.x), RoundOff(pos.y), pos.z));
                           m_pathfinder->FindPathGreedyBestFirst();
@@ -394,7 +406,17 @@ Toilet* ScrapMan::GetToilet()
 void ScrapMan::DoBreak()
 {
     if (m_toilet->CheckIfChange())
-        m_toiletIdx = Math::Max(--m_toiletIdx, 0);
+    {
+        if (m_shouldMoveForward)
+        {
+            m_toiletIdx = Math::Max(--m_toiletIdx, 0);
+            m_shouldMoveForward = false;
+        }
+    }
+    else
+    {
+        m_shouldMoveForward = true;
+    }
 
     if (d_timerCounter > 4)
     {
@@ -421,4 +443,9 @@ bool ScrapMan::GotRobot()
 bool ScrapMan::IsBreakingRobot()
 {
     return b_breakingDownRobot;
+}
+
+int ScrapMan::GetBreakCharge()
+{
+    return d_breakCharge;
 }

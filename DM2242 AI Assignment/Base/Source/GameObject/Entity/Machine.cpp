@@ -18,8 +18,8 @@ void Machine::Init()
 	m_storedTimer = 0;
 	m_overheatTimer = 0;
     m_overheatCharge = 0;
-    m_scrapQuantity = 10; 
-    m_maxScrapQuantity = 10;
+    m_scrapQuantity = 15; 
+    m_maxScrapQuantity = 12;
 	m_isBroken = false;
 	m_isEmpty = false;
 	m_partCreated = false;

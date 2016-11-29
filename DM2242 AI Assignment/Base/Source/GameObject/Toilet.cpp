@@ -20,7 +20,7 @@ void Toilet::Init()
 
 void Toilet::Update(double dt)
 {
-
+    //SetSprite();
 }
 
 bool Toilet::IsOccupied()
@@ -30,13 +30,14 @@ bool Toilet::IsOccupied()
 
 void Toilet::SetOccupied(bool status)
 {
-    SetSprite();
     b_occupied = status;
 
     if (status == false)
         m_change = true;
     else
         m_change = false;
+
+    SetSprite();
 }
 
 void Toilet::SetSprite()

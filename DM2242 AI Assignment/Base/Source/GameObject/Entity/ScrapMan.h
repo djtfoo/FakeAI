@@ -47,6 +47,7 @@ private:
     bool m_doOnce;
     bool m_atWorkstation;
     int m_toiletIdx;
+    bool m_shouldMoveForward;
     Vector3 m_origSpawn;
     Toilet* m_toilet;
 
@@ -75,6 +76,10 @@ public:
     Pathfinder* GetPathfinder();
     bool GotRobot();
     bool IsBreakingRobot();
+    int GetBreakCharge(); 
+
+    // DEBUG UI
+    int randNum;
 };
 
 #endif

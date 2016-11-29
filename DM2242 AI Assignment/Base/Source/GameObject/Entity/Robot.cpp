@@ -201,7 +201,7 @@ int Robot::Think()
         if (b_toShutDown)    // change to Markov
             return SHUTDOWN;
 
-        if (d_timerCounter >= 5.0)
+        if (d_timerCounter >= 4.0)
             return m_stateBeforeCheer;
         break;
 

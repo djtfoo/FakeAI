@@ -24,10 +24,13 @@ void Worker::Init()
     m_breakDone = false;
     m_inToilet = false;
     m_doOnce = false;
+    m_shouldMoveForward = true;
     m_toiletIdx = 0;
 
 	m_workstation = NULL;
     m_toilet = NULL;
+
+    randNum = 0;
 }
 
 void Worker::SetPos(Vector3 pos)
@@ -42,7 +45,7 @@ void Worker::Update(double dt)
     {
         if ((m_pos - m_toilet->GetPos()).Length() < 4)  // within toilet range
         {
-            if (!m_doOnce && m_state == BREAK)
+            if (!m_doOnce)
             {
                 m_toiletIdx = m_toilet->AddToQueue(this);
                 //std::cout << "ADDED" << std::endl;
@@ -176,7 +179,18 @@ int Worker::Think()
 
     case IDLE:
         if (m_breakCharge >= 2000)
-            return BREAK;
+        {
+            randNum = Math::RandIntMinMax(0, 100);
+            if (randNum < 50)
+            {
+                m_breakCharge = 0;
+            }
+            else
+            {
+                m_doOnce = false;
+                return BREAK;
+            }
+        }
         else if (IsAbleToWork())
             return WORK;
 
@@ -312,7 +326,17 @@ void Worker::DoWork()
 void Worker::DoBreak()
 {
     if (m_toilet->CheckIfChange())
-        m_toiletIdx = Math::Max(--m_toiletIdx, 0);
+    {
+        if (m_shouldMoveForward)
+        {
+            m_toiletIdx = Math::Max(--m_toiletIdx, 0);
+            m_shouldMoveForward = false;
+        }
+    }
+    else
+    {
+        m_shouldMoveForward = true;
+    }
 
     if (m_timer > 4)
     {
@@ -321,7 +345,8 @@ void Worker::DoBreak()
         m_timer = 0;
         m_toilet->RemoveFromQueue();
         //std::cout << "POPPED" << std::endl;
-        
+        m_shouldMoveForward = true;
+
         m_toilet->SetOccupied(false);
     }
 }

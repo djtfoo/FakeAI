@@ -25,6 +25,7 @@ private:
     bool m_breakDone;
     bool m_atWorkstation;
     bool m_doOnce;
+    bool m_shouldMoveForward;
     int m_toiletIdx;
     Vector3 m_origSpawn; 
 
@@ -72,6 +73,9 @@ public:
     // Getters
     double GetBreakCharge();
     Pathfinder* GetPathfinder();
+
+    // DEBUG UI
+    int randNum;
 };
 
 #endif
