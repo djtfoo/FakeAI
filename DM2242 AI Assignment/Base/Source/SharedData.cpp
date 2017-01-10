@@ -17,6 +17,8 @@ void SharedData::Init()
 
     m_ornamentSystem = new OrnamentBuildingSystem();
     //m_ornamentSystem->Init();
+
+    m_messageBoard = new MessageBoard();
 }
 
 void SharedData::Exit()

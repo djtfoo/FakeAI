@@ -25,6 +25,12 @@
     <Filter Include="Source Files\GameObject\Entity">
       <UniqueIdentifier>{bb0938b4-43bb-41fd-825f-b03d2daccf56}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\MessageBoard">
+      <UniqueIdentifier>{1e384b73-083b-4055-a176-991621f78d7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MessageBoard">
+      <UniqueIdentifier>{decf3e93-fb17-4f43-882d-9bc4f7e11695}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -122,6 +128,12 @@
     </ClCompile>
     <ClCompile Include="Source\GameObject\OrnamentBuildingSystem.cpp">
       <Filter>Source Files\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MessageBoard\Message.cpp">
+      <Filter>Source Files\MessageBoard</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MessageBoard\MessageBoard.cpp">
+      <Filter>Source Files\MessageBoard</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -229,6 +241,12 @@
     </ClInclude>
     <ClInclude Include="Source\GameObject\OrnamentBuildingSystem.h">
       <Filter>Header Files\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MessageBoard\MessageBoard.h">
+      <Filter>Header Files\MessageBoard</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MessageBoard\Message.h">
+      <Filter>Header Files\MessageBoard</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

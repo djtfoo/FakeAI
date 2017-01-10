@@ -403,10 +403,14 @@ void SceneAI::RenderBackground()
 void SceneAI::RenderGO(GameObject *go)
 {
 	modelStack.PushMatrix();
+
+    // if GameObject is something unique and needs to change its offset (esp for z-axis)
     if (go->GetName() == "ConveyorBelt")
         modelStack.Translate(0, 0, -0.5f);
     else if (go->GetName() == "DeliveryTruck")
         modelStack.Translate(0, -0.1f, 0.5f);
+    
+    // Render the object
     modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
     modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
 	RenderMesh(go->GetMesh(), false);

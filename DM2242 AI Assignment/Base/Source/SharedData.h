@@ -5,6 +5,7 @@
 #include "GridMap.h"
 #include "GameObject/GameObject.h"
 #include "GameObject/OrnamentBuildingSystem.h"
+#include "MessageBoard/MessageBoard.h"
 #include <vector>
 
 class SharedData
@@ -23,6 +24,7 @@ public:
     GridMap* m_gridMap;   // map that stores number of grids and collision information
     std::vector<GameObject*> m_goList;
     OrnamentBuildingSystem* m_ornamentSystem;
+    MessageBoard* m_messageBoard;
 
     void Init();
     void Exit();

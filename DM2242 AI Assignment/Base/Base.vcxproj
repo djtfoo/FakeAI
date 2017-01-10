@@ -38,6 +38,8 @@
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshBuilder.cpp" />
     <ClCompile Include="Source\MeshList.cpp" />
+    <ClCompile Include="Source\MessageBoard\Message.cpp" />
+    <ClCompile Include="Source\MessageBoard\MessageBoard.cpp" />
     <ClCompile Include="Source\SceneBase.cpp" />
     <ClCompile Include="Source\shader.cpp" />
     <ClCompile Include="Source\SceneAI.cpp" />
@@ -73,6 +75,8 @@
     <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\MeshBuilder.h" />
     <ClInclude Include="Source\MeshList.h" />
+    <ClInclude Include="Source\MessageBoard\Message.h" />
+    <ClInclude Include="Source\MessageBoard\MessageBoard.h" />
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\SceneBase.h" />
     <ClInclude Include="Source\shader.hpp" />

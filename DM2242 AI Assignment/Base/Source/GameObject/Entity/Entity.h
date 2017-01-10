@@ -23,6 +23,39 @@ private:
 protected:
     Entity(std::string name);
 
+    /*Entity* newTempRole;
+
+    newTempRole = NULL;
+    //newTempRole = &thisMaintenaceMan;
+
+    newTempRole = new MaintenanceMan();
+    newTempRole = CopyDataOverlah;
+
+    if (newTempRole == NULL)
+    {
+        Worker::Update();   // basically, call my own update
+    }
+    else
+    {
+        newTempRole->Update();
+        m_pos = newTempRole->GetPosition();
+        m_dir = newTempRole->GetDirection();
+    }
+
+    regardless of newTempRole,
+        we still call Worker::Render();
+
+    but,
+        we need his position & direction (& velocity)?
+
+    Render()
+    {
+        if (newTempRole)
+        {
+            RenderHatOverlay();
+        }
+    }*/
+
     DIRECTION m_dir;
     Vector3 m_vel;
 
