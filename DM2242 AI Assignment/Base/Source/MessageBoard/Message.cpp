@@ -1,6 +1,10 @@
 #include "Message.h"
 
 Message::Message(MESSAGE_TYPE type, std::string msgTo, std::string msgFrom, Time time)
+: m_type(type)
+, m_messageTo(msgTo)
+, m_messageFrom(msgFrom)
+, m_time(time)
 {
     b_isAcknowledged = false;
 }
@@ -21,4 +25,21 @@ std::string Message::GetMessage()
     case ENTITY_ROLECHANGE: return "Replace ";
     case MAINTENANCEMAN_NEEDSCRAP: return "I need more scrap parts.";
     }
+
+    return "";
+}
+
+std::string Message::GetMessageTo()
+{
+    return m_messageTo;
+}
+
+std::string Message::GetMessageFrom()
+{
+    return m_messageFrom;
+}
+
+std::string Message::GetTime()
+{
+    return m_time.GetDay() + " " + m_time.GetTime();
 }

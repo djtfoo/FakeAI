@@ -31,6 +31,12 @@
     <Filter Include="Source Files\MessageBoard">
       <UniqueIdentifier>{decf3e93-fb17-4f43-882d-9bc4f7e11695}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Clock">
+      <UniqueIdentifier>{34d584e7-e018-4ce1-95d3-d7d2a5de0954}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Clock">
+      <UniqueIdentifier>{c5e8052b-7480-4128-9975-52f2fb66c0c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -134,6 +140,12 @@
     </ClCompile>
     <ClCompile Include="Source\MessageBoard\MessageBoard.cpp">
       <Filter>Source Files\MessageBoard</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Clock\Clock.cpp">
+      <Filter>Source Files\Clock</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Clock\Time.cpp">
+      <Filter>Source Files\Clock</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -247,6 +259,12 @@
     </ClInclude>
     <ClInclude Include="Source\MessageBoard\Message.h">
       <Filter>Header Files\MessageBoard</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Clock\Clock.h">
+      <Filter>Header Files\Clock</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Clock\Time.h">
+      <Filter>Header Files\Clock</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

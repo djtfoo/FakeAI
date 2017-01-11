@@ -13,6 +13,8 @@
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
+    <ClCompile Include="Source\Clock\Clock.cpp" />
+    <ClCompile Include="Source\Clock\Time.cpp" />
     <ClCompile Include="Source\GameObject\BuildingBlockStack.cpp" />
     <ClCompile Include="Source\GameObject\ConveyorBelt.cpp" />
     <ClCompile Include="Source\GameObject\DeliveryTruck.cpp" />
@@ -49,6 +51,8 @@
   <ItemGroup>
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Camera.h" />
+    <ClInclude Include="Source\Clock\Clock.h" />
+    <ClInclude Include="Source\Clock\Time.h" />
     <ClInclude Include="Source\GameObject\BuildingBlockStack.h" />
     <ClInclude Include="Source\GameObject\ConveyorBelt.h" />
     <ClInclude Include="Source\GameObject\DeliveryTruck.h" />

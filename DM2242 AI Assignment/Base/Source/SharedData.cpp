@@ -19,6 +19,10 @@ void SharedData::Init()
     //m_ornamentSystem->Init();
 
     m_messageBoard = new MessageBoard();
+
+    // randomise the starting day (and time)
+    Time::DAY startingDay = static_cast<Time::DAY>(Math::RandIntMinMax(0, 6));
+    m_clock = new Clock(Time(startingDay, 0));
 }
 
 void SharedData::Exit()
@@ -42,6 +46,19 @@ void SharedData::Exit()
         m_ornamentSystem->Exit();
         delete m_ornamentSystem;
         m_ornamentSystem = NULL;
+    }
+
+    if (m_messageBoard)
+    {
+        m_messageBoard->Exit();
+        delete m_messageBoard;
+        m_messageBoard = NULL;
+    }
+
+    if (m_clock)
+    {
+        delete m_clock;
+        m_clock = NULL;
     }
 
     //Cleanup GameObjects

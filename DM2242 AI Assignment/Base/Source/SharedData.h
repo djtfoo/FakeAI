@@ -6,6 +6,7 @@
 #include "GameObject/GameObject.h"
 #include "GameObject/OrnamentBuildingSystem.h"
 #include "MessageBoard/MessageBoard.h"
+#include "Clock/Clock.h"
 #include <vector>
 
 class SharedData
@@ -25,6 +26,7 @@ public:
     std::vector<GameObject*> m_goList;
     OrnamentBuildingSystem* m_ornamentSystem;
     MessageBoard* m_messageBoard;
+    Clock* m_clock;
 
     void Init();
     void Exit();

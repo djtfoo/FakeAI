@@ -20,14 +20,19 @@ struct Time
 
 private:
     DAY m_day;
-    double m_seconds;  // the time in seconds; max is 
+    double m_seconds;  // the time in seconds; max in a day is 86400 seconds
+
+    bool IsNewDay();
 
 public:
-    Time();
+    Time(DAY day = MONDAY, double seconds = 0.0);
     ~Time();
 
     std::string GetDay();
-    double GetSeconds();
+    std::string GetTime();
+    //double GetSeconds();
+
+    void IncreaseTime(const double dt);
 };
 
 #endif

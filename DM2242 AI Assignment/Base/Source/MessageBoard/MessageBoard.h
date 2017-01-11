@@ -12,6 +12,8 @@ public:
     MessageBoard();
     ~MessageBoard();
 
+    void Exit();
+
     void AddMessage(Message* message);
     void PopMessage();
 };

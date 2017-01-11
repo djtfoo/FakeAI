@@ -345,7 +345,7 @@ void SceneAI::Update(double dt)
 
     d_keypressTimer += dt;
 
-    // Checking for keypress for debug info
+    // Checking for keypress for rendering of debug info
     if (d_keypressTimer > 0.2)
     if (Application::IsKeyPressed(VK_TAB))
     {
@@ -375,6 +375,9 @@ void SceneAI::Update(double dt)
         d_keypressTimer = 0.0;
     }
 
+    // Update the clock (day/night cycle)
+    SharedData::GetInstance()->m_clock->Update(dt);
+
     // Update GameObjects
     for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
     {
@@ -388,6 +391,7 @@ void SceneAI::Update(double dt)
         }
     }
 
+    // Update the Ornament Handler System
     SharedData::GetInstance()->m_ornamentSystem->Update(dt);
 }
 
@@ -511,7 +515,18 @@ void SceneAI::Render()
             glUniform1i(m_parameters[U_HIGHLIGHTED], 0);
     }
 
+    //============================
+    // Render GUI/on-screen stuff
+    //============================
+
+    // Render header
     RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "ROBOTOPIA", Color(0, 0, 0), 4, 0, 56);
+
+    // Render message board
+    //RenderMessageBoard();
+
+    // Render clock
+    //RenderClock();
 
     if (b_renderDebugInfo)
     {

@@ -28,14 +28,16 @@ private:
     std::string m_messageTo;
     std::string m_messageFrom;
 
-    Time time;
+    Time m_time;
 
 public:
     Message(MESSAGE_TYPE type, std::string msgTo, std::string msgFrom, Time time);
     ~Message();
 
     std::string GetMessage();
-    std::string 
+    std::string GetMessageTo();
+    std::string GetMessageFrom();
+    std::string GetTime();
 };
 
 #endif
