@@ -59,6 +59,16 @@ std::string Time::GetTime()
     return output.str();
 }
 
+int Time::GetMinutes()
+{
+    return (m_seconds - (GetHours() * 3600)) / 60;
+}
+
+int Time::GetHours()
+{
+    return m_seconds / 3600;
+}
+
 //double Time::GetSeconds()
 //{
 //    return m_seconds;

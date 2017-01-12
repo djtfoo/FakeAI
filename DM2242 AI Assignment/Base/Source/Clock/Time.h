@@ -31,6 +31,10 @@ public:
     std::string GetDay();
     std::string GetDayAbbreviation();
     std::string GetTime();
+    
+    int GetMinutes();
+    int GetHours();
+    
     //double GetSeconds();
 
     void Update(const double dt);

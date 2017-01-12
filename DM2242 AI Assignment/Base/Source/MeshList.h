@@ -42,6 +42,9 @@ enum GEOMETRY_TYPE
     // Generic Scene
     GEO_FLOOR,
     GEO_CLOCK,
+    GEO_CLOCKBASE,
+    GEO_CLOCKMINUTE,
+    GEO_CLOCKHOUR,
     //GEO_MESSAGEBOARD,
     GEO_TEXT,
 

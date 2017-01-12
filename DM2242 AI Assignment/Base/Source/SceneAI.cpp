@@ -431,12 +431,47 @@ void SceneAI::RenderMessageBoard()
 
 void SceneAI::RenderClock()
 {
+    // base beneath clock
+    modelStack.PushMatrix();
+    modelStack.Translate(0.5f, SharedData::GetInstance()->m_gridMap->GetColumns() - 1.5f, 0.5f);
+    modelStack.Scale(1.75f, 1.75f, 1);
+    RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_CLOCKBASE), false);
+    modelStack.PopMatrix();
+
+    // Minutes and Hours nodes beneath clock
+    int minutes = SharedData::GetInstance()->m_clock->GetCurrMinutes();
+    float anglePerMinute = -360.f / 60;
+    for (int i = 0; i < minutes; ++i)
+    {
+        modelStack.PushMatrix();
+        modelStack.Translate(0.5f, SharedData::GetInstance()->m_gridMap->GetColumns() - 0.71f, 1);
+        modelStack.Translate(0, -0.8f, 0);
+        modelStack.Rotate(anglePerMinute * i, 0, 0, 1);
+        modelStack.Translate(0, 0.8f, 0);
+        RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_CLOCKMINUTE), false);
+        modelStack.PopMatrix();
+    }
+    
+    int hours = SharedData::GetInstance()->m_clock->GetCurrHours();
+    float anglePerHour = -360.f / 12;
+    for (int i = 0; i < hours; ++i)
+    {
+        modelStack.PushMatrix();
+        modelStack.Translate(0.5f, SharedData::GetInstance()->m_gridMap->GetColumns() - 0.8f, 1);
+        modelStack.Translate(0, -0.7f, 0);
+        modelStack.Rotate(anglePerHour * i, 0, 0, 1);
+        modelStack.Translate(0, 0.7f, 0);
+        RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_CLOCKHOUR), false);
+        modelStack.PopMatrix();
+    }
+    
+    // Clock body
     modelStack.PushMatrix();
     modelStack.Translate(0.5f, SharedData::GetInstance()->m_gridMap->GetColumns() - 1.5f, 2);
     modelStack.Scale(1.75f, 1.75f, 1);
     RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_CLOCK), false);
     modelStack.PopMatrix();
-
+    
     RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), SharedData::GetInstance()->m_clock->GetCurrTime(), Color(1, 0, 0), 2, 3, 55.25f, true);
     RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), SharedData::GetInstance()->m_clock->GetCurrDayAbbreviation(), Color(1, 0, 0), 1.5f, 4.25f, 54);
 }
@@ -576,12 +611,12 @@ void SceneAI::RenderDebugInfo()
 
     //grid info
     ss << "Grid: " << SharedData::GetInstance()->m_gridMap->GetRows() << " x " << SharedData::GetInstance()->m_gridMap->GetColumns();
-    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2.5, 30, 57.5);
+    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2.5, 35, 57.5);
 
     //fps
     ss.str("");
     ss << "FPS: " << fps;
-    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2.5, 55, 57.5);
+    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2.5, 56, 57.5);
 
 
     // SPECIFIC INFO

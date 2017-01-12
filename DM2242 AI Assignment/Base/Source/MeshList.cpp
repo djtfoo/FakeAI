@@ -109,6 +109,12 @@ void MeshList::Init()
     meshList[GEO_CLOCK] = MeshBuilder::GenerateQuad("clock", Color(0, 0, 0), 1.f);
     meshList[GEO_CLOCK]->textureID = LoadTGA("Image//clock.tga");
 
+    meshList[GEO_CLOCKBASE] = MeshBuilder::GenerateQuad("clock base", Color(0, 0, 0), 1.f);
+    meshList[GEO_CLOCKBASE]->textureID = LoadTGA("Image//Clock_base.tga");
+
+    meshList[GEO_CLOCKMINUTE] = MeshBuilder::GenerateQuad("clock minute node", Color(0, 1, 0.5f), 0.08f);
+    meshList[GEO_CLOCKHOUR] = MeshBuilder::GenerateQuad("clock hour node", Color(0.3f, 0.9f, 1), 0.08f);
+
     meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
     meshList[GEO_TEXT]->textureID = LoadTGA("Image//Fonts/Font_FFF Forward.tga");
     meshList[GEO_TEXT]->LoadFontData("Image//Fonts/FontData_FFF Forward.csv");

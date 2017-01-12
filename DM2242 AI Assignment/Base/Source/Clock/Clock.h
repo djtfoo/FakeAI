@@ -14,6 +14,9 @@ public:
     std::string GetCurrDay();
     std::string GetCurrDayAbbreviation();
     std::string GetCurrTime();
+    int GetCurrMinutes();
+    int GetCurrHours();
+
     void Update(const double dt);
 };
 
