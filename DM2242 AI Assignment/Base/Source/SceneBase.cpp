@@ -148,7 +148,7 @@ void SceneBase::RenderText(Mesh* mesh, std::string text, Color color)
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SceneBase::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+void SceneBase::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, bool fixedFontWidth)
 {
 	if(!mesh || mesh->textureID <= 0)
 		return;
@@ -183,8 +183,8 @@ void SceneBase::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
         mesh->Render((unsigned)text[i] * 6, 6);
 
         float offsetIncrease = 0.f;
-        if (mesh->fontSize[text[i]] == 0) {   // there's no font data
-            offsetIncrease = 1.f;
+        if ((mesh->fontSize[text[i]] == 0) || fixedFontWidth) {   // there's no font data or font width is to be fixed
+            offsetIncrease = 0.5f;
         }
         else {
             offsetIncrease = (float)(mesh->fontSize[text[i]] / 64.f) + 0.3f;

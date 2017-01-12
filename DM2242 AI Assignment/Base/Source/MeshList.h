@@ -32,7 +32,6 @@ enum GEOMETRY_TYPE
     GEO_TOILET,
     GEO_WORKSTATION,
 
-    //GEO_SCRAP_PIECE,
     GEO_SCRAP_PILE,
 
     GEO_ROBOT_PART_PACKAGE,
@@ -40,9 +39,13 @@ enum GEOMETRY_TYPE
     GEO_BUILDINGBLOCK_STACK,
     GEO_ORNAMENT,
 
-    // Generic/Debug
+    // Generic Scene
     GEO_FLOOR,
+    GEO_CLOCK,
+    //GEO_MESSAGEBOARD,
     GEO_TEXT,
+
+    // Debug
     GEO_PATHFINDING_NODE,
     GEO_HIGHLIGHTBOX,
     

@@ -21,7 +21,7 @@ void SharedData::Init()
     m_messageBoard = new MessageBoard();
 
     // randomise the starting day (and time)
-    Time::DAY startingDay = static_cast<Time::DAY>(Math::RandIntMinMax(0, 6));
+    Time::DAY startingDay = static_cast<Time::DAY>(Math::RandIntMinMax(0, 4));
     m_clock = new Clock(Time(startingDay, 0));
 }
 

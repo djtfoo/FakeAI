@@ -376,7 +376,10 @@ void SceneAI::Update(double dt)
     }
 
     // Update the clock (day/night cycle)
-    SharedData::GetInstance()->m_clock->Update(dt);
+    double deltaTime = 500 * dt;
+    if (SharedData::GetInstance()->m_clock->GetCurrDayAbbreviation() == "SAT" || SharedData::GetInstance()->m_clock->GetCurrDayAbbreviation() == "SUN")
+        deltaTime *= 10;
+    SharedData::GetInstance()->m_clock->Update(deltaTime);
 
     // Update GameObjects
     for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
@@ -419,6 +422,23 @@ void SceneAI::RenderGO(GameObject *go)
     modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
 	RenderMesh(go->GetMesh(), false);
 	modelStack.PopMatrix();
+}
+
+void SceneAI::RenderMessageBoard()
+{
+
+}
+
+void SceneAI::RenderClock()
+{
+    modelStack.PushMatrix();
+    modelStack.Translate(0.5f, SharedData::GetInstance()->m_gridMap->GetColumns() - 1.5f, 2);
+    modelStack.Scale(1.75f, 1.75f, 1);
+    RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_CLOCK), false);
+    modelStack.PopMatrix();
+
+    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), SharedData::GetInstance()->m_clock->GetCurrTime(), Color(1, 0, 0), 2, 3, 55.25f, true);
+    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), SharedData::GetInstance()->m_clock->GetCurrDayAbbreviation(), Color(1, 0, 0), 1.5f, 4.25f, 54);
 }
 
 void SceneAI::Render()
@@ -520,13 +540,13 @@ void SceneAI::Render()
     //============================
 
     // Render header
-    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "ROBOTOPIA", Color(0, 0, 0), 4, 0, 56);
+    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "ROBOTOPIA", Color(0, 0, 0), 4, 11, 56);
 
     // Render message board
-    //RenderMessageBoard();
+    RenderMessageBoard();
 
     // Render clock
-    //RenderClock();
+    RenderClock();
 
     if (b_renderDebugInfo)
     {

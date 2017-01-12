@@ -11,6 +11,9 @@ public:
     Clock(Time time);
     ~Clock();
 
+    std::string GetCurrDay();
+    std::string GetCurrDayAbbreviation();
+    std::string GetCurrTime();
     void Update(const double dt);
 };
 

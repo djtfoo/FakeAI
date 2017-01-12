@@ -29,10 +29,11 @@ public:
     ~Time();
 
     std::string GetDay();
+    std::string GetDayAbbreviation();
     std::string GetTime();
     //double GetSeconds();
 
-    void IncreaseTime(const double dt);
+    void Update(const double dt);
 };
 
 #endif

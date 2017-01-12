@@ -1,7 +1,7 @@
 #include "Time.h"
 #include <sstream>
 
-Time::Time(DAY day = MONDAY, double seconds = 0.0)
+Time::Time(DAY day, double seconds)
 : m_day(day)
 , m_seconds(seconds)
 {
@@ -23,6 +23,24 @@ std::string Time::GetDay()
     case SATURDAY: return "Saturday";
     case SUNDAY: return "Sunday";
     }
+
+    return "";
+}
+
+std::string Time::GetDayAbbreviation()
+{
+    switch (m_day)
+    {
+    case MONDAY: return "MON";
+    case TUESDAY: return "TUE";
+    case WEDNESDAY: return "WED";
+    case THURSDAY: return "THU";
+    case FRIDAY: return "FRI";
+    case SATURDAY: return "SAT";
+    case SUNDAY: return "SUN";
+    }
+
+    return "";
 }
 
 std::string Time::GetTime()
@@ -31,7 +49,12 @@ std::string Time::GetTime()
     int minutes = (m_seconds - (hour * 3600)) / 60;
 
     std::stringstream output;
-    output << hour << ":" << minutes;
+    if (hour < 10)
+        output << "0";
+    output << hour << ":";
+    if (minutes < 10)
+        output << "0";
+    output << minutes;
     
     return output.str();
 }
@@ -41,7 +64,7 @@ std::string Time::GetTime()
 //    return m_seconds;
 //}
 
-void Time::IncreaseTime(const double dt)
+void Time::Update(const double dt)
 {
     m_seconds += dt;
     if (IsNewDay())

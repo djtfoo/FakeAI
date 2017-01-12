@@ -106,6 +106,9 @@ void MeshList::Init()
     meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("floor", Color(1, 1, 1), 1.f, 4.f);
     meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floor.tga");
 
+    meshList[GEO_CLOCK] = MeshBuilder::GenerateQuad("clock", Color(0, 0, 0), 1.f);
+    meshList[GEO_CLOCK]->textureID = LoadTGA("Image//clock.tga");
+
     meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
     meshList[GEO_TEXT]->textureID = LoadTGA("Image//Fonts/Font_FFF Forward.tga");
     meshList[GEO_TEXT]->LoadFontData("Image//Fonts/FontData_FFF Forward.csv");

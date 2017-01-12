@@ -27,6 +27,9 @@ public:
     void RenderBackground();
 	void RenderGO(GameObject *go);
 
+    void RenderMessageBoard();
+    void RenderClock();
+
     void RenderGameObject(GameObject* go);
     void RenderEntity(Entity* entity);
 
