@@ -17,7 +17,7 @@ public:
         ENTITY_ROLECHANGE,
         MAINTENANCEMAN_NEEDSCRAP,
 
-        MESSAGE_TYPES_TOTAL
+        MESSAGE_TYPES_TOTAL     // also acts as NIL
     };
 
 private:
@@ -38,6 +38,10 @@ public:
     std::string GetMessageTo();
     std::string GetMessageFrom();
     std::string GetTime();
+
+    bool IsAcknowledged();
+    void SetAcknowledged(bool b_acknowledged);
+    MESSAGE_TYPE GetMessageType();
 };
 
 #endif

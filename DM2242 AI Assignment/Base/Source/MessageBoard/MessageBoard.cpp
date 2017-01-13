@@ -1,8 +1,9 @@
 #include "MessageBoard.h"
+#include "../SharedData.h"
+#include "../GameObject/Entity/Entity.h"
 
-MessageBoard::MessageBoard()
+MessageBoard::MessageBoard() : maxSize(5)
 {
-
 }
 
 MessageBoard::~MessageBoard()
@@ -22,6 +23,18 @@ void MessageBoard::Exit()
 void MessageBoard::AddMessage(Message* message)
 {
     m_messageLog.push_back(message);
+
+    // notify every Entity about the new message
+    for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
+    {
+        GameObject* go = SharedData::GetInstance()->m_goList[i];
+        if (go->IsEntity())
+        {
+            Entity* entity = dynamic_cast<Entity*>(go);
+            entity->SetNewMessageNotif(true);
+        }
+    }
+
 }
 
 void MessageBoard::PopMessage()
@@ -32,4 +45,14 @@ void MessageBoard::PopMessage()
         delete toPop;
         m_messageLog.erase(m_messageLog.begin());
     }
+}
+
+Message* MessageBoard::GetMessage(int idx)
+{
+    return m_messageLog[idx];
+}
+
+int MessageBoard::GetMessageListSize()
+{
+    return m_messageLog.size();
 }

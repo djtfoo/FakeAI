@@ -7,6 +7,7 @@
 class MessageBoard
 {
     std::vector<Message*> m_messageLog;
+    const int maxSize;
 
 public:
     MessageBoard();
@@ -16,6 +17,9 @@ public:
 
     void AddMessage(Message* message);
     void PopMessage();
+
+    Message* GetMessage(int idx);
+    int GetMessageListSize();
 };
 
 #endif

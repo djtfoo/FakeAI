@@ -2,6 +2,7 @@
 #define ENTITY_H
 
 #include "../GameObject.h"
+#include "../../MessageBoard/MessageBoard.h"
 
 class Entity : public GameObject
 {
@@ -59,6 +60,8 @@ protected:
     DIRECTION m_dir;
     Vector3 m_vel;
 
+    bool b_newMsgNotif;    // notification that there is a new message on MessageBoard
+
 public:
     virtual ~Entity();
     
@@ -83,6 +86,9 @@ public:
     virtual void SetSprite();   // edit the mesh TexCoords
     virtual int GetStateInt();     // default just in case
     virtual int GetMaxStates(); // default just in case
+
+    Message::MESSAGE_TYPE ReadMessageBoard(MessageBoard* mb);
+    void SetNewMessageNotif(bool b_notif);
 
     // idea:
     // multiple types of think and act... use int values for switch case

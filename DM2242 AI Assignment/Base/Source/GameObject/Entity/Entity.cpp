@@ -141,3 +141,27 @@ Entity::DIRECTION Entity::CheckDirection(const Vector3& ownPos, const Vector3& t
     if (tempVel.y == -1)
         return DIR_DOWN;
 }
+
+Message::MESSAGE_TYPE Entity::ReadMessageBoard(MessageBoard* mb)
+{
+    b_newMsgNotif = false;     // messages will be processed now
+
+    int maxSize = mb->GetMessageListSize();
+
+    for (int i = maxSize - 1; i >= 0; --i)  // read the message log from oldest message
+    {
+        Message* msg = mb->GetMessage(i);
+        if (msg->GetMessageTo() == this->GetName() && !msg->IsAcknowledged())
+        {
+            msg->SetAcknowledged(true);
+            return msg->GetMessageType();
+        }
+    }
+
+    return Message::MESSAGE_TYPES_TOTAL;
+}
+
+void Entity::SetNewMessageNotif(bool b_notif)
+{
+    b_newMsgNotif = b_notif;
+}

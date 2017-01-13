@@ -43,3 +43,18 @@ std::string Message::GetTime()
 {
     return m_time.GetDay() + " " + m_time.GetTime();
 }
+
+bool Message::IsAcknowledged()
+{
+    return b_isAcknowledged;
+}
+
+void Message::SetAcknowledged(bool b_acknowledged)
+{
+    b_isAcknowledged = b_acknowledged;
+}
+
+Message::MESSAGE_TYPE Message::GetMessageType()
+{
+    return m_type;
+}
