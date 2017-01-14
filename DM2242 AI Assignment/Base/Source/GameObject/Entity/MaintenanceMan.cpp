@@ -244,7 +244,6 @@ int MaintenanceMan::Think()
                 // Check if retrieved message is invalid
                 if (retrivedMsg)
                 {
-                    retrivedMsg->SetAcknowledged(true);
                     switch (retrivedMsg->GetMessageType())
                     {
                     case Message::MACHINE_BROKEN:

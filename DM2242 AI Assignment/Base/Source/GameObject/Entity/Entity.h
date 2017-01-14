@@ -64,6 +64,7 @@ protected:
     Vector3 m_vel;
 
     bool b_newMsgNotif;    // notification that there is a new message on MessageBoard
+    bool b_MessageSent;
 
 public:
     virtual ~Entity();

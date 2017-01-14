@@ -116,10 +116,13 @@ int Machine::Think()
 
     }
 
-	if (m_state == WAITFORREFILL)
-	{
+    if (m_state == WAITFORREFILL)
+    {
         if (m_scrapQuantity > m_partToCreate)
+        {       
             return REST;
+            b_MessageSent = false;
+        }
         else
             return WAITFORREFILL;
 	}
@@ -131,6 +134,7 @@ int Machine::Think()
             m_overheatCharge = 0.0;
             m_timer = m_storedTimer;
             m_storedTimer = 0.0;
+            b_MessageSent = false;
             return PRODUCTION;
         }
         else
@@ -158,14 +162,24 @@ void Machine::Act(int value)
 		}
         break;
     case WAITFORREFILL:
-        SetState(WAITFORREFILL);
-        SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::MACHINE_REFILL, "Maintenance Man", this, SharedData::GetInstance()->m_clock->GetCurrTimeObject()));
-        m_isEmpty = true;
+        SetState(WAITFORREFILL);    
+
+        if (!b_MessageSent)
+        {
+            SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::MACHINE_REFILL, "Maintenance Man", this, SharedData::GetInstance()->m_clock->GetCurrTimeObject()));
+            b_MessageSent = true;
+        }
+            m_isEmpty = true;
         break;
 
     case BROKEN:
         SetState(BROKEN);
-        SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::MACHINE_BROKEN, "Maintenance Man", this, SharedData::GetInstance()->m_clock->GetCurrTimeObject()));
+
+        if (!b_MessageSent)
+        {
+            SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::MACHINE_BROKEN, "Maintenance Man", this, SharedData::GetInstance()->m_clock->GetCurrTimeObject()));
+            b_MessageSent = true;
+        }    
         m_isBroken = true;
         break;
     }

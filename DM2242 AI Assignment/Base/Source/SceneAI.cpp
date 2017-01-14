@@ -90,7 +90,6 @@ void SceneAI::Init()
 
     SharedData::GetInstance()->m_gridMap->m_collisionGrid[14][14] = true;
 
-
     // Machine
     debugMachine = new Machine();
     debugMachine->Init();
@@ -128,6 +127,8 @@ void SceneAI::Init()
     machine->SetSpawnLocation(conveyor->GetCheckpoint(6));
     SharedData::GetInstance()->m_goList.push_back(machine);
     SharedData::GetInstance()->m_gridMap->m_collisionGrid[9][2] = true;
+
+    // Door Spawn Location
 
     // Worker + Assosiated Workstation ( 1 )
     Workstation* tempStation = new Workstation();

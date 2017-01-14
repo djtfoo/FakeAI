@@ -281,7 +281,6 @@ int ScrapMan::Think()
             // Check if retrieved message is invalid
             if (retrivedMsg)
             {
-                retrivedMsg->SetAcknowledged(true);
                 m_robotToPickUp = dynamic_cast<Robot*>(retrivedMsg->GetMessageFromObject());
                 return COLLECT_ROBOT;
             }

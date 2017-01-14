@@ -5,7 +5,7 @@
 
 #include "../../MessageBoard/MessageBoard.h"
 
-Entity::Entity(std::string name) : GameObject(name, true), m_dir(DIR_DOWN), m_vel(0, 0, 0)
+Entity::Entity(std::string name) : GameObject(name, true), m_dir(DIR_DOWN), m_vel(0, 0, 0), b_MessageSent(false), b_newMsgNotif(false)
 {
 }
 
@@ -152,7 +152,7 @@ Message* Entity::ReadMessageBoard(MessageBoard* mb)
 
     for (int i = maxSize - 1; i >= 0; --i)  // read the message log from oldest message
     {
-        Message* msg = mb->GetMessage(i);
+        Message* msg = mb->GetAMessage(i);
         if (msg->GetMessageTo() == this->GetName() && !msg->IsAcknowledged())
         {
             msg->SetAcknowledged(true);
