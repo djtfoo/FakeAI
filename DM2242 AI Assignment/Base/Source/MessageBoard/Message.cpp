@@ -1,9 +1,18 @@
 #include "Message.h"
 
-Message::Message(MESSAGE_TYPE type, std::string msgTo, std::string msgFrom, Time time)
+Message::Message(MESSAGE_TYPE type, std::string msgTo, Entity* msgFrom, Time time)
 : m_type(type)
 , m_messageTo(msgTo)
 , m_messageFrom(msgFrom)
+, m_time(time)
+{
+    b_isAcknowledged = false;
+}
+
+Message::Message(MESSAGE_TYPE type, std::string msgTo, std::string msgFrom, Time time)
+: m_type(type)
+, m_messageTo(msgTo)
+, m_messageFromStr(msgFrom)
 , m_time(time)
 {
     b_isAcknowledged = false;
@@ -35,6 +44,15 @@ std::string Message::GetMessageTo()
 }
 
 std::string Message::GetMessageFrom()
+{
+    // Check if an entity has been set
+    if (!m_messageFrom)
+        return m_messageFrom->GetName();
+    else
+        return m_messageFromStr;
+}
+
+Entity* Message::GetMessageFromObject()
 {
     return m_messageFrom;
 }

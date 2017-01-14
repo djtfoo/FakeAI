@@ -1,4 +1,6 @@
 #include "OrnamentBuildingSystem.h"
+#include "../SharedData.h"
+#include "../MessageBoard/MessageBoard.h"
 
 OrnamentBuildingSystem::OrnamentBuildingSystem()
 : x_laneToBlocks(0), x_laneToOrnament(0)
@@ -58,6 +60,9 @@ void OrnamentBuildingSystem::Update(double dt)
             newIndex = Math::RandIntMinMax(0, 2);
     
         m_ornamentsIndex = newIndex;
+
+        // send message to delivery man
+        SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::ORNAMENT_COMPLETE, "Delivery Man", "Ornament", SharedData::GetInstance()->m_clock->GetCurrTimeObject()));
     }
 }
 

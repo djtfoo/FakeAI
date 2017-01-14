@@ -237,20 +237,21 @@ void ScrapMan::Sense(double dt)
                 //std::cout << d_breakCharge << std::endl;
             }
         }
-        // check whether there's any broken down Robots
-        for (std::vector<GameObject*>::iterator it = SharedData::GetInstance()->m_goList.begin(); it != SharedData::GetInstance()->m_goList.end(); ++it)
-        {
-            GameObject* go = (GameObject*)(*it);
-            if (go->IsActive() && go->GetName() == "Robot")
-            {
-                Robot* robot = dynamic_cast<Robot*>(go);
-                if (robot->GetState() == Robot::SHUTDOWN)
-                    m_robotToPickUp = robot;
-            }
 
-            if (m_robotToPickUp != NULL)
-                break;
-        }
+        // check whether there's any broken down Robots
+        //for (std::vector<GameObject*>::iterator it = SharedData::GetInstance()->m_goList.begin(); it != SharedData::GetInstance()->m_goList.end(); ++it)
+        //{
+        //    GameObject* go = (GameObject*)(*it);
+        //    if (go->IsActive() && go->GetName() == "Robot")
+        //    {
+        //        Robot* robot = dynamic_cast<Robot*>(go);
+        //        if (robot->GetState() == Robot::SHUTDOWN)
+        //            m_robotToPickUp = robot;
+        //    }
+
+        //    if (m_robotToPickUp != NULL)
+        //        break;
+        //}
     }
 
     if (m_state == BREAKDOWN_ROBOT && b_reachedDestination)
@@ -265,9 +266,26 @@ void ScrapMan::Sense(double dt)
 
 int ScrapMan::Think()
 {
-    if (m_robotToPickUp != NULL && m_state == IDLE)
+    //if (m_robotToPickUp != NULL && m_state == IDLE)
+    //{
+    //    return COLLECT_ROBOT;
+    //}
+
+    if (m_state == IDLE)
     {
-        return COLLECT_ROBOT;
+        // Read Messages
+        if (b_newMsgNotif)
+        {
+            Message* retrivedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
+
+            // Check if retrieved message is invalid
+            if (retrivedMsg)
+            {
+                retrivedMsg->SetAcknowledged(true);
+                m_robotToPickUp = dynamic_cast<Robot*>(retrivedMsg->GetMessageFromObject());
+                return COLLECT_ROBOT;
+            }
+        }
     }
 
     if (b_reachedDestination && m_state == COLLECT_ROBOT)

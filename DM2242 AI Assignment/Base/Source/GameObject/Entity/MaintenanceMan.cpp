@@ -230,30 +230,60 @@ int MaintenanceMan::Think()
 
     case IDLE:
     {
-                 if (m_breakCharge >= 2000)
-                 {
-                     randNum = Math::RandIntMinMax(0, 100);
-                     if (randNum < 50)
-                     {
-                         m_breakCharge = 0;
-                     }
-                     else
-                     {
-                         m_doOnce = false;
-                         return BREAK;
-                     }
-                 }
-     
         Vector3 temp = m_workstation->GetPos();
         temp.y -= 1;
 
         // Check if at workstation
         if ((m_pos - temp).Length() < 1.2)
         {
-            int value = ScanMachines();
-            if (value != IDLE)
-                return value;
+            // Read Messages
+            if (b_newMsgNotif)
+            {
+                Message* retrivedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
+
+                // Check if retrieved message is invalid
+                if (retrivedMsg)
+                {
+                    retrivedMsg->SetAcknowledged(true);
+                    switch (retrivedMsg->GetMessageType())
+                    {
+                    case Message::MACHINE_BROKEN:
+                        m_targetMachine = dynamic_cast<Machine*>(retrivedMsg->GetMessageFromObject());
+                        m_targetMachine->SetIsBeingWorkedOn(true);
+                        return REPAIR;
+                        break;
+
+                    case Message::MACHINE_REFILL:
+                        m_targetMachine = dynamic_cast<Machine*>(retrivedMsg->GetMessageFromObject());
+                        m_targetMachine->SetIsBeingWorkedOn(true);
+                        return REFILL;
+                        break;
+                    }
+                }
+            }
         }
+                 
+        if (m_breakCharge >= 2000)
+        {
+            randNum = Math::RandIntMinMax(0, 100);
+            if (randNum < 50)
+            {
+                m_breakCharge = 0;
+            }
+            else
+            {
+                m_doOnce = false;
+                return BREAK;
+            }
+        }
+
+        //// Check if at workstation
+        //if ((m_pos - temp).Length() < 1.2)
+        //{
+        //    int value = ScanMachines();
+        //    if (value != IDLE)
+        //        return value;
+        //}
 
         break;
     }

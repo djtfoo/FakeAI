@@ -2,7 +2,10 @@
 #define ENTITY_H
 
 #include "../GameObject.h"
-#include "../../MessageBoard/MessageBoard.h"
+
+// Forward declarations to fix Entity.h and Message.h including each other
+class Message;
+class MessageBoard;
 
 class Entity : public GameObject
 {
@@ -87,7 +90,7 @@ public:
     virtual int GetStateInt();     // default just in case
     virtual int GetMaxStates(); // default just in case
 
-    Message::MESSAGE_TYPE ReadMessageBoard(MessageBoard* mb);
+    Message* ReadMessageBoard(MessageBoard* mb);
     void SetNewMessageNotif(bool b_notif);
 
     // idea:

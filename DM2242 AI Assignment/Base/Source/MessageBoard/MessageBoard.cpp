@@ -47,7 +47,7 @@ void MessageBoard::PopMessage()
     }
 }
 
-Message* MessageBoard::GetMessage(int idx)
+Message* MessageBoard::GetAMessage(int idx)
 {
     return m_messageLog[idx];
 }

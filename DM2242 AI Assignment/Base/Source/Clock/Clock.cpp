@@ -23,6 +23,11 @@ std::string Clock::GetCurrTime()
     return m_time.GetTime();
 }
 
+Time Clock::GetCurrTimeObject()
+{
+    return m_time;
+}
+
 int Clock::GetCurrMinutes()
 {
     return m_time.GetMinutes();

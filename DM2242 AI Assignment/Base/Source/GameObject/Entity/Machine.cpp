@@ -159,11 +159,13 @@ void Machine::Act(int value)
         break;
     case WAITFORREFILL:
         SetState(WAITFORREFILL);
+        SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::MACHINE_REFILL, "Maintenance Man", this, SharedData::GetInstance()->m_clock->GetCurrTimeObject()));
         m_isEmpty = true;
         break;
 
     case BROKEN:
         SetState(BROKEN);
+        SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::MACHINE_BROKEN, "Maintenance Man", this, SharedData::GetInstance()->m_clock->GetCurrTimeObject()));
         m_isBroken = true;
         break;
     }

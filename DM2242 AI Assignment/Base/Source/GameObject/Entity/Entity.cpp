@@ -3,6 +3,8 @@
 #include "Entity.h"
 #include "../../Utility.h"
 
+#include "../../MessageBoard/MessageBoard.h"
+
 Entity::Entity(std::string name) : GameObject(name, true), m_dir(DIR_DOWN), m_vel(0, 0, 0)
 {
 }
@@ -142,7 +144,7 @@ Entity::DIRECTION Entity::CheckDirection(const Vector3& ownPos, const Vector3& t
         return DIR_DOWN;
 }
 
-Message::MESSAGE_TYPE Entity::ReadMessageBoard(MessageBoard* mb)
+Message* Entity::ReadMessageBoard(MessageBoard* mb)
 {
     b_newMsgNotif = false;     // messages will be processed now
 
@@ -154,11 +156,11 @@ Message::MESSAGE_TYPE Entity::ReadMessageBoard(MessageBoard* mb)
         if (msg->GetMessageTo() == this->GetName() && !msg->IsAcknowledged())
         {
             msg->SetAcknowledged(true);
-            return msg->GetMessageType();
+            return msg;
         }
     }
 
-    return Message::MESSAGE_TYPES_TOTAL;
+    return NULL;
 }
 
 void Entity::SetNewMessageNotif(bool b_notif)

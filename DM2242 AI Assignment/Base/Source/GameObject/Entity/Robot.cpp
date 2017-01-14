@@ -274,7 +274,7 @@ void Robot::Act(int value)
     case SHUTDOWN:
         SetState(SHUTDOWN);
         m_vel.SetZero();
-
+        SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::ROBOT_SHUTDOWN, "Scrap Man", this, SharedData::GetInstance()->m_clock->GetCurrTimeObject()));
         b_toShutDown = false;
         break;
     }

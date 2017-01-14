@@ -14,6 +14,7 @@ public:
     std::string GetCurrDay();
     std::string GetCurrDayAbbreviation();
     std::string GetCurrTime();
+    Time GetCurrTimeObject();
     int GetCurrMinutes();
     int GetCurrHours();
 

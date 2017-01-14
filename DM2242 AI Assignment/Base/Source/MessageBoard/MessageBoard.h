@@ -18,7 +18,7 @@ public:
     void AddMessage(Message* message);
     void PopMessage();
 
-    Message* GetMessage(int idx);
+    Message* GetAMessage(int idx);
     int GetMessageListSize();
 };
 
