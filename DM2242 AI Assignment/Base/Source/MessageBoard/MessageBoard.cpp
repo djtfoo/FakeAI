@@ -24,17 +24,7 @@ void MessageBoard::AddMessage(Message* message)
 {
     m_messageLog.push_back(message);
 
-    // notify every Entity about the new message
-    for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
-    {
-        GameObject* go = SharedData::GetInstance()->m_goList[i];
-        if (go->IsEntity())
-        {
-            Entity* entity = dynamic_cast<Entity*>(go);
-            entity->SetNewMessageNotif(true);
-        }
-    }
-
+    SendNotification();
 }
 
 void MessageBoard::PopMessage()
@@ -44,6 +34,20 @@ void MessageBoard::PopMessage()
         Message* toPop = *(m_messageLog.begin());
         delete toPop;
         m_messageLog.erase(m_messageLog.begin());
+    }
+}
+
+void MessageBoard::SendNotification()
+{
+    // notify every Entity about the new message
+    for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
+    {
+        GameObject* go = SharedData::GetInstance()->m_goList[i];
+        if (go->IsEntity())
+        {
+            Entity* entity = dynamic_cast<Entity*>(go);
+            entity->SetNewMessageNotif(true);
+        }
     }
 }
 

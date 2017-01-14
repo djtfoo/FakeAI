@@ -38,7 +38,7 @@ public:
     Message(MESSAGE_TYPE type, std::string msgTo, std::string m_messageFrom, Time time);
     ~Message();
 
-    std::string GetMessage();
+    std::string GetMessageString();
     std::string GetMessageTo();
     std::string GetMessageFrom();
     Entity* GetMessageFromObject();
