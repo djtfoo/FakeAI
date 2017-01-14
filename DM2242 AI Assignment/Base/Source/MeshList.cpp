@@ -115,6 +115,14 @@ void MeshList::Init()
     meshList[GEO_CLOCKMINUTE] = MeshBuilder::GenerateQuad("clock minute node", Color(0, 1, 0.5f), 0.08f);
     meshList[GEO_CLOCKHOUR] = MeshBuilder::GenerateQuad("clock hour node", Color(0.3f, 0.9f, 1), 0.08f);
 
+    meshList[GEO_MESSAGEBOARD] = MeshBuilder::GenerateQuad("message board", Color(0, 0, 0), 1.f);
+    meshList[GEO_MESSAGEBOARD]->textureID = LoadTGA("Image//Messageboard.tga");
+
+    meshList[GEO_MESSAGEBOARD_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+    meshList[GEO_MESSAGEBOARD_TEXT]->textureID = LoadTGA("Image//Fonts/Font_Calibri.tga");
+    meshList[GEO_MESSAGEBOARD_TEXT]->LoadFontData("Image//Fonts/FontData_Calibri.csv");
+    meshList[GEO_MESSAGEBOARD_TEXT]->material.kAmbient.Set(1, 0, 0);
+
     meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
     meshList[GEO_TEXT]->textureID = LoadTGA("Image//Fonts/Font_FFF Forward.tga");
     meshList[GEO_TEXT]->LoadFontData("Image//Fonts/FontData_FFF Forward.csv");

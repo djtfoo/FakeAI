@@ -1,5 +1,5 @@
-#ifndef MESSAGEBOARD_H
-#define MESSAGEBOARD_H
+#ifndef _MESSAGEBOARD_H
+#define _MESSAGEBOARD_H
 
 #include "Message.h"
 #include <vector>
@@ -20,6 +20,7 @@ public:
 
     Message* GetAMessage(int idx);
     int GetMessageListSize();
+    void SendNotification();
 };
 
 #endif

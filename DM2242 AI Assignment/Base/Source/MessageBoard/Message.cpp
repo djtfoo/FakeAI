@@ -22,7 +22,7 @@ Message::~Message()
 {
 }
 
-std::string Message::GetMessage()
+std::string Message::GetMessageString()
 {
     switch (m_type)
     {
@@ -59,7 +59,7 @@ Entity* Message::GetMessageFromObject()
 
 std::string Message::GetTime()
 {
-    return m_time.GetDay() + " " + m_time.GetTime();
+    return m_time.GetDayAbbreviation() + " " + m_time.GetTime();
 }
 
 bool Message::IsAcknowledged()

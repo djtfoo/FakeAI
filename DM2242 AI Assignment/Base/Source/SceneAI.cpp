@@ -427,7 +427,22 @@ void SceneAI::RenderGO(GameObject *go)
 
 void SceneAI::RenderMessageBoard()
 {
+    // Render the board
+    modelStack.PushMatrix();
+    modelStack.Translate(1.5f, SharedData::GetInstance()->m_gridMap->GetColumns() - 12.5f, 1.5f);
+    modelStack.Scale(4.f, 4.f, 1);
+    RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MESSAGEBOARD), false);
+    modelStack.PopMatrix();
 
+    // Render the messages
+    MessageBoard* mb = SharedData::GetInstance()->m_messageBoard;
+    for (int i = 0; i < mb->GetMessageListSize(); ++i)
+    {
+        Message* msg = mb->GetAMessage(i);
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), msg->GetTime(), Color(0, 0, 0), 1, 1, 16 - i * 3);
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), msg->GetMessageString(), Color(0, 0, 0), 1, 1, 15.f - i * 3);
+    }
+    
 }
 
 void SceneAI::RenderClock()
@@ -439,8 +454,8 @@ void SceneAI::RenderClock()
     RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_CLOCKBASE), false);
     modelStack.PopMatrix();
 
-    // Minutes and Hours nodes beneath clock
-    int minutes = SharedData::GetInstance()->m_clock->GetCurrMinutes();
+    // Minutes nodes beneath clock
+    int minutes = SharedData::GetInstance()->m_clock->GetCurrMinutes() + 1;
     float anglePerMinute = -360.f / 60;
     for (int i = 0; i < minutes; ++i)
     {
@@ -453,18 +468,28 @@ void SceneAI::RenderClock()
         modelStack.PopMatrix();
     }
     
-    int hours = SharedData::GetInstance()->m_clock->GetCurrHours();
+    // Hours nodes beneath clock
+    int hours = SharedData::GetInstance()->m_clock->GetCurrHours() % 12;
     float anglePerHour = -360.f / 12;
-    for (int i = 0; i < hours; ++i)
-    {
-        modelStack.PushMatrix();
-        modelStack.Translate(0.5f, SharedData::GetInstance()->m_gridMap->GetColumns() - 0.8f, 1);
-        modelStack.Translate(0, -0.7f, 0);
-        modelStack.Rotate(anglePerHour * i, 0, 0, 1);
-        modelStack.Translate(0, 0.7f, 0);
-        RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_CLOCKHOUR), false);
-        modelStack.PopMatrix();
-    }
+    //for (int i = 0; i < hours + 1; ++i)
+    //{
+    //    modelStack.PushMatrix();
+    //    modelStack.Translate(0.5f, SharedData::GetInstance()->m_gridMap->GetColumns() - 0.8f, 1);
+    //    modelStack.Translate(0, -0.7f, 0);
+    //    modelStack.Rotate(anglePerHour * i, 0, 0, 1);
+    //    modelStack.Translate(0, 0.7f, 0);
+    //    RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_CLOCKHOUR), false);
+    //    modelStack.PopMatrix();
+    //}
+
+    // Render a single Hour node
+    modelStack.PushMatrix();
+    modelStack.Translate(0.5f, SharedData::GetInstance()->m_gridMap->GetColumns() - 0.8f, 1);
+    modelStack.Translate(0, -0.7f, 0);
+    modelStack.Rotate(anglePerHour * hours, 0, 0, 1);
+    modelStack.Translate(0, 0.7f, 0);
+    RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_CLOCKHOUR), false);
+    modelStack.PopMatrix();
     
     // Clock body
     modelStack.PushMatrix();
