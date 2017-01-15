@@ -9,10 +9,13 @@ class MessageBoard
     std::vector<Message*> m_messageLog;
     const int maxSize;
 
+    double d_pulseTimer;
+
 public:
     MessageBoard();
     ~MessageBoard();
 
+    void Update(double dt);
     void Exit();
 
     void AddMessage(Message* message);

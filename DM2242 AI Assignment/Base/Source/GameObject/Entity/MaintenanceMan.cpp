@@ -260,8 +260,12 @@ int MaintenanceMan::Think()
                     }
                 }
             }
+            else
+            {
+                return IDLE;
+            }
         }
-                 
+
         if (m_breakCharge >= 2000)
         {
             randNum = Math::RandIntMinMax(0, 100);

@@ -2,12 +2,42 @@
 #include "../SharedData.h"
 #include "../GameObject/Entity/Entity.h"
 
-MessageBoard::MessageBoard() : maxSize(5)
+MessageBoard::MessageBoard() : maxSize(5), d_pulseTimer(0.0)
 {
 }
 
 MessageBoard::~MessageBoard()
 {
+}
+
+void MessageBoard::Update(double dt)
+{
+    // Periodically pulse notifications
+    d_pulseTimer += dt;
+
+    if (d_pulseTimer > 1.0)
+    {
+        bool msgNotAcknowledged = false;
+
+        // Check if msg acknowledged
+        int maxSize = this->GetMessageListSize();
+
+        for (int i = 0; i < maxSize; ++i) 
+        {
+            Message* msg = this->GetAMessage(i);
+            if (!msg->IsAcknowledged())
+            {
+                msgNotAcknowledged = true;
+                break;
+            }
+        }
+
+        if (msgNotAcknowledged)
+        {
+            SendNotification();
+            d_pulseTimer = 0.0;
+        }
+    }
 }
 
 void MessageBoard::Exit()

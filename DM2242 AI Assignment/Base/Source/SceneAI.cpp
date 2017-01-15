@@ -258,7 +258,7 @@ void SceneAI::Init()
     maintenance->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(maintenance);
 
-    SharedData::GetInstance()->m_gridMap->m_collisionGrid[5][11] = true;
+    //SharedData::GetInstance()->m_gridMap->m_collisionGrid[5][11] = true;
 
     // Scrap Man + Assosiated Scrap Pile ( 1 )
     ScrapPile* pile = new ScrapPile();
@@ -381,6 +381,9 @@ void SceneAI::Update(double dt)
     if (SharedData::GetInstance()->m_clock->GetCurrDayAbbreviation() == "SAT" || SharedData::GetInstance()->m_clock->GetCurrDayAbbreviation() == "SUN")
         deltaTime *= 10;
     SharedData::GetInstance()->m_clock->Update(deltaTime);
+
+    // Update messageboard
+    SharedData::GetInstance()->m_messageBoard->Update(dt);
 
     // Update GameObjects
     for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
