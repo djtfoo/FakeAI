@@ -43,6 +43,7 @@ protected:
         U_TEXT_ENABLED,
         U_TEXT_COLOR,
 
+        U_BRIGHTNESS,   // a colour filter for brightness of factory based on time of the day
         U_HIGHLIGHTED,  // a colour filter to represent being highlighted
         
         U_TOTAL,

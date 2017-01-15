@@ -19,7 +19,8 @@ public:
     void Exit();
 
     void AddMessage(Message* message);
-    void PopMessage();
+    void PopMessage(int idx);
+    void PopAnAcknowledgedMessage();    // pops the oldest acknowledged message
 
     Message* GetAMessage(int idx);
     int GetMessageListSize();

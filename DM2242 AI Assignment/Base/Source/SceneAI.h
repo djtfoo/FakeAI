@@ -15,6 +15,8 @@ private:
     int index_renderDebugInfo;
     double d_keypressTimer;
 
+    float brightnessFactor;     // for factory brightness
+
 public:
 	SceneAI();
 	~SceneAI();

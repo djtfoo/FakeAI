@@ -2,7 +2,7 @@
 #include "../SharedData.h"
 #include "../GameObject/Entity/Entity.h"
 
-MessageBoard::MessageBoard() : maxSize(5), d_pulseTimer(0.0)
+MessageBoard::MessageBoard() : maxSize(4), d_pulseTimer(0.0)
 {
 }
 
@@ -54,16 +54,32 @@ void MessageBoard::AddMessage(Message* message)
 {
     m_messageLog.push_back(message);
 
+    if (m_messageLog.size() > maxSize)
+        PopAnAcknowledgedMessage();
+
     SendNotification();
 }
 
-void MessageBoard::PopMessage()
+void MessageBoard::PopMessage(int idx)
 {
     if (!m_messageLog.empty())
     {
-        Message* toPop = *(m_messageLog.begin());
+        Message* toPop = m_messageLog[idx];
         delete toPop;
-        m_messageLog.erase(m_messageLog.begin());
+        m_messageLog.erase(m_messageLog.begin() + idx);
+    }
+}
+
+void MessageBoard::PopAnAcknowledgedMessage()
+{
+    for (int i = 0; i < m_messageLog.size(); ++i)   // oldest message to latest message
+    {
+        Message* msg = m_messageLog[i];
+        if (msg->IsAcknowledged())
+        {
+            PopMessage(i);
+            break;
+        }
     }
 }
 

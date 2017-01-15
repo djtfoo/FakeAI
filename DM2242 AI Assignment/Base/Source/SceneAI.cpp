@@ -42,6 +42,8 @@ void SceneAI::Init()
     index_renderDebugInfo = 0;
     d_keypressTimer = 0.0;
 
+    brightnessFactor = 1.f;
+
     //===================
     // Create GameObjects
     //===================
@@ -382,10 +384,28 @@ void SceneAI::Update(double dt)
     }
 
     // Update the clock (day/night cycle)
+    int hours = SharedData::GetInstance()->m_clock->GetCurrHours();
     double deltaTime = 500 * dt;
-    if (SharedData::GetInstance()->m_clock->GetCurrDayAbbreviation() == "SAT" || SharedData::GetInstance()->m_clock->GetCurrDayAbbreviation() == "SUN")
+    if (SharedData::GetInstance()->m_clock->GetCurrDayAbbreviation() == "SAT" || SharedData::GetInstance()->m_clock->GetCurrDayAbbreviation() == "SUN"
+        || hours < 8 || hours > 18)
         deltaTime *= 10;
     SharedData::GetInstance()->m_clock->Update(deltaTime);
+
+    // factory brightness
+    if (hours >= 18) {
+        if (brightnessFactor > 0.3f)
+        {
+            brightnessFactor -= 0.15f * (float)dt;
+            brightnessFactor = Math::Max(brightnessFactor, 0.3f);
+        }
+    }
+    else if (hours >= 8) {
+        if (brightnessFactor < 1.f)
+        {
+            brightnessFactor += 0.15f * (float)dt;
+            brightnessFactor = Math::Min(brightnessFactor, 1.f);
+        }
+    }
 
     // Update messageboard
     SharedData::GetInstance()->m_messageBoard->Update(dt);
@@ -538,6 +558,8 @@ void SceneAI::Render()
 	// Model matrix : an identity matrix (model will be at the origin)
 	modelStack.LoadIdentity();
 
+    glUniform1f(m_parameters[U_BRIGHTNESS], brightnessFactor);
+
     RenderBackground();
 
     //for (std::vector<GameObject*>::iterator it = SharedData::GetInstance()->m_goList.begin(); it != SharedData::GetInstance()->m_goList.end(); ++it)
@@ -612,6 +634,8 @@ void SceneAI::Render()
         if (i == index_renderDebugInfo)
             glUniform1i(m_parameters[U_HIGHLIGHTED], 0);
     }
+
+    glUniform1f(m_parameters[U_BRIGHTNESS], 1.f);
 
     //============================
     // Render GUI/on-screen stuff

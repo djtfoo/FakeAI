@@ -150,7 +150,7 @@ Message* Entity::ReadMessageBoard(MessageBoard* mb)
 
     int maxSize = mb->GetMessageListSize();
 
-    for (int i = maxSize - 1; i >= 0; --i)  // read the message log from oldest message
+    for (int i = 0; i < maxSize; ++i)  // read the message log from oldest message
     {
         Message* msg = mb->GetAMessage(i);
         if (msg->GetMessageTo() == this->GetName() && !msg->IsAcknowledged())

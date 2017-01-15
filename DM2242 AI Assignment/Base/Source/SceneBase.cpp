@@ -67,6 +67,8 @@ void SceneBase::Init()
 	m_parameters[U_TEXT_ENABLED] = glGetUniformLocation(m_programID, "textEnabled");
 	m_parameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
 
+    // colour filter for brightness of the factory based on time of the day
+    m_parameters[U_BRIGHTNESS] = glGetUniformLocation(m_programID, "brightnessFactor");
     // for highlighting selected objects
     m_parameters[U_HIGHLIGHTED] = glGetUniformLocation(m_programID, "highlighted");
 	
@@ -98,6 +100,8 @@ void SceneBase::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], lights[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], lights[0].exponent);
 
+    // colour filter for brightness of the factory based on time of the day
+    glUniform1f(m_parameters[U_BRIGHTNESS], 1.f);
     // for highlighting selected objects
     glUniform1i(m_parameters[U_HIGHLIGHTED], 0);
 
