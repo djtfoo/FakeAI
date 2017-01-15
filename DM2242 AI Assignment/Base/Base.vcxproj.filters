@@ -147,6 +147,9 @@
     <ClCompile Include="Source\Clock\Time.cpp">
       <Filter>Source Files\Clock</Filter>
     </ClCompile>
+    <ClCompile Include="Source\GameObject\Door.cpp">
+      <Filter>Source Files\GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -268,6 +271,9 @@
     </ClInclude>
     <ClInclude Include="Source\GameObject\Entity\Direction.h">
       <Filter>Header Files\GameObject\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObject\Door.h">
+      <Filter>Header Files\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

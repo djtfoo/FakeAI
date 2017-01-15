@@ -42,89 +42,108 @@ void Worker::SetPos(Vector3 pos)
 
 void Worker::Update(double dt)
 {
-    if (m_state == BREAK)
+    if (m_state != OFFWORK)
     {
-        if ((m_pos - m_toilet->GetPos()).Length() < 4)  // within toilet range
+        if (m_state == BREAK)
         {
-            if (!m_doOnce)
+            if ((m_pos - m_toilet->GetPos()).Length() < 4)  // within toilet range
             {
-                m_toiletIdx = m_toilet->AddToQueue(this);
-                //std::cout << "ADDED" << std::endl;
-                m_doOnce = true;
+                if (!m_doOnce)
+                {
+                    m_toiletIdx = m_toilet->AddToQueue(this);
+                    //std::cout << "ADDED" << std::endl;
+                    m_doOnce = true;
+                }
+
+                Vector3 dir = (m_toilet->GetQueuePosition(m_toiletIdx) - m_pos);
+                if (!dir.IsZero())
+                    dir.Normalize();
+
+                m_pos += dir * dt;
+            }
+            else
+            {
+                //pathfind to toilet
+
+                m_pos += m_vel * dt;
+                if (m_pathfinder->hasReachedNode(this->m_pos))
+                {
+                    // reached destination; can get a part and move on.
+                    if (m_pathfinder->hasReachedDestination(this->m_pos))
+                    {
+                        WhenReachedDestination();
+                    }
+                    else
+                    {
+                        WhenReachedPathNode();
+                    }
+                }
+
+                //Vector3 dir = (m_toilet->GetPos() - m_pos).Normalized();
+                //m_pos += dir * dt;
             }
 
-            Vector3 dir = (m_toilet->GetQueuePosition(m_toiletIdx) - m_pos);
-            if (!dir.IsZero())
-                dir.Normalize();
-
-            m_pos += dir * dt;
-        }
-        else
-        {
-            //pathfind to toilet
-
-            m_pos += m_vel * dt;
-            if (m_pathfinder->hasReachedNode(this->m_pos))
+            if ((m_pos - m_toilet->GetPos()).Length() < 0.1)
             {
-                // reached destination; can get a part and move on.
-                if (m_pathfinder->hasReachedDestination(this->m_pos))
+                m_inToilet = true;
+                m_toilet->SetOccupied(true);
+            }
+            else
+                m_inToilet = false;
+        }
+
+        if (m_state == IDLE && !m_atWorkstation)
+        {
+            if ((m_origSpawn - m_pos).Length() > 0.1)
+            {
+                // pathfind to workstation
+                m_pos += m_vel * dt;
+                if (m_pathfinder->hasReachedNode(this->m_pos))
                 {
-                    WhenReachedDestination();
+                    // reached destination; can get a part and move on.
+                    if (m_pathfinder->hasReachedDestination(this->m_pos))
+                    {
+                        WhenReachedDestination();
+                    }
+                    else
+                    {
+                        WhenReachedPathNode();
+                    }
                 }
-                else
+
+                //Vector3 dir = (m_origSpawn - m_pos);
+                //
+                //if (!dir.IsZero())
+                //    dir.Normalize();
+                //
+                //m_pos += dir * dt;
+
+
+                if ((m_pos - m_origSpawn).Length() < 0.1)
                 {
-                    WhenReachedPathNode();
+                    m_atWorkstation = true;
+                    m_doOnce = false;
                 }
             }
-
-            //Vector3 dir = (m_toilet->GetPos() - m_pos).Normalized();
-            //m_pos += dir * dt;
         }
-
-        if ((m_pos - m_toilet->GetPos()).Length() < 0.1)
-        {
-            m_inToilet = true;
-            m_toilet->SetOccupied(true);
-        }
-        else
-            m_inToilet = false;
     }
-
-    if (m_state == IDLE && !m_atWorkstation)
+    else if (m_state == OFFWORK)
     {
-        if ((m_origSpawn - m_pos).Length() > 0.1)
+        // Pathfind to door
+        m_pos += m_vel * dt;
+        if (m_pathfinder->hasReachedNode(this->m_pos))
         {
-            // pathfind to workstation
-            m_pos += m_vel * dt;
-            if (m_pathfinder->hasReachedNode(this->m_pos))
+            // reached destination; can get a part and move on.
+            if (m_pathfinder->hasReachedDestination(this->m_pos))
             {
-                // reached destination; can get a part and move on.
-                if (m_pathfinder->hasReachedDestination(this->m_pos))
-                {
-                    WhenReachedDestination();
-                }
-                else
-                {
-                    WhenReachedPathNode();
-                }
+                WhenReachedDestination();
             }
-
-            //Vector3 dir = (m_origSpawn - m_pos);
-            //
-            //if (!dir.IsZero())
-            //    dir.Normalize();
-            //
-            //m_pos += dir * dt;
-
-
-            if ((m_pos - m_origSpawn).Length() < 0.1)
+            else
             {
-                m_atWorkstation = true;
-                m_doOnce = false;
+                WhenReachedPathNode();
             }
         }
     }
-
 
     switch (m_state)
     {
@@ -138,6 +157,10 @@ void Worker::Update(double dt)
 
     case BREAK:
         DoBreak();
+        break;
+
+    case OFFWORK:
+        DoOffWork();
         break;
     }
 }
@@ -183,7 +206,8 @@ int Worker::Think()
         }
         else if (IsAbleToWork())
             return WORK;
-
+        else if (!SharedData::GetInstance()->m_clock->GetIsDay())
+            return OFFWORK;
         break;
 
     case WORK:
@@ -205,7 +229,11 @@ int Worker::Think()
         }
         break;
       
-    
+    case OFFWORK:
+        if (SharedData::GetInstance()->m_clock->GetIsDay())
+            return IDLE;
+        else
+            return OFFWORK;
     }
 
     return -1;
@@ -252,6 +280,29 @@ void Worker::Act(int value)
         SetDirection(CheckDirection(m_vel));
         m_pathfinder->ReceiveDirection(m_dir);
         break;
+
+    case OFFWORK:
+    {
+        SetState(OFFWORK);
+        // pathfind to door
+        m_pathfinder->EmptyPath();
+        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+
+        GameObject* door;
+        for (auto i : SharedData::GetInstance()->m_goList)
+        {
+            if (i->GetName() == "Door")
+                door = i;
+        }
+
+        m_pathfinder->ReceiveDestination(door->GetPos());
+        m_pathfinder->FindPathGreedyBestFirst();
+
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+        SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
+        break;
+    }
     }
 }
 
@@ -342,6 +393,10 @@ void Worker::DoBreak()
 
         m_toilet->SetOccupied(false);
     }
+}
+
+void Worker::DoOffWork()
+{
 }
 
 bool Worker::IsPartAtWorkstation()

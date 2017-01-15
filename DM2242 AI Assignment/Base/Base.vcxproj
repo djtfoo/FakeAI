@@ -18,6 +18,7 @@
     <ClCompile Include="Source\GameObject\BuildingBlockStack.cpp" />
     <ClCompile Include="Source\GameObject\ConveyorBelt.cpp" />
     <ClCompile Include="Source\GameObject\DeliveryTruck.cpp" />
+    <ClCompile Include="Source\GameObject\Door.cpp" />
     <ClCompile Include="Source\GameObject\Entity\DeliveryMan.cpp" />
     <ClCompile Include="Source\GameObject\Entity\Entity.cpp" />
     <ClCompile Include="Source\GameObject\Entity\Machine.cpp" />
@@ -56,6 +57,7 @@
     <ClInclude Include="Source\GameObject\BuildingBlockStack.h" />
     <ClInclude Include="Source\GameObject\ConveyorBelt.h" />
     <ClInclude Include="Source\GameObject\DeliveryTruck.h" />
+    <ClInclude Include="Source\GameObject\Door.h" />
     <ClInclude Include="Source\GameObject\Entity\DeliveryMan.h" />
     <ClInclude Include="Source\GameObject\Entity\Direction.h" />
     <ClInclude Include="Source\GameObject\Entity\Entity.h" />

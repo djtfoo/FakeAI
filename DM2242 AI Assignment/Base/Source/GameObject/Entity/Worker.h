@@ -13,6 +13,7 @@ public:
         IDLE,
         WORK,
         BREAK,
+        OFFWORK,
         WORKER_STATES_TOTAL
     };
 
@@ -39,6 +40,7 @@ private:
     void DoIdle();
     void DoWork();
     void DoBreak();
+    void DoOffWork();
 
     virtual void Sense(double dt);
     virtual int Think();

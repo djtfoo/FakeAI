@@ -19,6 +19,7 @@
 #include "GameObject/Ornament.h"
 #include "GameObject/ScrapPile.h"
 #include "GameObject/DeliveryTruck.h"
+#include "GameObject/Door.h"
 
 SceneAI::SceneAI()
 {
@@ -76,6 +77,10 @@ void SceneAI::Init()
 
     SharedData::GetInstance()->m_ornamentSystem->SetLaneToBlock(6);
     SharedData::GetInstance()->m_ornamentSystem->SetLaneToOrnament(8);
+
+    // Door 
+    SharedData::GetInstance()->AddGameObject(new Door(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_DOOR), 14, 4);
+    SharedData::GetInstance()->AddGameObject(new Door(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_DOOR), 14, 3);
 
     //===================
     // Create Entities

@@ -42,3 +42,12 @@ void Clock::Update(const double dt)
 {
     m_time.Update(dt);
 }
+
+bool Clock::GetIsDay()
+{
+    // Day defined as 0900 - 1800
+    if (m_time.GetHours() >= 9 && m_time.GetHours() <= 17)
+        return true;
+    else
+        return false;
+}

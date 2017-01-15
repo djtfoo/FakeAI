@@ -18,6 +18,8 @@ public:
     int GetCurrMinutes();
     int GetCurrHours();
 
+    bool GetIsDay();
+
     void Update(const double dt);
 };
 

@@ -118,6 +118,9 @@ void MeshList::Init()
     meshList[GEO_MESSAGEBOARD] = MeshBuilder::GenerateQuad("message board", Color(0, 0, 0), 1.f);
     meshList[GEO_MESSAGEBOARD]->textureID = LoadTGA("Image//Messageboard.tga");
 
+    meshList[GEO_DOOR] = MeshBuilder::GenerateQuad("door", Color(0, 0, 0), 1.f);
+    meshList[GEO_DOOR]->textureID = LoadTGA("Image//door.tga");
+
     meshList[GEO_MESSAGEBOARD_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
     meshList[GEO_MESSAGEBOARD_TEXT]->textureID = LoadTGA("Image//Fonts/Font_Calibri.tga");
     meshList[GEO_MESSAGEBOARD_TEXT]->LoadFontData("Image//Fonts/FontData_Calibri.csv");
