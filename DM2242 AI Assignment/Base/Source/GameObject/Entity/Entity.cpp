@@ -106,7 +106,7 @@ Vector3 Entity::CheckVelocity(DIRECTION dir)
         return Vector3(-1, 0, 0);
 }
 
-Entity::DIRECTION Entity::CheckDirection(const Vector3& velocity)
+DIRECTION Entity::CheckDirection(const Vector3& velocity)
 {
     if (m_vel.IsZero())     // not moving
         return m_dir;    // return previous direction
@@ -124,7 +124,7 @@ Entity::DIRECTION Entity::CheckDirection(const Vector3& velocity)
         return DIR_DOWN;
 }
 
-Entity::DIRECTION Entity::CheckDirection(const Vector3& ownPos, const Vector3& toFacePos)
+DIRECTION Entity::CheckDirection(const Vector3& ownPos, const Vector3& toFacePos)
 {
     Vector3 tempVel = CheckVelocity(ownPos, toFacePos);
 
@@ -166,4 +166,27 @@ Message* Entity::ReadMessageBoard(MessageBoard* mb)
 void Entity::SetNewMessageNotif(bool b_notif)
 {
     b_newMsgNotif = b_notif;
+}
+
+void Entity::WhenReachedDestination()
+{
+    m_pos = m_pathfinder->foundPath.back().GetPosition();
+
+    m_pathfinder->foundPath.pop_back();
+
+    m_vel.SetZero();
+
+    b_reachedDestination = true;
+}
+
+void Entity::WhenReachedPathNode()
+{
+    m_pos = m_pathfinder->foundPath.back().GetPosition();
+
+    m_pathfinder->foundPath.pop_back();
+
+    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+    SetDirection(CheckDirection(m_vel));
+
+    m_pathfinder->ReceiveDirection(m_dir);
 }

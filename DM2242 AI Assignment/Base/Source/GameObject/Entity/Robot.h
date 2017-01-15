@@ -3,7 +3,6 @@
 
 #include "Entity.h"
 #include "../ConveyorBelt.h"
-#include "Pathfinder.h"
 
 class Robot : public Entity
 {
@@ -31,9 +30,9 @@ private:
     bool b_toShutDown;
     
     //bool b_reachedLane; // maybe
-    bool b_reachedDestination;
 
-    Pathfinder* m_pathfinder;
+    //Pathfinder* m_pathfinder;
+    //bool b_reachedDestination;
     
     ROBOT_STATE m_state;
 

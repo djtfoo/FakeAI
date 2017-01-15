@@ -15,6 +15,7 @@ Worker::~Worker()
 void Worker::Init()
 {
     m_pathfinder = new Pathfinder();
+    b_reachedDestination = false;
 
     m_state = IDLE;
     m_timer = 0;
@@ -68,22 +69,11 @@ void Worker::Update(double dt)
                 // reached destination; can get a part and move on.
                 if (m_pathfinder->hasReachedDestination(this->m_pos))
                 {
-                    m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                    m_pathfinder->foundPath.pop_back();
-
-                    m_vel.SetZero();
-
-                    b_reachedDestination = true;
+                    WhenReachedDestination();
                 }
                 else
                 {
-                    m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                    m_pathfinder->foundPath.pop_back();
-
-                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
-                    SetDirection(CheckDirection(m_vel));
+                    WhenReachedPathNode();
                 }
             }
 
@@ -111,22 +101,11 @@ void Worker::Update(double dt)
                 // reached destination; can get a part and move on.
                 if (m_pathfinder->hasReachedDestination(this->m_pos))
                 {
-                    m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                    m_pathfinder->foundPath.pop_back();
-
-                    m_vel.SetZero();
-
-                    b_reachedDestination = true;
+                    WhenReachedDestination();
                 }
                 else
                 {
-                    m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                    m_pathfinder->foundPath.pop_back();
-
-                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
-                    SetDirection(CheckDirection(m_vel));
+                    WhenReachedPathNode();
                 }
             }
 
@@ -249,6 +228,7 @@ void Worker::Act(int value)
 
         SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
         SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
         break;
 
     case WORK:
@@ -270,6 +250,7 @@ void Worker::Act(int value)
 
         SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
         SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
         break;
     }
 }

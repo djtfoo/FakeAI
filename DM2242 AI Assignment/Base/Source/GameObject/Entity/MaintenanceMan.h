@@ -28,8 +28,8 @@ private:
 
     Machine* m_targetMachine;
 
-    Pathfinder* m_pathfinder;
-    bool b_reachedDestination;
+    //Pathfinder* m_pathfinder;
+    //bool b_reachedDestination;
 
     bool m_doingWork;
     bool m_breakDone;

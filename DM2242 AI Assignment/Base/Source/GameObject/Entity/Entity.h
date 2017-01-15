@@ -2,6 +2,8 @@
 #define ENTITY_H
 
 #include "../GameObject.h"
+#include "Pathfinder.h"
+#include "Direction.h"
 
 // Forward declarations to fix Entity.h and Message.h including each other
 class Message;
@@ -9,16 +11,6 @@ class MessageBoard;
 
 class Entity : public GameObject
 {
-public:
-    enum DIRECTION
-    {
-        DIR_DOWN,
-        DIR_UP,
-        DIR_RIGHT,
-        DIR_LEFT,
-        DIRECTIONS_TOTAL
-    };
-
 private:
     virtual void Sense(double dt) = 0;  // get/receive updates from the world
     virtual int Think() = 0;   // process the updates
@@ -66,6 +58,10 @@ protected:
     bool b_newMsgNotif;    // notification that there is a new message on MessageBoard
     bool b_MessageSent;
 
+    // Pathfinding (not all Entities will use)
+    Pathfinder* m_pathfinder;
+    bool b_reachedDestination;
+
 public:
     virtual ~Entity();
     
@@ -93,6 +89,10 @@ public:
 
     Message* ReadMessageBoard(MessageBoard* mb);
     void SetNewMessageNotif(bool b_notif);
+
+    // Pathfinding-related functions
+    void WhenReachedDestination();  // generic settings for reaching intended destination of found path
+    void WhenReachedPathNode();     // generic settings for when reaching next node on found path (but not destination)
 
     // idea:
     // multiple types of think and act... use int values for switch case

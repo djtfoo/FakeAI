@@ -2,7 +2,6 @@
 #define DELIVERY_MAN_H
 
 #include "Entity.h"
-#include "Pathfinder.h"
 #include "../DeliveryTruck.h"
 #include "../Ornament.h"
 
@@ -25,11 +24,11 @@ private:
     DeliveryTruck* m_deliveryTruck;
     Ornament* m_completedOrnaments[3];
     Ornament* m_ornamentToCollect;
-
-    bool b_reachedDestination;
     
     double d_timerCounter;
-    Pathfinder* m_pathfinder;
+
+    //Pathfinder* m_pathfinder;
+    //bool b_reachedDestination;
 
     virtual void Sense(double dt);
     virtual int Think();

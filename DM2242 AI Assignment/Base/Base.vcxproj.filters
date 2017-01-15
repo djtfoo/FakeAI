@@ -266,5 +266,8 @@
     <ClInclude Include="Source\Clock\Time.h">
       <Filter>Header Files\Clock</Filter>
     </ClInclude>
+    <ClInclude Include="Source\GameObject\Entity\Direction.h">
+      <Filter>Header Files\GameObject\Entity</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
