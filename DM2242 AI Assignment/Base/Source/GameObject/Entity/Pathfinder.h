@@ -2,6 +2,7 @@
 #define PATHFINDER_H
 
 #include "Vector3.h"
+#include "Direction.h"
 #include <vector>
 
 struct Node
@@ -44,6 +45,7 @@ class Pathfinder
 
     
     Vector3 destination;
+    DIRECTION m_entityDir;  // direction of the Entity
 
 public:
     std::vector<Node> foundPath;     // top Node in stack is the next step to take; destination at bottom of stack
@@ -60,6 +62,8 @@ public:
 
     bool hasReachedNode(const Vector3& pos);    // reached the next node to go to; time to recalculate path
     bool hasReachedDestination(const Vector3& pos); // check if node reached is the destination
+
+    void ReceiveDirection(DIRECTION dir);   // get Entity's current direction
 
     void ReceiveCurrentPos(const Vector3& pos);     // get the Entity's current position
     void ReceiveDestination(const Vector3& pos);    // when movementNodes is empty or state changes, receive the Entity's new destination

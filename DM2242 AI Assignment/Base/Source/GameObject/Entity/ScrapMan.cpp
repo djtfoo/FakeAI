@@ -17,7 +17,6 @@ void ScrapMan::Init()
     d_timerCounter = 0.0;
 
     m_pathfinder = new Pathfinder();
-
     b_reachedDestination = false;
 
     m_dir = DIR_DOWN;
@@ -70,22 +69,11 @@ void ScrapMan::Update(double dt)
                 // reached destination; can get a part and move on.
                 if (m_pathfinder->hasReachedDestination(this->m_pos))
                 {
-                    m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                    m_pathfinder->foundPath.pop_back();
-
-                    m_vel.SetZero();
-
-                    b_reachedDestination = true;
+                    WhenReachedDestination();
                 }
                 else
                 {
-                    m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                    m_pathfinder->foundPath.pop_back();
-
-                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
-                    SetDirection(CheckDirection(m_vel));
+                    WhenReachedPathNode();
                 }
             }
 
@@ -103,22 +91,11 @@ void ScrapMan::Update(double dt)
             // reached destination; can get a part and move on.
             if (m_pathfinder->hasReachedDestination(this->m_pos))
             {
-                m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                m_pathfinder->foundPath.pop_back();
-
-                m_vel.SetZero();
-
-                b_reachedDestination = true;
+                WhenReachedDestination();
             }
             else
             {
-                m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                m_pathfinder->foundPath.pop_back();
-
-                SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
-                SetDirection(CheckDirection(m_vel));
+                WhenReachedPathNode();
             }
         }
         break;
@@ -133,23 +110,12 @@ void ScrapMan::Update(double dt)
                 // reached destination; can get a part and move on.
                 if (m_pathfinder->hasReachedDestination(this->m_pos))
                 {
-                    m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                    m_pathfinder->foundPath.pop_back();
-
-                    m_vel.SetZero();
+                    WhenReachedDestination();
                     SetDirection(DIR_RIGHT);
-
-                    b_reachedDestination = true;
                 }
                 else
                 {
-                    m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                    m_pathfinder->foundPath.pop_back();
-
-                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
-                    SetDirection(CheckDirection(m_vel));
+                    WhenReachedPathNode();
                 }
             }
 
@@ -185,22 +151,11 @@ void ScrapMan::Update(double dt)
                 // reached destination; can get a part and move on.
                 if (m_pathfinder->hasReachedDestination(this->m_pos))
                 {
-                    m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                    m_pathfinder->foundPath.pop_back();
-
-                    m_vel.SetZero();
-
-                    b_reachedDestination = true;
+                    WhenReachedDestination();
                 }
                 else
                 {
-                    m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                    m_pathfinder->foundPath.pop_back();
-
-                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
-                    SetDirection(CheckDirection(m_vel));
+                    WhenReachedPathNode();
                 }
             }
 
@@ -345,7 +300,7 @@ void ScrapMan::Act(int value)
 
         SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
         SetDirection(CheckDirection(m_vel));
-
+        m_pathfinder->ReceiveDirection(m_dir);
         break;
 
     case COLLECT_ROBOT:
@@ -363,6 +318,7 @@ void ScrapMan::Act(int value)
 
                           SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
                           SetDirection(CheckDirection(m_vel));
+                          m_pathfinder->ReceiveDirection(m_dir);
                           break;
     }
 
@@ -379,7 +335,7 @@ void ScrapMan::Act(int value)
 
                             SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
                             SetDirection(CheckDirection(m_vel));
-
+                            m_pathfinder->ReceiveDirection(m_dir);
                             break;
     }
 
@@ -396,6 +352,7 @@ void ScrapMan::Act(int value)
 
         SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
         SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
         break;
 
     case 5: // go to idle after doing work

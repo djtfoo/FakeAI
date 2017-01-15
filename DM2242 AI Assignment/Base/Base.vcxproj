@@ -57,6 +57,7 @@
     <ClInclude Include="Source\GameObject\ConveyorBelt.h" />
     <ClInclude Include="Source\GameObject\DeliveryTruck.h" />
     <ClInclude Include="Source\GameObject\Entity\DeliveryMan.h" />
+    <ClInclude Include="Source\GameObject\Entity\Direction.h" />
     <ClInclude Include="Source\GameObject\Entity\Entity.h" />
     <ClInclude Include="Source\GameObject\Entity\Machine.h" />
     <ClInclude Include="Source\GameObject\Entity\MaintenanceMan.h" />

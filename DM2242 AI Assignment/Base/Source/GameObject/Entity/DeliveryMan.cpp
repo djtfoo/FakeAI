@@ -14,14 +14,13 @@ DeliveryMan::~DeliveryMan()
 void DeliveryMan::Init()
 {
     m_pathfinder = new Pathfinder();
+    b_reachedDestination = false;
 
     m_state = IDLE;
     m_dir = DIR_DOWN;
     m_deliveryTruck = 0;
 
     d_timerCounter = 0.0;
-
-    b_reachedDestination = false;
 
     m_ornamentToCollect = NULL;
     for (int i = 0; i < 3; ++i)
@@ -48,19 +47,13 @@ void DeliveryMan::Update(double dt)
                 // reached destination; can get a part and move on.
                 if (m_pathfinder->hasReachedDestination(this->m_pos))
                 {
-                    m_pathfinder->foundPath.pop_back();
-
-                    m_vel.SetZero();
-
+                    WhenReachedDestination();
+                    //b_reachedDestination = false;
                     m_deliveryTruck->SetMoving(false);
                 }
                 else
                 {
-                    m_pathfinder->foundPath.pop_back();
-
-                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
-                    SetDirection(CheckDirection(m_vel));
-
+                    WhenReachedPathNode();
                     m_deliveryTruck->SetDirection(this->m_dir);
                 }
             }
@@ -79,21 +72,12 @@ void DeliveryMan::Update(double dt)
             // reached destination; can get a part and move on.
             if (m_pathfinder->hasReachedDestination(this->m_pos))
             {
-                m_pathfinder->foundPath.pop_back();
-
-                m_vel.SetZero();
-
-                b_reachedDestination = true;
-
+                WhenReachedDestination();
                 m_deliveryTruck->SetMoving(false);
             }
             else
             {
-                m_pathfinder->foundPath.pop_back();
-
-                SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
-                SetDirection(CheckDirection(m_vel));
-
+                WhenReachedPathNode();
                 m_deliveryTruck->SetDirection(this->m_dir);
             }
         }
@@ -109,18 +93,11 @@ void DeliveryMan::Update(double dt)
             // reached destination; can get a part and move on.
             if (m_pathfinder->hasReachedDestination(this->m_pos))
             {
-                m_pathfinder->foundPath.pop_back();
-
-                m_vel.SetZero();
-
-                b_reachedDestination = true;
+                WhenReachedDestination();
             }
             else
             {
-                m_pathfinder->foundPath.pop_back();
-
-                SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
-                SetDirection(CheckDirection(m_vel));
+                WhenReachedPathNode();
             }
         }
         break;
@@ -132,20 +109,12 @@ void DeliveryMan::Update(double dt)
             // reached destination; can get a part and move on.
             if (m_pathfinder->hasReachedDestination(this->m_pos))
             {
-                m_pathfinder->foundPath.pop_back();
-
-                m_vel.SetZero();
-
-                b_reachedDestination = true;
-
+                WhenReachedDestination();
                 m_ornamentToCollect = GetOrnamentToCollect();   // if there is no more, it will return 0
             }
             else
             {
-                m_pathfinder->foundPath.pop_back();
-
-                SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
-                SetDirection(CheckDirection(m_vel));
+                WhenReachedPathNode();
             }
         }
         break;
@@ -197,6 +166,7 @@ void DeliveryMan::Act(int value)
 
         SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
         SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
 
         m_deliveryTruck->SetDirection(this->m_dir);
 
@@ -213,6 +183,7 @@ void DeliveryMan::Act(int value)
 
         SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()) );
         SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
 
         m_deliveryTruck->SetDirection(this->m_dir);
         break;
@@ -230,6 +201,7 @@ void DeliveryMan::Act(int value)
 
         SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
         SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
         break;
 
     case COLLECT_PRODUCT:
@@ -247,6 +219,7 @@ void DeliveryMan::Act(int value)
 
                             SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
                             SetDirection(CheckDirection(m_vel));
+                            m_pathfinder->ReceiveDirection(m_dir);
                             break;
     }
 

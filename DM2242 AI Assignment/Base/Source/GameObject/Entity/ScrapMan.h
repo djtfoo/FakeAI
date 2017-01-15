@@ -2,7 +2,6 @@
 #define SCRAP_MAN_H
 
 #include "Entity.h"
-#include "Pathfinder.h"
 #include "../ScrapPile.h"
 #include "Robot.h"
 #include "../Toilet.h"
@@ -32,8 +31,8 @@ private:
     bool b_gotRobot;
     bool b_breakingDownRobot;
 
-    Pathfinder* m_pathfinder;
-    bool b_reachedDestination;
+    //Pathfinder* m_pathfinder;
+    //bool b_reachedDestination;
 
     ScrapPile* m_pile;  // aka work place lol
 

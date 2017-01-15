@@ -67,22 +67,11 @@ void MaintenanceMan::Update(double dt)
                 // reached destination; can get a part and move on.
                 if (m_pathfinder->hasReachedDestination(this->m_pos))
                 {
-                    m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                    m_pathfinder->foundPath.pop_back();
-
-                    m_vel.SetZero();
-
-                    b_reachedDestination = true;
+                    WhenReachedDestination();
                 }
                 else
                 {
-                    m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                    m_pathfinder->foundPath.pop_back();
-
-                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
-                    SetDirection(CheckDirection(m_vel));
+                    WhenReachedPathNode();
                 }
             }
 
@@ -114,23 +103,12 @@ void MaintenanceMan::Update(double dt)
                 // reached destination; can get a part and move on.
                 if (m_pathfinder->hasReachedDestination(this->m_pos))
                 {
-                    m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                    m_pathfinder->foundPath.pop_back();
-
-                    m_vel.SetZero();
-
-                    b_reachedDestination = true;
+                    WhenReachedDestination();
                     m_doingWork = true;
                 }
                 else
                 {
-                    m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                    m_pathfinder->foundPath.pop_back();
-
-                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
-                    SetDirection(CheckDirection(m_vel));
+                    WhenReachedPathNode();
                 }
             }
 
@@ -152,22 +130,11 @@ void MaintenanceMan::Update(double dt)
                 // reached destination; can get a part and move on.
                 if (m_pathfinder->hasReachedDestination(this->m_pos))
                 {
-                    m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                    m_pathfinder->foundPath.pop_back();
-
-                    m_vel.SetZero();
-
-                    b_reachedDestination = true;
+                    WhenReachedDestination();
                 }
                 else
                 {
-                    m_pos = m_pathfinder->foundPath.back().GetPosition();
-
-                    m_pathfinder->foundPath.pop_back();
-
-                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
-                    SetDirection(CheckDirection(m_vel));
+                    WhenReachedPathNode();
                 }
             }
 
@@ -351,6 +318,7 @@ void MaintenanceMan::Act(int value)
 
         SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
         SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
         break;
 
     case REPAIR:
@@ -366,6 +334,7 @@ void MaintenanceMan::Act(int value)
 
         SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
         SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
         break;
 
     case REFILL:
@@ -381,6 +350,7 @@ void MaintenanceMan::Act(int value)
 
         SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
         SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
         break;
 
     case BREAK:
@@ -396,6 +366,7 @@ void MaintenanceMan::Act(int value)
 
         SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
         SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
         break;
 
     case MAINTENANCEMAN_STATES_TOTAL:   // going back to workstation from toilet
@@ -411,6 +382,7 @@ void MaintenanceMan::Act(int value)
 
         SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
         SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
         break;
     }
 }

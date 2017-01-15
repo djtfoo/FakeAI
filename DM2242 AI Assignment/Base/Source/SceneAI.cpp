@@ -436,11 +436,20 @@ void SceneAI::RenderMessageBoard()
 
     // Render the messages
     MessageBoard* mb = SharedData::GetInstance()->m_messageBoard;
+    Color msgColor(0, 0, 0);
     for (int i = 0; i < mb->GetMessageListSize(); ++i)
     {
-        Message* msg = mb->GetAMessage(i);
-        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), msg->GetTime(), Color(0, 0, 0), 1, 1, 16 - i * 3);
-        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), msg->GetMessageString(), Color(0, 0, 0), 1, 1, 15.f - i * 3);
+        Message* msg = mb->GetAMessage(mb->GetMessageListSize() - 1 - i);
+
+        if (msg->IsAcknowledged()) {
+            msgColor.Set(0, 1, 0);
+        }
+        else {
+            msgColor.Set(0, 0, 0);
+        }
+
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), msg->GetTime(), msgColor, 1, 1, 16 - i * 3);
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), msg->GetMessageString(), msgColor, 1, 1, 15.f - i * 3);
     }
     
 }

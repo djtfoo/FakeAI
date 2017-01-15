@@ -1,7 +1,7 @@
 #include "Pathfinder.h"
 #include "../../SharedData.h"
 
-Pathfinder::Pathfinder()
+Pathfinder::Pathfinder() : m_entityDir(DIR_DOWN)
 {
 }
 
@@ -31,8 +31,31 @@ bool Pathfinder::hasReachedNode(const Vector3& pos)
 {
     std::vector<Node>::iterator it = foundPath.end() - 1;
 
-    if ((it->GetPosition() - pos).Length() < 0.03)
-        return true;
+    //if ((it->GetPosition() - pos).Length() < 0.03)
+    //    return true;
+
+    switch (m_entityDir)
+    {
+    case DIR_DOWN:
+        if (pos.y <= it->GetPosition().y)
+            return true;
+        break;
+
+    case DIR_UP:
+        if (pos.y >= it->GetPosition().y)
+            return true;
+        break;
+
+    case DIR_RIGHT:
+        if (pos.x >= it->GetPosition().x)
+            return true;
+        break;
+
+    case DIR_LEFT:
+        if (pos.x <= it->GetPosition().x)
+            return true;
+        break;
+    }
 
     return false;
 }
@@ -43,6 +66,11 @@ bool Pathfinder::hasReachedDestination(const Vector3& pos)
         return true;
 
     return false;
+}
+
+void Pathfinder::ReceiveDirection(DIRECTION dir)
+{
+    this->m_entityDir = dir;
 }
 
 void Pathfinder::ReceiveCurrentPos(const Vector3& pos)

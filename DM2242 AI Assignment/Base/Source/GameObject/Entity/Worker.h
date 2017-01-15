@@ -3,7 +3,6 @@
 
 #include "Entity.h"
 #include "../Workstation.h"
-#include "Pathfinder.h"
 #include "../Toilet.h"
 
 class Worker : public Entity
@@ -32,9 +31,9 @@ private:
     Workstation* m_workstation;
     Toilet* m_toilet;
 
-    Pathfinder* m_pathfinder;
-    bool b_reachedDestination;
-
+    //Pathfinder* m_pathfinder;
+    //bool b_reachedDestination;
+    
     WORKER_STATE m_state;
 
     void DoIdle();
