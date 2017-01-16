@@ -174,6 +174,23 @@ void ScrapMan::Update(double dt)
         DoBreak();
 
         break;
+
+    case OFFWORK:
+        m_pos += m_vel * dt;
+        if (m_pathfinder->hasReachedNode(this->m_pos))
+        {
+            // reached destination; can get a part and move on.
+            if (m_pathfinder->hasReachedDestination(this->m_pos))
+            {
+                WhenReachedDestination();
+            }
+            else
+            {
+                WhenReachedPathNode();
+            }
+        }
+        break;
+       
     }
 }
 
@@ -240,6 +257,9 @@ int ScrapMan::Think()
                 return COLLECT_ROBOT;
             }
         }
+
+        if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+            return OFFWORK;
     }
 
     if (b_reachedDestination && m_state == COLLECT_ROBOT)
@@ -276,6 +296,12 @@ int ScrapMan::Think()
             d_breakCharge = 0;
             return IDLE;
         }
+    }
+
+    if (m_state == OFFWORK)
+    {
+        if (SharedData::GetInstance()->m_clock->GetIsWorkDay() && SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+            return IDLE;
     }
 
     return -1;
@@ -364,6 +390,29 @@ void ScrapMan::Act(int value)
         m_atWorkstation = true;
         d_timerCounter = 0.0;
         break;
+
+    case OFFWORK:
+    {
+        SetState(OFFWORK);
+        // pathfind to door
+        m_pathfinder->EmptyPath();
+        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+
+        GameObject* door;
+        for (auto i : SharedData::GetInstance()->m_goList)
+        {
+            if (i->GetName() == "Door")
+                door = i;
+        }
+
+        m_pathfinder->ReceiveDestination(door->GetPos());
+        m_pathfinder->FindPathGreedyBestFirst();
+
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+        SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
+        break;
+    }
     }
 }
 

@@ -15,7 +15,7 @@ public:
         COLLECT_ROBOT,
         BREAKDOWN_ROBOT,
         BREAK,
-        
+        OFFWORK,
         SCRAPMAN_STATES_TOTAL
     };
 
