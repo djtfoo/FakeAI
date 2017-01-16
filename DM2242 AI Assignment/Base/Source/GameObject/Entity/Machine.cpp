@@ -78,17 +78,23 @@ int Machine::Think()
 	// Change to switch case maybe?
     //~~~~~~~~~~~~~~~~
 
-    if (m_state == REST && m_timer > 5)
+    if (m_state == REST)
     {
-        if (m_scrapQuantity < m_partToCreate)
+        if (m_timer > 5)
         {
-            return WAITFORREFILL;
+            if (m_scrapQuantity < m_partToCreate)
+            {
+                return WAITFORREFILL;
+            }
+            else
+            {
+                m_timer = 0.0;
+                return PRODUCTION;
+            }
         }
-        else
-        {
-            m_timer = 0.0;
-            return PRODUCTION;
-        }
+
+        if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+            return SHUTDOWN;
     }
 
     if (m_state == PRODUCTION)
@@ -141,6 +147,12 @@ int Machine::Think()
             return BROKEN;
 	}
 
+    if (m_state == SHUTDOWN)
+    {
+        if (SharedData::GetInstance()->m_clock->GetIsWorkDay() && SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+            return REST;
+    }
+
     return -1;
 }
 
@@ -181,6 +193,10 @@ void Machine::Act(int value)
             b_MessageSent = true;
         }    
         m_isBroken = true;
+        break;
+
+    case SHUTDOWN:
+        SetState(SHUTDOWN);
         break;
     }
 }

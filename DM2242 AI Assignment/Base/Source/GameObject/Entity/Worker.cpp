@@ -129,14 +129,18 @@ void Worker::Update(double dt)
     }
     else if (m_state == OFFWORK)
     {
-        // Pathfind to door
+        // Walk to door
         m_pos += m_vel * dt;
         if (m_pathfinder->hasReachedNode(this->m_pos))
         {
-            // reached destination; can get a part and move on.
+            // check if reached destination; 
             if (m_pathfinder->hasReachedDestination(this->m_pos))
             {
+                // reached
                 WhenReachedDestination();
+
+                // Set inactive; Offwork already
+                this->SetInactive();
             }
             else
             {
@@ -191,7 +195,9 @@ int Worker::Think()
     {
 
     case IDLE:
-        if (m_breakCharge >= 2000)
+        if (IsAbleToWork())
+            return WORK;
+        else if (m_breakCharge >= 2000)
         {
             randNum = Math::RandIntMinMax(0, 100);
             if (randNum < 50)
@@ -204,14 +210,11 @@ int Worker::Think()
                 return BREAK;
             }
         }
-        else if (IsAbleToWork())
-            return WORK;
-        else if (!SharedData::GetInstance()->m_clock->GetIsDay())
+        else if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
             return OFFWORK;
         break;
 
     case WORK:
-
         if (m_workCompleted)
         {
             m_timer = 0.0;
@@ -230,10 +233,8 @@ int Worker::Think()
         break;
       
     case OFFWORK:
-        if (SharedData::GetInstance()->m_clock->GetIsDay())
+        if (SharedData::GetInstance()->m_clock->GetIsWorkDay() && SharedData::GetInstance()->m_clock->GetIsWorkStarted())
             return IDLE;
-        else
-            return OFFWORK;
     }
 
     return -1;

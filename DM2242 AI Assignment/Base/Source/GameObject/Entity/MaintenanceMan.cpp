@@ -118,7 +118,28 @@ void MaintenanceMan::Update(double dt)
             }
         }
     }
-    else    // idle state
+    else if (m_state == OFFWORK)
+    {
+        // Walk to door
+        m_pos += m_vel * dt;
+        if (m_pathfinder->hasReachedNode(this->m_pos))
+        {
+            // check if reached destination; 
+            if (m_pathfinder->hasReachedDestination(this->m_pos))
+            {
+                // reached
+                WhenReachedDestination();
+
+                // Set inactive; Offwork already
+                this->SetInactive();
+            }
+            else
+            {
+                WhenReachedPathNode();
+            }
+        }
+    }
+    else // idle state
     {
         // Move to workstation if no TargetMachine
         if ((m_origSpawn - m_pos).Length() > 0.1)
@@ -169,6 +190,10 @@ void MaintenanceMan::Update(double dt)
 
     case BREAK:
         DoBreak();
+        break;
+
+    case OFFWORK:
+        DoOffWork();
         break;
     }
 }
@@ -227,10 +252,6 @@ int MaintenanceMan::Think()
                     }
                 }
             }
-            else
-            {
-                return IDLE;
-            }
         }
 
         if (m_breakCharge >= 2000)
@@ -246,6 +267,9 @@ int MaintenanceMan::Think()
                 return BREAK;
             }
         }
+
+        if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+            return OFFWORK;
 
         //// Check if at workstation
         //if ((m_pos - temp).Length() < 1.2)
@@ -270,7 +294,7 @@ int MaintenanceMan::Think()
         //{
         //    return REFILL;
         //}
-            break;
+        break;
 
     case REPAIR:
         if (m_targetMachine && !m_targetMachine->IsBroken())
@@ -291,7 +315,7 @@ int MaintenanceMan::Think()
         {
             m_breakDone = false;
             m_breakCharge = 0;
-            return MAINTENANCEMAN_STATES_TOTAL;
+            return IDLE;
         }
         else
         {
@@ -299,6 +323,10 @@ int MaintenanceMan::Think()
             m_doingWork = false;
         }
         break;
+
+    case OFFWORK:
+        if (SharedData::GetInstance()->m_clock->GetIsWorkDay() && SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+            return IDLE;
 
     }
 
@@ -388,6 +416,29 @@ void MaintenanceMan::Act(int value)
         SetDirection(CheckDirection(m_vel));
         m_pathfinder->ReceiveDirection(m_dir);
         break;
+
+    case OFFWORK:
+    {
+        SetState(OFFWORK);
+        // pathfind to door
+        m_pathfinder->EmptyPath();
+        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+
+        GameObject* door;
+        for (auto i : SharedData::GetInstance()->m_goList)
+        {
+            if (i->GetName() == "Door")
+                door = i;
+        }
+
+        m_pathfinder->ReceiveDestination(door->GetPos());
+        m_pathfinder->FindPathGreedyBestFirst();
+
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+        SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
+        break;
+    }
     }
 }
 
@@ -474,6 +525,10 @@ void MaintenanceMan::DoBreak()
  
         m_toilet->SetOccupied(false);
     }
+}
+
+void MaintenanceMan::DoOffWork()
+{
 }
 
 MaintenanceMan::MAINTENANCEMAN_STATE MaintenanceMan::GetState()

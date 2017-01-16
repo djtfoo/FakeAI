@@ -18,7 +18,8 @@ public:
     int GetCurrMinutes();
     int GetCurrHours();
 
-    bool GetIsDay();
+    bool GetIsWorkDay();
+    bool GetIsWorkStarted();
 
     void Update(const double dt);
 };

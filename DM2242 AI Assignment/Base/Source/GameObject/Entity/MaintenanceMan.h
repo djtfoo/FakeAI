@@ -16,7 +16,7 @@ public:
         REPAIR,
         REFILL,
         BREAK,
-
+        OFFWORK,
         MAINTENANCEMAN_STATES_TOTAL
     };
 
@@ -44,6 +44,7 @@ private:
     void DoRepair();
     void DoRefill();
     void DoBreak();
+    void DoOffWork();
 
     virtual void Sense(double dt);
     virtual int Think();

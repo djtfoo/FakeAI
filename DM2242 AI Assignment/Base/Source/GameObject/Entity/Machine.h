@@ -16,6 +16,7 @@ public:
         PRODUCTION,
         WAITFORREFILL,
         BROKEN,
+        SHUTDOWN,
         MACHINE_STATES_TOTAL
     };
 

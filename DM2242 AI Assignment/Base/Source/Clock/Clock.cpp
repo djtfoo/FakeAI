@@ -43,9 +43,17 @@ void Clock::Update(const double dt)
     m_time.Update(dt);
 }
 
-bool Clock::GetIsDay()
+bool Clock::GetIsWorkDay()
 {
-    // Day defined as 0900 - 1800
+    // Day defined as 0800 - 1800
+    if (m_time.GetHours() >= 8 && m_time.GetHours() <= 17 && (m_time.GetDayAbbreviation() != "SAT" && m_time.GetDayAbbreviation() != "SUN"))
+        return true;
+    else
+        return false;
+}
+
+bool Clock::GetIsWorkStarted()
+{
     if (m_time.GetHours() >= 9 && m_time.GetHours() <= 17)
         return true;
     else
