@@ -1,18 +1,18 @@
-#include "Worker.h"
+#include "Supervisor.h"
 
 #include "Robot.h"
 
-Worker::Worker() : Entity("Worker")
+Supervisor::Supervisor() : Entity("Supervisor")
 {
 }
 
-Worker::~Worker()
+Supervisor::~Supervisor()
 {
     if (m_pathfinder)
         delete m_pathfinder;
 }
 
-void Worker::Init()
+void Supervisor::Init()
 {
     m_pathfinder = new Pathfinder();
     b_reachedDestination = false;
@@ -20,7 +20,6 @@ void Worker::Init()
     m_state = IDLE;
     m_timer = 0;
     m_breakCharge = Math::RandFloatMinMax(-1000, 1000);
-    m_workCompleted = false;
     m_atWorkstation = true;
     m_breakDone = false;
     m_inToilet = false;
@@ -28,19 +27,18 @@ void Worker::Init()
     m_shouldMoveForward = true;
     m_toiletIdx = 0;
 
-	m_workstation = NULL;
+    m_workstation = NULL;
     m_toilet = NULL;
 
-    randNum = 0;
 }
 
-void Worker::SetPos(Vector3 pos)
+void Supervisor::SetPos(Vector3 pos)
 {
     m_pos = pos;
     m_origSpawn = m_pos;
 }
 
-void Worker::Update(double dt)
+void Supervisor::Update(double dt)
 {
     if (m_state != OFFWORK)
     {
@@ -155,8 +153,8 @@ void Worker::Update(double dt)
         DoIdle();
         break;
 
-    case WORK:
-        DoWork();
+    case PATROL:
+        DoPatrol();
         break;
 
     case BREAK:
@@ -169,9 +167,9 @@ void Worker::Update(double dt)
     }
 }
 
-void Worker::Sense(double dt)
+void Supervisor::Sense(double dt)
 {
-    if (m_state == WORK)
+    if (m_state == PATROL)
         m_timer += dt;
     else if (m_state == BREAK && m_inToilet)
         m_timer += dt;
@@ -189,21 +187,19 @@ void Worker::Sense(double dt)
     }
 }
 
-int Worker::Think()
+int Supervisor::Think()
 {
     switch (m_state)
     {
 
     case IDLE:
-        
+
         if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
             return OFFWORK;
 
-        if (IsAbleToWork())
-            return WORK;
-        else if (m_breakCharge >= 2000)
+        if (m_breakCharge >= 2000)
         {
-            randNum = Math::RandIntMinMax(0, 100);
+            int randNum = Math::RandIntMinMax(0, 100);
             if (randNum < 50)
             {
                 m_breakCharge = 0;
@@ -217,13 +213,8 @@ int Worker::Think()
 
         break;
 
-    case WORK:
-        if (m_workCompleted)
-        {
-            m_timer = 0.0;
-            m_workCompleted = false;
-            return IDLE;
-        }
+    case PATROL:
+
         break;
 
     case BREAK:
@@ -234,7 +225,7 @@ int Worker::Think()
             return IDLE;
         }
         break;
-      
+
     case OFFWORK:
         if (SharedData::GetInstance()->m_clock->GetIsWorkDay())
         {
@@ -245,13 +236,13 @@ int Worker::Think()
                 return IDLE;
             }
         }
-            
+
     }
 
     return -1;
 }
 
-void Worker::Act(int value)
+void Supervisor::Act(int value)
 {
     switch (value)
     {
@@ -271,8 +262,8 @@ void Worker::Act(int value)
         m_pathfinder->ReceiveDirection(m_dir);
         break;
 
-    case WORK:
-        SetState(WORK);
+    case PATROL:
+        SetState(PATROL);
         //DoWork();
         SetDirection(CheckDirection(this->m_pos, m_workstation->GetPos()));
         break;
@@ -295,30 +286,30 @@ void Worker::Act(int value)
 
     case OFFWORK:
     {
-        SetState(OFFWORK);
-        // pathfind to door
-        m_pathfinder->EmptyPath();
-        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+                    SetState(OFFWORK);
+                    // pathfind to door
+                    m_pathfinder->EmptyPath();
+                    m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
 
-        GameObject* door;
-        for (auto i : SharedData::GetInstance()->m_goList)
-        {
-            if (i->GetName() == "Door")
-                door = i;
-        }
+                    GameObject* door;
+                    for (auto i : SharedData::GetInstance()->m_goList)
+                    {
+                        if (i->GetName() == "Door")
+                            door = i;
+                    }
 
-        m_pathfinder->ReceiveDestination(door->GetPos());
-        m_pathfinder->FindPathGreedyBestFirst();
+                    m_pathfinder->ReceiveDestination(door->GetPos());
+                    m_pathfinder->FindPathGreedyBestFirst();
 
-        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
-        SetDirection(CheckDirection(m_vel));
-        m_pathfinder->ReceiveDirection(m_dir);
-        break;
+                    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+                    SetDirection(CheckDirection(m_vel));
+                    m_pathfinder->ReceiveDirection(m_dir);
+                    break;
     }
     }
 }
 
-void Worker::DoIdle()
+void Supervisor::DoIdle()
 {
     if ((m_pos - m_origSpawn).Length() < 0.1)
     {
@@ -334,52 +325,12 @@ void Worker::DoIdle()
         SetDirection(DIR_DOWN);
 }
 
-void Worker::DoWork()
+void Supervisor::DoPatrol()
 {
-    if (m_timer > 4)
-    {
-        m_workCompleted = true;
 
-        if (m_workstation->GetTypeStored() == RobotPart::BODY)
-        {
-            Robot* tempRobot = new Robot();
-            tempRobot->Init();
-            tempRobot->SetActive();
-
-            tempRobot->SetPos(m_pos - Vector3(0, 1, 0));
-
-            for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
-            {
-                if (SharedData::GetInstance()->m_goList[i]->GetName() == "ConveyorBelt")
-                {
-                    tempRobot->SetBelt(dynamic_cast<ConveyorBelt*>(SharedData::GetInstance()->m_goList[i]));
-                }
-            }
-
-            tempRobot->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT));
-            tempRobot->SetState(Robot::INCOMPLETE_1);
-            tempRobot->SetWaypoint(1);
-
-            SharedData::GetInstance()->m_goList.push_back(tempRobot);
-        }
-        else
-        {
-            if (m_workstation->GetCurrRobot())
-            {
-                m_workstation->GetCurrRobot()->SetState(static_cast<Robot::ROBOT_STATE>(m_workstation->GetCurrRobot()->GetState() + 1));
-                m_workstation->GetCurrRobot()->SetWorkedOn(false);
-                m_workstation->GetCurrRobot()->SetPos(m_workstation->GetRobotPrevPos());
-                //m_workstation->GetCurrRobot()->SetVelocity(CheckVelocity(m_pos, m_workstation->GetCurrRobot()->GetWaypoint()));
-                m_workstation->SetCurrRobot(NULL);
-            }
-        }
-
-        m_timer = 0;
-        m_workstation->RemoveFromStorage();
-    }
 }
 
-void Worker::DoBreak()
+void Supervisor::DoBreak()
 {
     if (m_toilet->CheckIfChange())
     {
@@ -407,19 +358,11 @@ void Worker::DoBreak()
     }
 }
 
-void Worker::DoOffWork()
+void Supervisor::DoOffWork()
 {
 }
 
-bool Worker::IsPartAtWorkstation()
-{
-    if (m_workstation->IfHasRobotPart())
-        return true;
-
-    return false;
-}
-
-bool Worker::IsOnBreak()
+bool Supervisor::IsOnBreak()
 {
     if (m_state == BREAK)
         return true;
@@ -428,76 +371,48 @@ bool Worker::IsOnBreak()
 }
 
 
-void Worker::SetWorkstation(Workstation* station)
+void Supervisor::SetWorkstation(Workstation* station)
 {
     m_workstation = station;
 }
 
-bool Worker::IsAbleToWork()
-{
-    if (!m_atWorkstation)
-        return false;
-
-    switch (m_workstation->GetTypeStored())
-    {
-    case RobotPart::BODY:
-        if (IsPartAtWorkstation())
-            return true;
-        break;
-    case RobotPart::HEAD:
-        if (IsPartAtWorkstation() && m_workstation->IfRobotAtStation())
-            return true;
-        break;
-    case RobotPart::LIMB:
-        if (IsPartAtWorkstation() && m_workstation->IfRobotAtStation())
-            return true;
-        break;
-    case RobotPart::MICROCHIP:
-        if (IsPartAtWorkstation() && m_workstation->IfRobotAtStation())
-            return true;
-        break;
-    }
-
-    return false;
-}
-
-Worker::WORKER_STATE Worker::GetState()
+Supervisor::SUPERVISOR_STATE Supervisor::GetState()
 {
     return m_state;
 }
 
-void Worker::SetState(WORKER_STATE state)
+void Supervisor::SetState(SUPERVISOR_STATE state)
 {
     this->m_state = state;
     this->SetSprite();
 }
 
-int Worker::GetStateInt()
+int Supervisor::GetStateInt()
 {
     return m_state;
 }
 
-int Worker::GetMaxStates()
+int Supervisor::GetMaxStates()
 {
-    return WORKER_STATES_TOTAL;
+    return SUPERVISOR_STATES_TOTAL;
 }
 
-void Worker::SetToilet(Toilet* toilet)
+void Supervisor::SetToilet(Toilet* toilet)
 {
     m_toilet = toilet;
 }
 
-Toilet* Worker::GetToilet()
+Toilet* Supervisor::GetToilet()
 {
     return m_toilet;
 }
 
-double Worker::GetBreakCharge()
+double Supervisor::GetBreakCharge()
 {
     return m_breakCharge;
 }
 
-Pathfinder* Worker::GetPathfinder()
+Pathfinder* Supervisor::GetPathfinder()
 {
     return m_pathfinder;
 }

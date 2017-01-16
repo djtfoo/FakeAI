@@ -113,6 +113,9 @@ void Robot::Update(double dt)
 
     case SHUTDOWN:
         break;
+    
+    case POWEROFF:
+        break;
     }
 
 }
@@ -170,6 +173,9 @@ int Robot::Think()
 
         if (b_ornamentCompleted && m_lifetime > 10.0)   // so they don't cheer so early
             return CHEER;
+
+        if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+            return POWEROFF;
         break;
 
     case WORK_WITHPART:
@@ -195,6 +201,11 @@ int Robot::Think()
         break;
 
     case SHUTDOWN:
+        break;
+
+    case POWEROFF:
+        if (SharedData::GetInstance()->m_clock->GetIsWorkDay() && SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+            return WORK_WITHOUTPART;
         break;
     }
 
@@ -255,6 +266,10 @@ void Robot::Act(int value)
         m_vel.SetZero();
         SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::ROBOT_SHUTDOWN, "Scrap Man", this, SharedData::GetInstance()->m_clock->GetCurrTimeObject()));
         b_toShutDown = false;
+        break;
+
+    case POWEROFF:
+        SetState(POWEROFF);
         break;
     }
 }

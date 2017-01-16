@@ -81,7 +81,7 @@ void SceneAI::Init()
     SharedData::GetInstance()->m_ornamentSystem->SetLaneToOrnament(8);
 
     // Door 
-    SharedData::GetInstance()->AddGameObject(new Door(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_DOOR), 14, 4);
+    SharedData::GetInstance()->AddGameObject(new Door(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_DOOR), 14, 8);
 
     //===================
     // Create Entities
@@ -383,7 +383,7 @@ void SceneAI::Update(double dt)
     // Update the clock (day/night cycle)
     int hours = SharedData::GetInstance()->m_clock->GetCurrHours();
     std::string dayAbbr = SharedData::GetInstance()->m_clock->GetCurrDayAbbreviation();
-    double deltaTime = 500 * dt;
+    double deltaTime = 300 * dt;
     if (dayAbbr == "SAT" || dayAbbr == "SUN" || hours < 8 || hours > 18)
         deltaTime *= 10;
     SharedData::GetInstance()->m_clock->Update(deltaTime);

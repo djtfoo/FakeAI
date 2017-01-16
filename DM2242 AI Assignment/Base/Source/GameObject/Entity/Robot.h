@@ -18,6 +18,7 @@ public:
         WORK_WITHPART,
         CHEER,
         SHUTDOWN,
+        POWEROFF,
 
         ROBOT_STATES_TOTAL
     };

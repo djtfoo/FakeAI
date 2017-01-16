@@ -26,6 +26,7 @@
     <ClCompile Include="Source\GameObject\Entity\Pathfinder.cpp" />
     <ClCompile Include="Source\GameObject\Entity\Robot.cpp" />
     <ClCompile Include="Source\GameObject\Entity\ScrapMan.cpp" />
+    <ClCompile Include="Source\GameObject\Entity\Supervisor.cpp" />
     <ClCompile Include="Source\GameObject\Entity\Worker.cpp" />
     <ClCompile Include="Source\GameObject\GameObject.cpp" />
     <ClCompile Include="Source\GameObject\Ornament.cpp" />
@@ -66,6 +67,7 @@
     <ClInclude Include="Source\GameObject\Entity\Pathfinder.h" />
     <ClInclude Include="Source\GameObject\Entity\Robot.h" />
     <ClInclude Include="Source\GameObject\Entity\ScrapMan.h" />
+    <ClInclude Include="Source\GameObject\Entity\Supervisor.h" />
     <ClInclude Include="Source\GameObject\Entity\Worker.h" />
     <ClInclude Include="Source\GameObject\GameObject.h" />
     <ClInclude Include="Source\GameObject\Ornament.h" />

@@ -232,6 +232,9 @@ int MaintenanceMan::Think()
 
     case IDLE:
     {
+        if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+            return OFFWORK;
+
         Vector3 temp = m_workstation->GetPos();
         temp.y -= 1;
 
@@ -277,9 +280,6 @@ int MaintenanceMan::Think()
                 return BREAK;
             }
         }
-
-        if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
-            return OFFWORK;
 
         //// Check if at workstation
         //if ((m_pos - temp).Length() < 1.2)
@@ -335,8 +335,15 @@ int MaintenanceMan::Think()
         break;
 
     case OFFWORK:
-        if (SharedData::GetInstance()->m_clock->GetIsWorkDay() && SharedData::GetInstance()->m_clock->GetIsWorkStarted())
-            return IDLE;
+        if (SharedData::GetInstance()->m_clock->GetIsWorkDay())
+        {
+            float randNum = Math::RandFloatMinMax(0, 100);
+            if (randNum < 0.1 || SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+            {
+                m_breakCharge = 0;
+                return IDLE;
+            }
+        }
 
     }
 

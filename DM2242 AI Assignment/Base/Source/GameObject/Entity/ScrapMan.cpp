@@ -258,6 +258,9 @@ int ScrapMan::Think()
 
     if (m_state == IDLE)
     {
+        if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+            return OFFWORK;
+
         // Read Messages
         if (b_newMsgNotif && d_msgNotifTimer >= 2.0)
         {
@@ -272,9 +275,6 @@ int ScrapMan::Think()
                 return COLLECT_ROBOT;
             }
         }
-
-        if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
-            return OFFWORK;
     }
 
     if (b_reachedDestination && m_state == COLLECT_ROBOT)
@@ -315,8 +315,15 @@ int ScrapMan::Think()
 
     if (m_state == OFFWORK)
     {
-        if (SharedData::GetInstance()->m_clock->GetIsWorkDay() && SharedData::GetInstance()->m_clock->GetIsWorkStarted())
-            return IDLE;
+        if (SharedData::GetInstance()->m_clock->GetIsWorkDay())
+        {
+            float randNum = Math::RandFloatMinMax(0, 100);
+            if (randNum < 0.1 || SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+            {
+                d_breakCharge = 0;
+                return IDLE;
+            }
+        }
     }
 
     return -1;
@@ -335,7 +342,7 @@ void ScrapMan::Act(int value)
 
         // pathfind to workstation
         m_pathfinder->EmptyPath();
-        m_pathfinder->ReceiveCurrentPos(Vector3(14, 14, m_pos.z));
+        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
         m_pathfinder->ReceiveDestination(m_origSpawn);
         m_pathfinder->FindPathGreedyBestFirst();
 

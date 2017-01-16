@@ -150,6 +150,9 @@
     <ClCompile Include="Source\GameObject\Door.cpp">
       <Filter>Source Files\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="Source\GameObject\Entity\Supervisor.cpp">
+      <Filter>Source Files\GameObject\Entity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -274,6 +277,9 @@
     </ClInclude>
     <ClInclude Include="Source\GameObject\Door.h">
       <Filter>Header Files\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObject\Entity\Supervisor.h">
+      <Filter>Header Files\GameObject\Entity</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
