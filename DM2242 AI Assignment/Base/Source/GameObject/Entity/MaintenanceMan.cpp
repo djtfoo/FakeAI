@@ -40,6 +40,16 @@ void MaintenanceMan::SetPos(Vector3 pos)
 
 void MaintenanceMan::Update(double dt)
 {
+    // Update message notification
+    if (b_newMsgNotif)
+    {
+        UpdateMessageNotif(dt);
+    }
+    if (b_renderAcknowledgeMsg)
+    {
+        UpdateMessageAcknowledged(dt);
+    }
+
     if (m_state == BREAK)
     {
         // Check if toilet is close, if so add to queue and walk to it
@@ -120,22 +130,22 @@ void MaintenanceMan::Update(double dt)
     }
     else if (m_state == OFFWORK)
     {
-        // Walk to door
-        m_pos += m_vel * dt;
-        if (m_pathfinder->hasReachedNode(this->m_pos))
+        if (!m_pathfinder->IsPathEmpty())
         {
-            // check if reached destination; 
-            if (m_pathfinder->hasReachedDestination(this->m_pos))
+            // Walk to door
+            m_pos += m_vel * dt;
+            if (m_pathfinder->hasReachedNode(this->m_pos))
             {
-                // reached
-                WhenReachedDestination();
-
-                // Set inactive; Offwork already
-                this->SetInactive();
-            }
-            else
-            {
-                WhenReachedPathNode();
+                // check if reached destination; 
+                if (m_pathfinder->hasReachedDestination(this->m_pos))
+                {
+                    // reached
+                    WhenReachedDestination();
+                }
+                else
+                {
+                    WhenReachedPathNode();
+                }
             }
         }
     }
@@ -229,26 +239,26 @@ int MaintenanceMan::Think()
         if ((m_pos - temp).Length() < 1.2)
         {
             // Read Messages
-            if (b_newMsgNotif)
+            if (b_newMsgNotif && d_msgNotifTimer >= 2.0)
             {
                 Message* retrivedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
 
                 // Check if retrieved message is invalid
                 if (retrivedMsg)
                 {
+                    AcknowledgeMessage();
+
                     switch (retrivedMsg->GetMessageType())
                     {
                     case Message::MACHINE_BROKEN:
                         m_targetMachine = dynamic_cast<Machine*>(retrivedMsg->GetMessageFromObject());
                         m_targetMachine->SetIsBeingWorkedOn(true);
                         return REPAIR;
-                        break;
 
                     case Message::MACHINE_REFILL:
                         m_targetMachine = dynamic_cast<Machine*>(retrivedMsg->GetMessageFromObject());
                         m_targetMachine->SetIsBeingWorkedOn(true);
                         return REFILL;
-                        break;
                     }
                 }
             }

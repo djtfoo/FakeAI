@@ -29,6 +29,16 @@ void DeliveryMan::Init()
 
 void DeliveryMan::Update(double dt)
 {
+    // Update message notification
+    if (b_newMsgNotif)
+    {
+        UpdateMessageNotif(dt);
+    }
+    if (b_renderAcknowledgeMsg)
+    {
+        UpdateMessageAcknowledged(dt);
+    }
+
     if (SharedData::GetInstance()->m_ornamentSystem->IsJustCompleted())
     {
         AddCompletedOrnament(SharedData::GetInstance()->m_ornamentSystem->GetCompletedOrnament());

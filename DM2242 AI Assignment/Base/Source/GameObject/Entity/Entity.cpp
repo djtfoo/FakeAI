@@ -5,7 +5,11 @@
 
 #include "../../MessageBoard/MessageBoard.h"
 
-Entity::Entity(std::string name) : GameObject(name, true), m_dir(DIR_DOWN), m_vel(0, 0, 0), b_MessageSent(false), b_newMsgNotif(false)
+Entity::Entity(std::string name) : GameObject(name, true)
+, m_dir(DIR_DOWN), m_vel(0, 0, 0)
+, b_newMsgNotif(false), d_msgNotifTimer(0.0)
+, f_symbolTranslation(0.f)
+, b_renderMessageComeIn(false), b_renderAcknowledgeMsg(false)
 {
 }
 
@@ -166,6 +170,62 @@ Message* Entity::ReadMessageBoard(MessageBoard* mb)
 void Entity::SetNewMessageNotif(bool b_notif)
 {
     b_newMsgNotif = b_notif;
+}
+
+void Entity::ReceiveMessageNotif()
+{
+    b_renderMessageComeIn = true;
+    d_msgNotifTimer = 0.0;
+    f_symbolTranslation = 0.f;
+}
+
+void Entity::UpdateMessageNotif(const double dt)
+{
+    d_msgNotifTimer += dt;
+    if (d_msgNotifTimer >= 1.5)
+        b_renderMessageComeIn = false;
+    
+    UpdateSymbolTranslation(dt);
+}
+
+void Entity::UpdateMessageAcknowledged(const double dt)
+{
+    d_msgNotifTimer += dt;
+    if (d_msgNotifTimer >= 1.5)
+        b_renderAcknowledgeMsg = false;
+
+    UpdateSymbolTranslation(dt);
+}
+
+void Entity::UpdateSymbolTranslation(const double dt)
+{
+    if (f_symbolTranslation < 0.3f)
+    {
+        f_symbolTranslation += 0.5f * (float)dt;
+        f_symbolTranslation = Math::Min(f_symbolTranslation, 0.3f);
+    }
+}
+
+bool Entity::HasMessageComeIn()
+{
+    return b_renderMessageComeIn;
+}
+
+float Entity::GetRenderNotifOffset()
+{
+    return f_symbolTranslation;
+}
+
+bool Entity::HasAcknowledgedMessage()
+{
+    return b_renderAcknowledgeMsg;
+}
+
+void Entity::AcknowledgeMessage()
+{
+    b_renderAcknowledgeMsg = true;
+    d_msgNotifTimer = 0.0;
+    f_symbolTranslation = 0.f;
 }
 
 void Entity::WhenReachedDestination()

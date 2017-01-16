@@ -33,7 +33,9 @@ public:
     void RenderClock();
 
     void RenderGameObject(GameObject* go);
-    void RenderEntity(Entity* entity);
+    //void RenderEntity(Entity* entity);
+    void RenderMessageNotification(Entity* entity);
+    void RenderAcknowledgeNotification(Entity* entity);
 
     void RenderDebugInfo();
 

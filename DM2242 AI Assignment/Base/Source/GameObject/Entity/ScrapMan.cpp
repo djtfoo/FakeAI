@@ -48,6 +48,16 @@ void ScrapMan::SetPos(Vector3 pos)
 
 void ScrapMan::Update(double dt)
 {
+    // Update message notification
+    if (b_newMsgNotif)
+    {
+        UpdateMessageNotif(dt);
+    }
+    if (b_renderAcknowledgeMsg)
+    {
+        UpdateMessageAcknowledged(dt);
+    }
+
     switch (m_state)
     {
     case IDLE:
@@ -176,17 +186,20 @@ void ScrapMan::Update(double dt)
         break;
 
     case OFFWORK:
-        m_pos += m_vel * dt;
-        if (m_pathfinder->hasReachedNode(this->m_pos))
+        if (!m_pathfinder->IsPathEmpty())
         {
-            // reached destination; can get a part and move on.
-            if (m_pathfinder->hasReachedDestination(this->m_pos))
+            m_pos += m_vel * dt;
+            if (m_pathfinder->hasReachedNode(this->m_pos))
             {
-                WhenReachedDestination();
-            }
-            else
-            {
-                WhenReachedPathNode();
+                // reached destination; can get a part and move on.
+                if (m_pathfinder->hasReachedDestination(this->m_pos))
+                {
+                    WhenReachedDestination();
+                }
+                else
+                {
+                    WhenReachedPathNode();
+                }
             }
         }
         break;
@@ -246,13 +259,15 @@ int ScrapMan::Think()
     if (m_state == IDLE)
     {
         // Read Messages
-        if (b_newMsgNotif)
+        if (b_newMsgNotif && d_msgNotifTimer >= 2.0)
         {
             Message* retrivedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
 
             // Check if retrieved message is invalid
             if (retrivedMsg)
             {
+                AcknowledgeMessage();
+
                 m_robotToPickUp = dynamic_cast<Robot*>(retrivedMsg->GetMessageFromObject());
                 return COLLECT_ROBOT;
             }

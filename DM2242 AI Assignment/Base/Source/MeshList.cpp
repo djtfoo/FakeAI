@@ -119,7 +119,7 @@ void MeshList::Init()
     meshList[GEO_MESSAGEBOARD]->textureID = LoadTGA("Image//Messageboard.tga");
 
     meshList[GEO_DOOR] = MeshBuilder::GenerateQuad("door", Color(0, 0, 0), 1.f);
-    meshList[GEO_DOOR]->textureID = LoadTGA("Image//door.tga");
+    meshList[GEO_DOOR]->textureID = LoadTGA("Image//Door.tga");
 
     meshList[GEO_MESSAGEBOARD_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
     meshList[GEO_MESSAGEBOARD_TEXT]->textureID = LoadTGA("Image//Fonts/Font_Calibri.tga");
@@ -130,6 +130,12 @@ void MeshList::Init()
     meshList[GEO_TEXT]->textureID = LoadTGA("Image//Fonts/Font_FFF Forward.tga");
     meshList[GEO_TEXT]->LoadFontData("Image//Fonts/FontData_FFF Forward.csv");
     meshList[GEO_TEXT]->material.kAmbient.Set(1, 0, 0);
+
+    meshList[GEO_MESSAGENOTIF] = MeshBuilder::GenerateQuad("envelope", Color(1, 1, 1), 1.f);
+    meshList[GEO_MESSAGENOTIF]->textureID = LoadTGA("Image//Symbol_Envelope.tga");
+
+    meshList[GEO_ACKNOWLEDGETICK] = MeshBuilder::GenerateQuad("tick", Color(1, 1, 1), 1.f);
+    meshList[GEO_ACKNOWLEDGETICK]->textureID = LoadTGA("Image//Symbol_Tick.tga");
 
     meshList[GEO_PATHFINDING_NODE] = MeshBuilder::GenerateQuad("pathfinding node", Color(1, 1, 1), 0.25f);
     meshList[GEO_PATHFINDING_NODE]->textureID = LoadTGA("Image//node.tga");

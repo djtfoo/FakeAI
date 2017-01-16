@@ -50,7 +50,9 @@ enum GEOMETRY_TYPE
     GEO_DOOR,
     GEO_TEXT,
 
-    // Debug
+    // Debug/Symbols
+    GEO_MESSAGENOTIF,
+    GEO_ACKNOWLEDGETICK,
     GEO_PATHFINDING_NODE,
     GEO_HIGHLIGHTBOX,
     

@@ -382,25 +382,28 @@ void SceneAI::Update(double dt)
 
     // Update the clock (day/night cycle)
     int hours = SharedData::GetInstance()->m_clock->GetCurrHours();
+    std::string dayAbbr = SharedData::GetInstance()->m_clock->GetCurrDayAbbreviation();
     double deltaTime = 500 * dt;
-    if (SharedData::GetInstance()->m_clock->GetCurrDayAbbreviation() == "SAT" || SharedData::GetInstance()->m_clock->GetCurrDayAbbreviation() == "SUN"
-        || hours < 8 || hours > 18)
+    if (dayAbbr == "SAT" || dayAbbr == "SUN" || hours < 8 || hours > 18)
         deltaTime *= 10;
     SharedData::GetInstance()->m_clock->Update(deltaTime);
 
     // factory brightness
-    if (hours >= 18) {
-        if (brightnessFactor > 0.3f)
-        {
-            brightnessFactor -= 0.15f * (float)dt;
-            brightnessFactor = Math::Max(brightnessFactor, 0.3f);
+    if (dayAbbr != "SAT" && dayAbbr != "SUN")
+    {
+        if (hours >= 18) {
+            if (brightnessFactor > 0.3f)
+            {
+                brightnessFactor -= 0.15f * (float)dt;
+                brightnessFactor = Math::Max(brightnessFactor, 0.3f);
+            }
         }
-    }
-    else if (hours >= 8) {
-        if (brightnessFactor < 1.f)
-        {
-            brightnessFactor += 0.15f * (float)dt;
-            brightnessFactor = Math::Min(brightnessFactor, 1.f);
+        else if (hours >= 8) {
+            if (brightnessFactor < 1.f)
+            {
+                brightnessFactor += 0.15f * (float)dt;
+                brightnessFactor = Math::Min(brightnessFactor, 1.f);
+            }
         }
     }
 
@@ -442,12 +445,49 @@ void SceneAI::RenderGO(GameObject *go)
         modelStack.Translate(0, 0, -0.5f);
     else if (go->GetName() == "DeliveryTruck")
         modelStack.Translate(0, -0.1f, 0.5f);
+    else if (go->GetName() == "Door")
+        modelStack.Translate(0, 0, 0.5f);
     
     // Render the object
     modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
     modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
 	RenderMesh(go->GetMesh(), false);
+
+    // Render message notification for Entities
+    if (go->IsEntity())
+    {
+        Entity* entity = dynamic_cast<Entity*>(go);
+        if (entity->HasMessageComeIn())
+        {
+            glUniform1i(m_parameters[U_HIGHLIGHTED], 0);
+            RenderMessageNotification(entity);
+        }
+        else if (entity->HasAcknowledgedMessage())
+        {
+            glUniform1i(m_parameters[U_HIGHLIGHTED], 0);
+            RenderAcknowledgeNotification(entity);
+        }
+    }
+
 	modelStack.PopMatrix();
+}
+
+void SceneAI::RenderMessageNotification(Entity* entity)
+{
+    modelStack.PushMatrix();
+    modelStack.Translate(0.f, 0.1f + entity->GetRenderNotifOffset(), 1.f);
+    modelStack.Scale(0.5f, 0.5f, 0.5f);
+    RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MESSAGENOTIF), false);
+    modelStack.PopMatrix();
+}
+
+void SceneAI::RenderAcknowledgeNotification(Entity* entity)
+{
+    modelStack.PushMatrix();
+    modelStack.Translate(0.f, 0.1f + entity->GetRenderNotifOffset(), 1.f);
+    modelStack.Scale(0.5f, 0.5f, 0.5f);
+    RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ACKNOWLEDGETICK), false);
+    modelStack.PopMatrix();
 }
 
 void SceneAI::RenderMessageBoard()

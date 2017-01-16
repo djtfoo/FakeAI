@@ -23,7 +23,8 @@ void SharedData::Init()
     // randomise the starting day (and time)
     Time::DAY startingDay = static_cast<Time::DAY>(Math::RandIntMinMax(0, 4));
 
-    int startTime = 32400;
+    int startTime = 32400;  // 9am
+    //int startTime = 61200;  // 5pm
     //int startTime = 0;
     m_clock = new Clock(Time(startingDay, startTime));
 }

@@ -56,7 +56,10 @@ protected:
     Vector3 m_vel;
 
     bool b_newMsgNotif;    // notification that there is a new message on MessageBoard
-    bool b_MessageSent;
+    bool b_renderMessageComeIn;   // message that is directed to this Entity has arrived; envelope symbol appears
+    double d_msgNotifTimer; // timer offset for notif to come in and render notif symbol
+    float f_symbolTranslation;  // value for translation for animation
+    bool b_renderAcknowledgeMsg;    // rendering a tick to represent having acknowledged the message
 
     // Pathfinding (not all Entities will use)
     Pathfinder* m_pathfinder;
@@ -87,8 +90,17 @@ public:
     virtual int GetStateInt();     // default just in case
     virtual int GetMaxStates(); // default just in case
 
+    // MessageBoard-related functions
     Message* ReadMessageBoard(MessageBoard* mb);
     void SetNewMessageNotif(bool b_notif);
+    bool HasMessageComeIn();
+    void ReceiveMessageNotif();
+    void UpdateSymbolTranslation(const double dt);
+    void UpdateMessageNotif(const double dt);
+    float GetRenderNotifOffset();
+    bool HasAcknowledgedMessage();
+    void AcknowledgeMessage();
+    void UpdateMessageAcknowledged(const double dt);
 
     // Pathfinding-related functions
     void WhenReachedDestination();  // generic settings for reaching intended destination of found path

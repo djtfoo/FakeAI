@@ -57,7 +57,16 @@ void MessageBoard::AddMessage(Message* message)
     if (m_messageLog.size() > maxSize)
         PopAnAcknowledgedMessage();
 
-    SendNotification();
+    //SendNotification();
+    for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
+    {
+        GameObject* go = SharedData::GetInstance()->m_goList[i];
+        if (go->GetName() == message->GetMessageTo())
+        {
+            Entity* entity = dynamic_cast<Entity*>(go);
+            entity->ReceiveMessageNotif();
+        }
+    }
 }
 
 void MessageBoard::PopMessage(int idx)

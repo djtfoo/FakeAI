@@ -129,22 +129,22 @@ void Worker::Update(double dt)
     }
     else if (m_state == OFFWORK)
     {
-        // Walk to door
-        m_pos += m_vel * dt;
-        if (m_pathfinder->hasReachedNode(this->m_pos))
+        if (!m_pathfinder->IsPathEmpty())
         {
-            // check if reached destination; 
-            if (m_pathfinder->hasReachedDestination(this->m_pos))
+            // Walk to door
+            m_pos += m_vel * dt;
+            if (m_pathfinder->hasReachedNode(this->m_pos))
             {
-                // reached
-                WhenReachedDestination();
-
-                // Set inactive; Offwork already
-                this->SetInactive();
-            }
-            else
-            {
-                WhenReachedPathNode();
+                // check if reached destination; 
+                if (m_pathfinder->hasReachedDestination(this->m_pos))
+                {
+                    // reached
+                    WhenReachedDestination();
+                }
+                else
+                {
+                    WhenReachedPathNode();
+                }
             }
         }
     }
