@@ -13,6 +13,7 @@
 #include "GameObject/Entity/Robot.h"
 #include "GameObject/Entity/DeliveryMan.h"
 #include "GameObject/Entity/ScrapMan.h"
+#include "GameObject/Entity/Supervisor.h"
 
 #include "GameObject/Toilet.h"
 #include "GameObject/BuildingBlockStack.h"
@@ -154,7 +155,7 @@ void SceneAI::Init()
     tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
-    SharedData::GetInstance()->m_gridMap->m_collisionGrid[13][6] = true;
+    //SharedData::GetInstance()->m_gridMap->m_collisionGrid[13][6] = true;
 
     // Worker + Assosiated Workstation ( 2 )
     tempStation = new Workstation();
@@ -176,7 +177,7 @@ void SceneAI::Init()
     tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
-    SharedData::GetInstance()->m_gridMap->m_collisionGrid[9][9] = true;
+    //SharedData::GetInstance()->m_gridMap->m_collisionGrid[9][9] = true;
 
     // Worker + Assosiated Workstation ( 3 )
     tempStation = new Workstation();
@@ -198,7 +199,7 @@ void SceneAI::Init()
     tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
-    SharedData::GetInstance()->m_gridMap->m_collisionGrid[8][5] = true;
+    //SharedData::GetInstance()->m_gridMap->m_collisionGrid[8][5] = true;
 
     // Worker + Assosiated Workstation ( 4 )
     tempStation = new Workstation();
@@ -220,7 +221,7 @@ void SceneAI::Init()
     tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
-    SharedData::GetInstance()->m_gridMap->m_collisionGrid[6][2] = true;
+    //SharedData::GetInstance()->m_gridMap->m_collisionGrid[6][2] = true;
 
     // Maintenance Man + Assosiated Workstation ( 1 )
     tempStation = new Workstation();
@@ -241,7 +242,7 @@ void SceneAI::Init()
     maintenance->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(maintenance);
 
-    SharedData::GetInstance()->m_gridMap->m_collisionGrid[5][13] = true;
+    //SharedData::GetInstance()->m_gridMap->m_collisionGrid[5][13] = true;
 
     // Maintenance Man + Assosiated Workstation ( 2 )
     tempStation = new Workstation();
@@ -280,6 +281,15 @@ void SceneAI::Init()
     DeliveryMan* deliveryMan = new DeliveryMan();
     SharedData::GetInstance()->AddGameObject(deliveryMan, SharedData::GetInstance()->m_meshList->GetMesh(GEO_DELIVERYMAN), 1, 2);
     deliveryMan->AssignDeliveryTruck(truck);
+
+    // Supervisor
+    Supervisor* sup = new Supervisor();
+    sup->Init();
+    sup->SetActive();
+    sup->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_SUPERVISOR));
+    sup->SetPos(Vector3(12, 12, 0));
+    sup->SetToilet(tempToilet);
+    SharedData::GetInstance()->m_goList.push_back(sup);
 
     //// Scrap Pile
     //ScrapPile* pile = new ScrapPile();
@@ -769,6 +779,10 @@ void SceneAI::RenderDebugInfo()
         case Machine::BROKEN:
             stateStr = "Broken";
             break;
+
+        case Machine::SHUTDOWN:
+            stateStr = "Powered Off";
+            break;
         }
 
         RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State: " + stateStr, Color(0, 0, 0), 2, 18, 0);
@@ -803,6 +817,10 @@ void SceneAI::RenderDebugInfo()
 
         case Worker::BREAK:
             stateStr = "Break";
+            break;
+
+        case Worker::OFFWORK:
+            stateStr = "Off Work";
             break;
         }
 
@@ -859,6 +877,10 @@ void SceneAI::RenderDebugInfo()
 
         case MaintenanceMan::BREAK:
             stateStr = "Break";
+            break;
+
+        case MaintenanceMan::OFFWORK:
+            stateStr = "Off Work";
             break;
         }
 
@@ -1008,6 +1030,10 @@ void SceneAI::RenderDebugInfo()
         case Robot::SHUTDOWN:
             stateStr = "Shut Down";
             break;
+
+        case Robot::POWEROFF:
+            stateStr = "Powered Off";
+            break;
         }
 
         RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State: " + stateStr, Color(0, 0, 0), 2, 18, 0);
@@ -1147,6 +1173,10 @@ void SceneAI::RenderDebugInfo()
         case ScrapMan::BREAK:
             stateStr = "Break";
             break;
+
+        case ScrapMan::OFFWORK:
+            stateStr = "Off Work";
+            break;
         }
 
         RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State:" + stateStr, Color(0, 0, 0), 2, 20, 0);
@@ -1194,6 +1224,40 @@ void SceneAI::RenderDebugInfo()
                 }
             }
         }   // end of pathfinder
+
+    }
+
+    //SUPERVISOR
+    if (SharedData::GetInstance()->m_goList[index_renderDebugInfo]->GetName() == "Supervisor")
+    {
+        Supervisor* sup = dynamic_cast<Supervisor*>(SharedData::GetInstance()->m_goList[index_renderDebugInfo]);
+        
+        // State
+        std::string stateStr = "";
+        switch (sup->GetState())
+        {
+        case Supervisor::IDLE:
+            stateStr = "Idle";
+            break;
+
+        case Supervisor::PATROL:
+            stateStr = "Work";
+            break;
+
+        case Supervisor::BREAK:
+            stateStr = "Work";
+            break;
+
+        case Supervisor::MAKEDECISION:
+            stateStr = "Break";
+            break;
+
+        case Supervisor::OFFWORK:
+            stateStr = "Off Work";
+            break;
+        }
+
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State:" + stateStr, Color(0, 0, 0), 2, 23, 0);
 
     }
 

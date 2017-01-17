@@ -1,6 +1,6 @@
 #include "Message.h"
 
-Message::Message(MESSAGE_TYPE type, std::string msgTo, Entity* msgFrom, Time time)
+Message::Message(MESSAGE_TYPE type, std::string msgTo, GameObject* msgFrom, Time time)
 : m_type(type)
 , m_messageTo(msgTo)
 , m_messageFrom(msgFrom)
@@ -52,7 +52,7 @@ std::string Message::GetMessageFrom()
         return m_messageFromStr;
 }
 
-Entity* Message::GetMessageFromObject()
+GameObject* Message::GetMessageFromObject()
 {
     return m_messageFrom;
 }

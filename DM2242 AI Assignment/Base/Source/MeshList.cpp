@@ -47,6 +47,10 @@ void MeshList::Init()
     meshList[GEO_DELIVERYMAN] = MeshBuilder::GenerateQuad("delivery man", Color(1, 0.5f, 0.5f));
     meshList[GEO_DELIVERYMAN]->textureID = LoadTGA("Image/Entity_DeliveryMan.tga");
 
+    // Supervisor
+    meshList[GEO_SUPERVISOR] = MeshBuilder::GenerateQuad("supervisor", Color(1, 0.5f, 0.5f));
+    meshList[GEO_SUPERVISOR]->textureID = LoadTGA("Image/Entity_Supervisor.tga");
+
     // Game Objects
     meshList[GEO_DELIVERYTRUCK] = MeshBuilder::GenerateQuad("delivery truck", Color(1, 0.5f, 0.5f));
     meshList[GEO_DELIVERYTRUCK]->textureID = LoadTGA("Image/GO_DeliveryTruck.tga");

@@ -264,14 +264,14 @@ int ScrapMan::Think()
         // Read Messages
         if (b_newMsgNotif && d_msgNotifTimer >= 2.0)
         {
-            Message* retrivedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
+            Message* retrievedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
 
             // Check if retrieved message is invalid
-            if (retrivedMsg)
+            if (retrievedMsg)
             {
                 AcknowledgeMessage();
 
-                m_robotToPickUp = dynamic_cast<Robot*>(retrivedMsg->GetMessageFromObject());
+                m_robotToPickUp = dynamic_cast<Robot*>(retrievedMsg->GetMessageFromObject());
                 return COLLECT_ROBOT;
             }
         }

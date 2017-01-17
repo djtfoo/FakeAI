@@ -54,15 +54,16 @@ void OrnamentBuildingSystem::Update(double dt)
         // set index for deliveryman to come
         m_completedOrnamentIndex = m_ornamentsIndex;
     
+        // send message to delivery man
+        //SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::ORNAMENT_COMPLETE, "Delivery Man", "Ornament", SharedData::GetInstance()->m_clock->GetCurrTimeObject()));
+        SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::ORNAMENT_COMPLETE, "Delivery Man", m_ornaments[m_ornamentsIndex], SharedData::GetInstance()->m_clock->GetCurrTimeObject()));
+
         // change index for robots to build on
         int newIndex = m_ornamentsIndex;
         while (newIndex == m_ornamentsIndex)
             newIndex = Math::RandIntMinMax(0, 2);
     
         m_ornamentsIndex = newIndex;
-
-        // send message to delivery man
-        SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::ORNAMENT_COMPLETE, "Delivery Man", "Ornament", SharedData::GetInstance()->m_clock->GetCurrTimeObject()));
     }
 }
 

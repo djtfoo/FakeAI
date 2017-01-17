@@ -23,8 +23,8 @@ void DeliveryMan::Init()
     d_timerCounter = 0.0;
 
     m_ornamentToCollect = NULL;
-    for (int i = 0; i < 3; ++i)
-        m_completedOrnaments[i] = NULL;
+    //for (int i = 0; i < 3; ++i)
+    //   m_completedOrnaments[i] = NULL;
 }
 
 void DeliveryMan::Update(double dt)
@@ -39,15 +39,15 @@ void DeliveryMan::Update(double dt)
         UpdateMessageAcknowledged(dt);
     }
 
-    if (SharedData::GetInstance()->m_ornamentSystem->IsJustCompleted())
-    {
-        AddCompletedOrnament(SharedData::GetInstance()->m_ornamentSystem->GetCompletedOrnament());
-    }
+    //if (SharedData::GetInstance()->m_ornamentSystem->IsJustCompleted())
+    //{
+    //    AddCompletedOrnament(SharedData::GetInstance()->m_ornamentSystem->GetCompletedOrnament());
+    //}
 
     switch (m_state)
     {
     case IDLE:
-        if (!m_vel.IsZero())
+        if (!m_pathfinder->IsPathEmpty())
         {
             m_pos += m_vel * dt;
             m_deliveryTruck->SetMoving(true);
@@ -120,7 +120,7 @@ void DeliveryMan::Update(double dt)
             if (m_pathfinder->hasReachedDestination(this->m_pos))
             {
                 WhenReachedDestination();
-                m_ornamentToCollect = GetOrnamentToCollect();   // if there is no more, it will return 0
+                //m_ornamentToCollect = GetOrnamentToCollect();   // if there is no more, it will return 0
             }
             else
             {
@@ -133,16 +133,30 @@ void DeliveryMan::Update(double dt)
 
 void DeliveryMan::Sense(double dt)
 {
-    if (m_state == IDLE && m_vel.IsZero() && m_ornamentToCollect == NULL)
-    {
-        m_ornamentToCollect = GetOrnamentToCollect();
-    }
+    //if (m_state == IDLE && m_vel.IsZero() && m_ornamentToCollect == NULL)
+    //{
+    //    m_ornamentToCollect = GetOrnamentToCollect();
+    //}
 }
 
 int DeliveryMan::Think()
 {
-    if (m_state == IDLE && m_ornamentToCollect)
-        return DRIVING;
+    if (m_state == IDLE)
+    {
+        // Read Messages
+        if (b_newMsgNotif && d_msgNotifTimer >= 2.0)
+        {
+            Message* retrievedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
+
+            // Check if retrieved message is invalid
+            if (retrievedMsg)
+            {
+                AcknowledgeMessage();
+                m_ornamentToCollect = dynamic_cast<Ornament*>(retrievedMsg->GetMessageFromObject());
+                return DRIVING;
+            }
+        }
+    }
 
     if (b_reachedDestination && m_state == DRIVING)
         return WALK;
@@ -152,11 +166,21 @@ int DeliveryMan::Think()
 
     if (b_reachedDestination && m_state == COLLECT_PRODUCT)
     {
-        if (m_ornamentToCollect)
-            return WALK;
+        // Read Messages
+        if (b_newMsgNotif)
+        {
+            Message* retrievedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
 
-        else
-            return IDLE;
+            // Check if retrieved message is invalid
+            if (retrievedMsg)
+            {
+                AcknowledgeMessage();
+                m_ornamentToCollect = dynamic_cast<Ornament*>(retrievedMsg->GetMessageFromObject());
+                return WALK;
+            }
+        }
+
+        return IDLE;
     }
 
     return -1;
@@ -262,32 +286,32 @@ void DeliveryMan::AssignDeliveryTruck(DeliveryTruck* truck)
     this->m_deliveryTruck = truck;
 }
 
-void DeliveryMan::AddCompletedOrnament(Ornament* ornament)
-{
-    for (int i = 0; i < 3; ++i)
-    {
-        if (m_completedOrnaments[i] == NULL)
-        {
-            m_completedOrnaments[i] = ornament;
-            break;
-        }
-    }
-}
+//void DeliveryMan::AddCompletedOrnament(Ornament* ornament)
+//{
+//    for (int i = 0; i < 3; ++i)
+//    {
+//        if (m_completedOrnaments[i] == NULL)
+//        {
+//            m_completedOrnaments[i] = ornament;
+//            break;
+//        }
+//    }
+//}
 
-Ornament* DeliveryMan::GetOrnamentToCollect()
-{
-    for (int i = 0; i < 3; ++i)
-    {
-        if (m_completedOrnaments[i])
-        {
-            Ornament* ornament = m_completedOrnaments[i];
-            m_completedOrnaments[i] = 0;
-            return ornament;
-        }
-    }
-
-    return NULL;    // no ornament to collect
-}
+//Ornament* DeliveryMan::GetOrnamentToCollect()
+//{
+//    for (int i = 0; i < 3; ++i)
+//    {
+//        if (m_completedOrnaments[i])
+//        {
+//            Ornament* ornament = m_completedOrnaments[i];
+//            m_completedOrnaments[i] = 0;
+//            return ornament;
+//        }
+//    }
+//
+//    return NULL;    // no ornament to collect
+//}
 
 Pathfinder* DeliveryMan::GetPathfinder()
 {

@@ -27,21 +27,21 @@ private:
     MESSAGE_TYPE m_type;
 
     std::string m_messageTo;
-    Entity* m_messageFrom;
+    GameObject* m_messageFrom;
     // String for non-entity or non-gameobject objects
     std::string m_messageFromStr;
 
     Time m_time;
 
 public:
-    Message(MESSAGE_TYPE type, std::string msgTo, Entity* m_messageFrom, Time time);
+    Message(MESSAGE_TYPE type, std::string msgTo, GameObject* m_messageFrom, Time time);
     Message(MESSAGE_TYPE type, std::string msgTo, std::string m_messageFrom, Time time);
     ~Message();
 
     std::string GetMessageString();
     std::string GetMessageTo();
     std::string GetMessageFrom();
-    Entity* GetMessageFromObject();
+    GameObject* GetMessageFromObject();
     std::string GetTime();
 
     bool IsAcknowledged();

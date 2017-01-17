@@ -22,7 +22,7 @@ private:
     DELIVERYMAN_STATE m_state;
 
     DeliveryTruck* m_deliveryTruck;
-    Ornament* m_completedOrnaments[3];
+    //Ornament* m_completedOrnaments[3];
     Ornament* m_ornamentToCollect;
     
     double d_timerCounter;
@@ -48,8 +48,8 @@ public:
 
     void AssignDeliveryTruck(DeliveryTruck* truck);
 
-    void AddCompletedOrnament(Ornament* ornament);
-    Ornament* GetOrnamentToCollect();
+    //void AddCompletedOrnament(Ornament* ornament);
+    //Ornament* GetOrnamentToCollect();
 
     // Getters
     Pathfinder* GetPathfinder();

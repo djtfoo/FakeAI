@@ -244,22 +244,22 @@ int MaintenanceMan::Think()
             // Read Messages
             if (b_newMsgNotif && d_msgNotifTimer >= 2.0)
             {
-                Message* retrivedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
+                Message* retrievedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
 
                 // Check if retrieved message is invalid
-                if (retrivedMsg)
+                if (retrievedMsg)
                 {
                     AcknowledgeMessage();
 
-                    switch (retrivedMsg->GetMessageType())
+                    switch (retrievedMsg->GetMessageType())
                     {
                     case Message::MACHINE_BROKEN:
-                        m_targetMachine = dynamic_cast<Machine*>(retrivedMsg->GetMessageFromObject());
+                        m_targetMachine = dynamic_cast<Machine*>(retrievedMsg->GetMessageFromObject());
                         m_targetMachine->SetIsBeingWorkedOn(true);
                         return REPAIR;
 
                     case Message::MACHINE_REFILL:
-                        m_targetMachine = dynamic_cast<Machine*>(retrivedMsg->GetMessageFromObject());
+                        m_targetMachine = dynamic_cast<Machine*>(retrievedMsg->GetMessageFromObject());
                         m_targetMachine->SetIsBeingWorkedOn(true);
                         return REFILL;
                     }
