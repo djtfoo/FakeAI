@@ -291,6 +291,8 @@ void SceneAI::Init()
     sup->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(sup);
 
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[12][12] = true;
+
     //// Scrap Pile
     //ScrapPile* pile = new ScrapPile();
     //SharedData::GetInstance()->AddGameObject(pile, SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAP_PILE), 12, 2);

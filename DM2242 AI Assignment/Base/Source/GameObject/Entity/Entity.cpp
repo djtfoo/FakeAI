@@ -5,6 +5,8 @@
 
 #include "../../MessageBoard/MessageBoard.h"
 
+#include "../../SharedData.h"
+
 Entity::Entity(std::string name) : GameObject(name, true)
 , m_dir(DIR_DOWN), m_vel(0, 0, 0)
 , b_newMsgNotif(false), d_msgNotifTimer(0.0)
@@ -226,6 +228,21 @@ void Entity::AcknowledgeMessage()
     b_renderAcknowledgeMsg = true;
     d_msgNotifTimer = 0.0;
     f_symbolTranslation = 0.f;
+
+    // pop message if the message board is full
+    MessageBoard* mb = SharedData::GetInstance()->m_messageBoard;
+    if (mb->GetMessageListSize() > mb->GetMaxMessageListSize())
+    {
+        for (int i = 0; i < mb->GetMessageListSize(); ++i)   // oldest message to latest message
+        {
+            Message* msg = mb->GetAMessage(i);
+            if (msg->IsAcknowledged())
+            {
+                mb->PopMessage(i);
+                break;
+            }
+        }
+    }
 }
 
 void Entity::WhenReachedDestination()

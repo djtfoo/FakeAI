@@ -115,3 +115,8 @@ int MessageBoard::GetMessageListSize()
 {
     return m_messageLog.size();
 }
+
+int MessageBoard::GetMaxMessageListSize()
+{
+    return maxSize;
+}

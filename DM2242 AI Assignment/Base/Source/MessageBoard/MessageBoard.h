@@ -24,6 +24,7 @@ public:
 
     Message* GetAMessage(int idx);
     int GetMessageListSize();
+    int GetMaxMessageListSize();
     void SendNotification();
 };
 
