@@ -155,7 +155,7 @@ void SceneAI::Init()
     tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
-    //SharedData::GetInstance()->m_gridMap->m_collisionGrid[13][6] = true;
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[13][6] = true;
 
     // Worker + Assosiated Workstation ( 2 )
     tempStation = new Workstation();
@@ -177,7 +177,7 @@ void SceneAI::Init()
     tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
-    //SharedData::GetInstance()->m_gridMap->m_collisionGrid[9][9] = true;
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[9][9] = true;
 
     // Worker + Assosiated Workstation ( 3 )
     tempStation = new Workstation();
@@ -199,7 +199,7 @@ void SceneAI::Init()
     tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
-    //SharedData::GetInstance()->m_gridMap->m_collisionGrid[8][5] = true;
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[8][5] = true;
 
     // Worker + Assosiated Workstation ( 4 )
     tempStation = new Workstation();
@@ -221,7 +221,7 @@ void SceneAI::Init()
     tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
-    //SharedData::GetInstance()->m_gridMap->m_collisionGrid[6][2] = true;
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[6][2] = true;
 
     // Maintenance Man + Assosiated Workstation ( 1 )
     tempStation = new Workstation();
@@ -525,8 +525,10 @@ void SceneAI::RenderMessageBoard()
             msgColor.Set(0, 0, 0);
         }
 
-        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), msg->GetTime(), msgColor, 1, 1, 16 - i * 3);
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), msg->GetTime(), msgColor, 1, 15, 15 - i * 3);
         RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), msg->GetMessageString(), msgColor, 1, 1, 15.f - i * 3);
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "From: " + msg->GetMessageFrom(), msgColor, 1, 1, 16.f - i * 3);
+        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "To: " + msg->GetMessageTo(), msgColor, 1, 10, 16.f - i * 3);
     }
     
 }

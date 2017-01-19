@@ -40,6 +40,16 @@ void Supervisor::SetPos(Vector3 pos)
 
 void Supervisor::Update(double dt)
 {
+    // Update message notification
+    if (b_newMsgNotif)
+    {
+        UpdateMessageNotif(dt);
+    }
+    if (b_renderAcknowledgeMsg)
+    {
+        UpdateMessageAcknowledged(dt);
+    }
+
     if (m_state != OFFWORK)
     {
         if (m_state == BREAK)

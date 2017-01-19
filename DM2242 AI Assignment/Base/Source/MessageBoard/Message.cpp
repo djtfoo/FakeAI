@@ -14,6 +14,7 @@ Message::Message(MESSAGE_TYPE type, std::string msgTo, std::string msgFrom, Time
 , m_messageTo(msgTo)
 , m_messageFromStr(msgFrom)
 , m_time(time)
+, m_messageFrom(0)
 {
     b_isAcknowledged = false;
 }
@@ -46,7 +47,7 @@ std::string Message::GetMessageTo()
 std::string Message::GetMessageFrom()
 {
     // Check if an entity has been set
-    if (!m_messageFrom)
+    if (m_messageFrom)
         return m_messageFrom->GetName();
     else
         return m_messageFromStr;
