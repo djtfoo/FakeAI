@@ -19,6 +19,8 @@ private:
 protected:
     Entity(std::string name);
 
+    Entity* tempRole;
+
     /*Entity* newTempRole;
 
     newTempRole = NULL;
@@ -72,6 +74,9 @@ public:
     virtual void Update(double dt) = 0;      // doing things for its state (e.g. walking)
 
     virtual void RunFSM(double dt);
+
+    // New Temp Role stuff
+    Entity* GetTempRole();
 
     // setting Entity's velocity
     Vector3 CheckVelocity(const Vector3& ownPos, const Vector3& destinationPos);    // get velocity based on destination

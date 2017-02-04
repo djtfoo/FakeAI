@@ -69,6 +69,7 @@ public:
     void ReceiveDestination(const Vector3& pos);    // when movementNodes is empty or state changes, receive the Entity's new destination
     void FindPathAStar();   // main loop to find path with A*; call this when entity is to change path (e.g. due to movement nodes being empty or change in state)
     void FindPathGreedyBestFirst();     // main loop to find path with Greedy Best First Search
+    void MoveStraightLine();    // calculate the velocity and direction of the Entity using a given waypoint
 
     void AddFrontier();     // add a frontier at start of each loop
     int GetCurrentCost(Node* current);   // get movement cost for start point to current position

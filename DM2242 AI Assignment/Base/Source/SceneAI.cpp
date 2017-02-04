@@ -469,6 +469,9 @@ void SceneAI::RenderGO(GameObject *go)
     if (go->IsEntity())
     {
         Entity* entity = dynamic_cast<Entity*>(go);
+        //if (entity->GetTempRole() != NULL)
+            RenderTempRoleName(entity);
+
         if (entity->HasMessageComeIn())
         {
             glUniform1i(m_parameters[U_HIGHLIGHTED], 0);
@@ -482,6 +485,12 @@ void SceneAI::RenderGO(GameObject *go)
     }
 
 	modelStack.PopMatrix();
+}
+
+void SceneAI::RenderTempRoleName(Entity* entity)
+{
+    std::string name = entity->GetName();
+    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), name, Color(0, 0, 0), 1, (entity->GetPos().x * 6.f) - (name.size() * 0.5f), (entity->GetPos().y * 4.5f) + 0.4f);
 }
 
 void SceneAI::RenderMessageNotification(Entity* entity)

@@ -13,6 +13,7 @@ Entity::Entity(std::string name) : GameObject(name, true)
 , f_symbolTranslation(0.f)
 , b_renderMessageComeIn(false), b_renderAcknowledgeMsg(false)
 {
+    tempRole = NULL;
 }
 
 Entity::~Entity()
@@ -266,4 +267,9 @@ void Entity::WhenReachedPathNode()
     SetDirection(CheckDirection(m_vel));
 
     m_pathfinder->ReceiveDirection(m_dir);
+}
+
+Entity* Entity::GetTempRole()
+{
+    return tempRole;
 }

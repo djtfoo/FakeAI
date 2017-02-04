@@ -34,6 +34,7 @@ public:
 
     void RenderGameObject(GameObject* go);
     //void RenderEntity(Entity* entity);
+    void RenderTempRoleName(Entity* entity);
     void RenderMessageNotification(Entity* entity);
     void RenderAcknowledgeNotification(Entity* entity);
 
