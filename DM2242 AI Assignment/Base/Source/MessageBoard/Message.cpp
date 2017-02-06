@@ -1,6 +1,6 @@
 #include "Message.h"
 
-Message::Message(MESSAGE_TYPE type, std::string msgTo, GameObject* msgFrom, Time time)
+Message::Message(MESSAGE_TYPE type, std::string msgTo, GameObject* msgFrom, Time time, Entity* m_messageSubject)
 : m_type(type)
 , m_messageTo(msgTo)
 , m_messageFrom(msgFrom)
@@ -10,7 +10,7 @@ Message::Message(MESSAGE_TYPE type, std::string msgTo, GameObject* msgFrom, Time
     b_isAcknowledged = false;
 }
 
-Message::Message(MESSAGE_TYPE type, std::string msgTo, std::string msgFrom, Time time)
+Message::Message(MESSAGE_TYPE type, std::string msgTo, std::string msgFrom, Time time, Entity* m_messageSubject)
 : m_type(type)
 , m_messageTo(msgTo)
 , m_messageFromStr(msgFrom)
@@ -81,4 +81,9 @@ void Message::SetAcknowledged(bool b_acknowledged)
 Message::MESSAGE_TYPE Message::GetMessageType()
 {
     return m_type;
+}
+
+Entity* Message::GetMessageSubject()
+{
+    return m_messageSubject;
 }

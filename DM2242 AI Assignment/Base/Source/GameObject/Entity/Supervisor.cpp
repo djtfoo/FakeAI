@@ -1,6 +1,9 @@
 #include "Supervisor.h"
 
 #include "Robot.h"
+#include "Worker.h"
+#include "ScrapMan.h"
+#include "MaintenanceMan.h"
 
 Supervisor::Supervisor() : Entity("Supervisor"), m_MessageToSend(Message::MESSAGE_TYPES_TOTAL), b_decisionMade(false), d_decisionTimer(0.0), b_shouldMakeDecision(true), d_PatrolTimer(0.0), i_currWaypointIdx(0), b_waypointsFound(false)
 {
@@ -683,7 +686,6 @@ void Supervisor::DoMakeDecision()
 
 
         // Role Change
-
         // Check if anyone is OFFWORK, on MC
         for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
         {
@@ -697,10 +699,185 @@ void Supervisor::DoMakeDecision()
                 checkEntity = checkEntity->GetTempRole();
             }
 
-            //if (checkEntity == )
+            bool someoneMC = false;
+            if (checkEntity->GetName() == "Worker")
+            {
+                Worker* worker = dynamic_cast<Worker*>(checkEntity);
+                if (worker->GetState() == Worker::OFFWORK)
+                    someoneMC = true;
 
+            }
+            else if (checkEntity->GetName() == "Scrap Man")
+            {
+                ScrapMan* scrapMan = dynamic_cast<ScrapMan*>(checkEntity);
+                if (scrapMan->GetState() == ScrapMan::OFFWORK)
+                    someoneMC = true;
+            }
+            else if (checkEntity->GetName() == "Maintenance Man")
+            {
+                MaintenanceMan* maintenanceMan = dynamic_cast<MaintenanceMan*>(checkEntity);
+                if (maintenanceMan->GetState() == MaintenanceMan::OFFWORK)
+                    someoneMC = true;
+            }
+
+            if (someoneMC)
+            {   
+                // Find free MM or SM
+                Entity* replacement;
+                int highest_inactive_level = -999999999;
+
+                for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
+                {
+                    if (!SharedData::GetInstance()->m_goList[i]->IsEntity())
+                        continue;
+
+                    Entity* checkEntity2 = dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i]);
+
+                    if (checkEntity2->GetTempRole())
+                        continue;
+
+                    if (checkEntity2->GetName() == "Maintenance Man" || checkEntity2->GetName() == "Scrap Man")
+                    {
+                        if (checkEntity2->GetInactiveLevel() > highest_inactive_level)
+                        {
+                            highest_inactive_level = checkEntity2->GetInactiveLevel();
+                            replacement = checkEntity2;
+                        }
+                    }
+                }
+
+                // Send Replacement Message
+                SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::ENTITY_ROLECHANGE, "Humans", this, SharedData::GetInstance()->m_clock->GetCurrTimeObject(), replacement));
+            }
         }
 
+        // Check if need temp help in a 'role'
+        double maintenance_inactivity = 0;
+        int maintenance_num = 0;
+
+        double scrap_inactivity = 0;
+        int scrap_num = 0;
+
+        double work_inactivity = 0;
+        int work_num = 0;
+
+        // Find all inactivity values and get the lowest value (most busy) and send that role someone from the highest value
+        for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
+        {
+            if (!SharedData::GetInstance()->m_goList[i]->IsEntity())
+                continue;
+
+            Entity* checkEntity = dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i]);
+
+            while (checkEntity->GetTempRole())
+            {
+                checkEntity = checkEntity->GetTempRole();
+            }
+
+            if (checkEntity->GetName() == "Worker")
+            {
+                work_inactivity += checkEntity->GetInactiveLevel();
+                work_num++;
+
+            }
+            else if (checkEntity->GetName() == "Scrap Man")
+            {
+                scrap_inactivity += checkEntity->GetInactiveLevel();
+                scrap_num++;
+            }
+            else if (checkEntity->GetName() == "Maintenance Man")
+            {
+                maintenance_inactivity += checkEntity->GetInactiveLevel();
+                maintenance_num++;
+            }
+        }
+
+        double work_average_inactivity = work_inactivity / work_num;
+        double scrap_average_inactivity = scrap_inactivity / scrap_num;
+        double maintenance_average_inactivity = maintenance_inactivity / maintenance_num;
+
+        std::string busy, idle;
+
+        if (work_average_inactivity >= scrap_average_inactivity && work_average_inactivity >= maintenance_average_inactivity)
+        {
+            idle = "Work";
+            if (scrap_average_inactivity <= maintenance_average_inactivity)
+            {
+                busy = "Scrap";
+            }
+            else
+            {
+                busy = "Maintenance";
+            }
+        }
+        else if (maintenance_average_inactivity >= scrap_average_inactivity && maintenance_average_inactivity >= work_average_inactivity)
+        {
+            idle = "Maintenance";
+            if (scrap_average_inactivity <= work_average_inactivity)
+            {
+                busy = "Scrap";
+            }
+            else
+            {
+                busy = "Work";
+            }
+        }
+        else if (scrap_average_inactivity >= work_average_inactivity && scrap_average_inactivity >= maintenance_average_inactivity)
+        {
+            idle = "Scrap";
+            if (work_average_inactivity <= maintenance_average_inactivity)
+            {
+                busy = "Work";
+            }
+            else
+            {
+                busy = "Maintenance";
+            }
+        }
+
+        // Transfer over someone
+        Entity* helper;
+        Entity* needy;
+        if (idle == "Scrap")
+        {
+            if (busy == "Maintenance")
+            {
+                for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
+                {
+                    if (!SharedData::GetInstance()->m_goList[i]->IsEntity())
+                        continue;
+
+                    Entity* checkEntity = dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i]);
+
+                    if (checkEntity->GetName() == "Maintenance Man")
+                    {
+                        needy = checkEntity;
+                    }
+                }
+            }
+        }
+        else if (idle == "Maintenance")
+        {
+            if (busy == "Scrap")
+            {
+                for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
+                {
+                    if (!SharedData::GetInstance()->m_goList[i]->IsEntity())
+                        continue;
+
+                    Entity* checkEntity = dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i]);
+
+                    if (checkEntity->GetName() == "ScrapMan")
+                    {
+                        needy = checkEntity;
+                    }
+
+                }
+            }
+        }
+
+        // Send Message
+        SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::ENTITY_ROLECHANGE, idle, this, SharedData::GetInstance()->m_clock->GetCurrTimeObject(), needy));
     }
 }
 

@@ -28,7 +28,7 @@ private:
     bool b_isAcknowledged;
 
     MESSAGE_TYPE m_type;
-    GameObject* m_messageSubject;
+    Entity* m_messageSubject;
 
     std::string m_messageTo;
     GameObject* m_messageFrom;
@@ -38,14 +38,15 @@ private:
     Time m_time;
 
 public:
-    Message(MESSAGE_TYPE type, std::string msgTo, GameObject* m_messageFrom, Time time);
-    Message(MESSAGE_TYPE type, std::string msgTo, std::string m_messageFrom, Time time);
+    Message(MESSAGE_TYPE type, std::string msgTo, GameObject* m_messageFrom, Time time, Entity* subject = NULL);
+    Message(MESSAGE_TYPE type, std::string msgTo, std::string m_messageFrom, Time time, Entity* subject = NULL);
     ~Message();
 
     std::string GetMessageString();
     std::string GetMessageTo();
     std::string GetMessageFrom();
     GameObject* GetMessageFromObject();
+    Entity* GetMessageSubject();
     std::string GetTime();
 
     bool IsAcknowledged();

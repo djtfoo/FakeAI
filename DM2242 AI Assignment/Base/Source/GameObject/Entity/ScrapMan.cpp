@@ -318,6 +318,10 @@ int ScrapMan::Think()
                 case Message::COMPLETED_URGENCY_CHANGE:
                     b_urgencyChanged = false;
                     break;
+
+                case Message::ENTITY_ROLECHANGE:
+                    SetTempRole(retrievedMsg->GetMessageSubject());
+                    break;
                 }
 
                 // Update walk speed if needed
