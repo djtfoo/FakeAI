@@ -50,6 +50,15 @@ void MaintenanceMan::Update(double dt)
         UpdateMessageAcknowledged(dt);
     }
 
+    if (tempRole)
+    {
+        tempRole->Update(dt);
+        SetPos(tempRole->GetPos());
+        SetDirection(tempRole->GetDirection());
+        //m_dir = tempRole->GetDirection();
+        return;
+    }
+
     if (m_state == BREAK)
     {
         // Check if toilet is close, if so add to queue and walk to it
@@ -238,7 +247,7 @@ int MaintenanceMan::Think()
             return OFFWORK;
 
         Vector3 temp = m_workstation->GetPos();
-        temp.y -= 1;
+        //temp.y -= 1;
 
         // Check if at workstation
         if ((m_pos - temp).Length() < 1.2)

@@ -372,6 +372,7 @@ void Worker::DoWork()
                 if (SharedData::GetInstance()->m_goList[i]->GetName() == "ConveyorBelt")
                 {
                     tempRobot->SetBelt(dynamic_cast<ConveyorBelt*>(SharedData::GetInstance()->m_goList[i]));
+                    break;
                 }
             }
 

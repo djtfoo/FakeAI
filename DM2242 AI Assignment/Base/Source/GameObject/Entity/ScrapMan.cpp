@@ -58,6 +58,15 @@ void ScrapMan::Update(double dt)
         UpdateMessageAcknowledged(dt);
     }
 
+    if (tempRole)
+    {
+        tempRole->Update(dt);
+        SetPos(tempRole->GetPos());
+        SetDirection(tempRole->GetDirection());
+        //m_dir = tempRole->GetDirection();
+        return;
+    }
+
     switch (m_state)
     {
     case IDLE:
