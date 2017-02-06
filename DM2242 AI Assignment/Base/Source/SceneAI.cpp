@@ -319,11 +319,11 @@ void SceneAI::Init()
     sup->Init();
     sup->SetActive();
     sup->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_SUPERVISOR));
-    sup->SetPos(Vector3(12, 12, 0));
+    sup->SetPos(Vector3(12, 10, 0));
     sup->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(sup);
 
-    SharedData::GetInstance()->m_gridMap->m_collisionGrid[12][12] = true;
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[10][12] = true;
 
     // spawn temp Robot
     Robot* robot = new Robot();
@@ -524,7 +524,7 @@ void SceneAI::RenderGO(GameObject *go)
         Entity* entity = dynamic_cast<Entity*>(go);
         if (entity->GetTempRole()) {
             Entity* tempRole = entity->GetTempRole();
-            RenderRoleName(tempRole);
+            RenderTempRole(tempRole);
             if (tempRole->HasMessageComeIn())
             {
                 glUniform1i(m_parameters[U_HIGHLIGHTED], 0);
@@ -552,10 +552,10 @@ void SceneAI::RenderGO(GameObject *go)
 	modelStack.PopMatrix();
 }
 
-void SceneAI::RenderRoleName(Entity* entity)
+void SceneAI::RenderTempRole(Entity* tempRole)
 {
-    std::string name = entity->GetName();
-    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), name, Color(0, 0, 0), 1, ((entity->GetPos().x + 1) * 5.3f) - (name.size() * 0.5f), ((1 + entity->GetPos().y) * 4.f) - 1.5f);
+    std::string name = tempRole->GetName();
+    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), name, Color(0, 0, 0), 1, ((tempRole->GetPos().x + 1) * 5.3f) - (name.size() * 0.5f), ((1 + tempRole->GetPos().y) * 4.f) - 1.5f);
 }
 
 void SceneAI::RenderMessageNotification(Entity* entity)

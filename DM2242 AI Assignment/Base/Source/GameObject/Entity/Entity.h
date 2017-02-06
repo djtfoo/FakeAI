@@ -82,6 +82,7 @@ public:
     // New Temp Role stuff
     void SetTempRole(Entity* newRole);
     Entity* GetTempRole();
+    void RemoveTempRole();
 
     // setting Entity's velocity
     Vector3 CheckVelocity(const Vector3& ownPos, const Vector3& destinationPos);    // get velocity based on destination
