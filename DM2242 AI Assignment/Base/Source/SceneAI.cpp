@@ -437,8 +437,20 @@ void SceneAI::Update(double dt)
     int hours = SharedData::GetInstance()->m_clock->GetCurrHours();
     std::string dayAbbr = SharedData::GetInstance()->m_clock->GetCurrDayAbbreviation();
     double deltaTime = 300 * dt;
-    if (dayAbbr == "SAT" || dayAbbr == "SUN" || hours < 8 || hours > 18)
+    if (dayAbbr == "SAT" || dayAbbr == "SUN" || hours < 8 || hours > 18) {
+        if (Entity::IsSomeoneOnLeave()) {
+            Entity::SetSomeoneOnLeave(false);
+            for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
+            {
+                GameObject* go = SharedData::GetInstance()->m_goList[i];
+                if (go->IsEntity()) {
+                    Entity* entity = dynamic_cast<Entity*>(go);
+                    entity->SetOnLeave(false);
+                }
+            }
+        }
         deltaTime *= 10;
+    }
     SharedData::GetInstance()->m_clock->Update(deltaTime);
 
     // factory brightness
@@ -473,11 +485,72 @@ void SceneAI::Update(double dt)
         {
             Entity* entity = dynamic_cast<Entity*>(go);
             entity->RunFSM(dt);
+
+            if (entity->GetTempRole())
+                CheckEntityTempRoleComplete(entity);
         }
     }
 
     // Update the Ornament Handler System
     SharedData::GetInstance()->m_ornamentSystem->Update(dt);
+}
+
+void SceneAI::CheckEntityTempRoleComplete(Entity* entity)
+{
+    if (entity->GetTempRole()->GetName() == "Worker")
+    {
+        Worker* worker = dynamic_cast<Worker*>(entity->GetTempRole());
+        if (worker->GetState() == Worker::IDLE && !SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+        {
+            if (entity->GetName() == "Maintenance Man") {
+                MaintenanceMan* man = dynamic_cast<MaintenanceMan*>(entity);
+                man->RemoveTempRole();
+                man->SetState(MaintenanceMan::IDLE);
+            }
+            else if (entity->GetName() == "Scrap Man") {
+                ScrapMan* man = dynamic_cast<ScrapMan*>(entity);
+                man->RemoveTempRole();
+                man->SetState(ScrapMan::IDLE);
+            }
+        }
+    }
+
+    else if (entity->GetTempRole()->GetName() == "Maintenance Man")
+    {
+        MaintenanceMan* man = dynamic_cast<MaintenanceMan*>(entity->GetTempRole());
+        if (man->GetState() == MaintenanceMan::IDLE && man->HasReachedDestination())
+        {
+            if (entity->GetName() == "Worker") {
+                Worker* worker = dynamic_cast<Worker*>(entity);
+                worker->RemoveTempRole();
+                worker->SetState(Worker::IDLE);
+            }
+            else if (entity->GetName() == "Scrap Man") {
+                ScrapMan* scrapman = dynamic_cast<ScrapMan*>(entity);
+                scrapman->RemoveTempRole();
+                scrapman->SetState(ScrapMan::IDLE);
+            }
+        }
+    }
+
+    else if (entity->GetTempRole()->GetName() == "Scrap Man")
+    {
+        ScrapMan* scrapman = dynamic_cast<ScrapMan*>(entity->GetTempRole());
+        if (scrapman->GetState() == ScrapMan::IDLE && scrapman->HasReachedDestination())
+        {
+            if (entity->GetName() == "Worker") {
+                Worker* worker = dynamic_cast<Worker*>(entity);
+                worker->RemoveTempRole();
+                worker->SetState(Worker::IDLE);
+            }
+            else if (entity->GetName() == "Maintenance Man") {
+                MaintenanceMan* man = dynamic_cast<MaintenanceMan*>(entity);
+                man->RemoveTempRole();
+                man->SetState(MaintenanceMan::IDLE);
+            }
+        }
+    }
+
 }
 
 void SceneAI::RenderBackground()
@@ -554,8 +627,21 @@ void SceneAI::RenderGO(GameObject *go)
 
 void SceneAI::RenderTempRole(Entity* tempRole)
 {
-    std::string name = tempRole->GetName();
-    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), name, Color(0, 0, 0), 1, ((tempRole->GetPos().x + 1) * 5.3f) - (name.size() * 0.5f), ((1 + tempRole->GetPos().y) * 4.f) - 1.5f);
+    //std::string name = tempRole->GetName();
+    //RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), name, Color(0, 0, 0), 1, ((tempRole->GetPos().x + 1) * 5.3f) - (name.size() * 0.5f), ((1 + tempRole->GetPos().y) * 4.f) - 1.5f);
+
+    modelStack.PushMatrix();
+    modelStack.Translate(0.f, 0.3f, 1.f);
+    modelStack.Scale(0.5f, 0.5f, 0.5f);
+
+    if (tempRole->GetName() == "Worker")
+        RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEMPROLE_WORKER), false);
+    else if (tempRole->GetName() == "Maintenance Man")
+        RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEMPROLE_MAINTENANCEMAN), false);
+    else if (tempRole->GetName() == "Scrap Man")
+        RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEMPROLE_SCRAPMAN), false);
+
+    modelStack.PopMatrix();
 }
 
 void SceneAI::RenderMessageNotification(Entity* entity)

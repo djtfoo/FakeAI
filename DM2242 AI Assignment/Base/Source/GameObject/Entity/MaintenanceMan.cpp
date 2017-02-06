@@ -386,6 +386,20 @@ int MaintenanceMan::Think()
         break;
 
     case OFFWORK:
+        if (this->IsOnLeave())
+            break;
+
+        if (!Entity::IsSomeoneOnLeave())
+        {
+            // run the probability codes
+            float rand = Math::RandFloatMinMax(0, 100);
+            if (rand < 0.01f) {
+                this->SetOnLeave(true);
+                Entity::SetSomeoneOnLeave(true);
+                break;
+            }
+        }
+
         if (SharedData::GetInstance()->m_clock->GetIsWorkDay())
         {
             float randNum = Math::RandFloatMinMax(0, 100);
@@ -395,6 +409,7 @@ int MaintenanceMan::Think()
                 return IDLE;
             }
         }
+        break;
 
     }
 

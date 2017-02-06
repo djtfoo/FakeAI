@@ -38,6 +38,8 @@ public:
     void RenderMessageNotification(Entity* entity);
     void RenderAcknowledgeNotification(Entity* entity);
 
+    void CheckEntityTempRoleComplete(Entity* entity);
+
     void RenderDebugInfo();
 
 	//GameObject* FetchGameObject(OBJECT_TYPE ObjectType);

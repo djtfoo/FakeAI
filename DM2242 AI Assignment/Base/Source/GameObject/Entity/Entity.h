@@ -12,6 +12,8 @@ class MessageBoard;
 class Entity : public GameObject
 {
 private:
+    static bool b_someoneOnLeave;
+
     virtual void Sense(double dt) = 0;  // get/receive updates from the world
     virtual int Think() = 0;   // process the updates
     virtual void Act(int value) = 0;     // act upon any change in behaviour
@@ -71,9 +73,15 @@ protected:
     Pathfinder* m_pathfinder;
     bool b_reachedDestination;
 
+    // on leave stuff
+    bool b_onLeave;
+
 public:
     virtual ~Entity();
     
+    static bool IsSomeoneOnLeave();
+    static void SetSomeoneOnLeave(const bool onLeave);
+
     virtual void Init() = 0;
     virtual void Update(double dt) = 0;      // doing things for its state (e.g. walking)
 
@@ -117,10 +125,15 @@ public:
     // Pathfinding-related functions
     void WhenReachedDestination();  // generic settings for reaching intended destination of found path
     void WhenReachedPathNode();     // generic settings for when reaching next node on found path (but not destination)
+    bool HasReachedDestination();
 
     // Urgency related functions
     int GetInactiveLevel();
     bool GetUrgencyChanged();
+
+    // on leave
+    bool IsOnLeave();
+    void SetOnLeave(const bool onLeave);
 
     // idea:
     // multiple types of think and act... use int values for switch case
