@@ -76,6 +76,7 @@ public:
     virtual void RunFSM(double dt);
 
     // New Temp Role stuff
+    void SetTempRole(Entity* newRole);
     Entity* GetTempRole();
 
     // setting Entity's velocity
@@ -89,6 +90,7 @@ public:
     DIRECTION CheckDirection(const Vector3& ownPos, const Vector3& toFacePos);    // check for direction based on where to face; can be workstation or based on previous position
 
     void SetDirection(DIRECTION dir);
+    DIRECTION GetDirection();
 
     // setting Entity's sprite
     virtual void SetSprite();   // edit the mesh TexCoords

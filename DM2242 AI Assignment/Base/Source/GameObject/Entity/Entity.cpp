@@ -7,6 +7,9 @@
 
 #include "../../SharedData.h"
 
+#include "MaintenanceMan.h"
+#include "Worker.h"
+
 Entity::Entity(std::string name) : GameObject(name, true)
 , m_dir(DIR_DOWN), m_vel(0, 0, 0)
 , b_newMsgNotif(false), d_msgNotifTimer(0.0)
@@ -23,10 +26,22 @@ Entity::~Entity()
         delete m_mesh;
         m_mesh = NULL;
     }
+
+    if (tempRole)
+    {
+        delete tempRole;
+        tempRole = NULL;
+    }
 }
 
 void Entity::RunFSM(double dt)
 {
+    if (tempRole)
+    {
+        tempRole->RunFSM(dt);
+        return;
+    }
+
     Sense(dt);
 
     int thinkValue = Think();
@@ -50,6 +65,10 @@ void Entity::SetDirection(DIRECTION dir)
 
     this->m_dir = dir;
     this->SetSprite();
+}
+DIRECTION Entity::GetDirection()
+{
+    return m_dir;
 }
 
 void Entity::SetSprite()
@@ -111,6 +130,8 @@ Vector3 Entity::CheckVelocity(DIRECTION dir)
 
     if (dir == DIR_LEFT)
         return Vector3(-1, 0, 0);
+
+    return Vector3(0, -1, 0);
 }
 
 DIRECTION Entity::CheckDirection(const Vector3& velocity)
@@ -129,6 +150,8 @@ DIRECTION Entity::CheckDirection(const Vector3& velocity)
 
     if (m_vel.y == -1)
         return DIR_DOWN;
+
+    return DIR_DOWN;
 }
 
 DIRECTION Entity::CheckDirection(const Vector3& ownPos, const Vector3& toFacePos)
@@ -149,6 +172,8 @@ DIRECTION Entity::CheckDirection(const Vector3& ownPos, const Vector3& toFacePos
 
     if (tempVel.y == -1)
         return DIR_DOWN;
+
+    return DIR_DOWN;
 }
 
 Message* Entity::ReadMessageBoard(MessageBoard* mb)
@@ -172,14 +197,24 @@ Message* Entity::ReadMessageBoard(MessageBoard* mb)
 
 void Entity::SetNewMessageNotif(bool b_notif)
 {
-    b_newMsgNotif = b_notif;
+    if (tempRole)
+        tempRole->b_newMsgNotif = b_notif;
+    else
+        b_newMsgNotif = b_notif;
 }
 
 void Entity::ReceiveMessageNotif()
 {
-    b_renderMessageComeIn = true;
-    d_msgNotifTimer = 0.0;
-    f_symbolTranslation = 0.f;
+    if (tempRole) {
+        tempRole->b_renderMessageComeIn = true;
+        tempRole->d_msgNotifTimer = 0.0;
+        tempRole->f_symbolTranslation = 0.f;
+    }
+    else {
+        b_renderMessageComeIn = true;
+        d_msgNotifTimer = 0.0;
+        f_symbolTranslation = 0.f;
+    }
 }
 
 void Entity::UpdateMessageNotif(const double dt)
@@ -267,6 +302,30 @@ void Entity::WhenReachedPathNode()
     SetDirection(CheckDirection(m_vel));
 
     m_pathfinder->ReceiveDirection(m_dir);
+}
+
+void Entity::SetTempRole(Entity* newRole)
+{
+    if (newRole->GetName() == "Maintenance Man") {
+        tempRole = new MaintenanceMan();
+        tempRole->Init();
+        tempRole->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MAINTENANCEMAN));
+        tempRole->SetPos(this->m_pos);
+        tempRole->SetDirection(this->m_dir);
+
+        MaintenanceMan* replacer = dynamic_cast<MaintenanceMan*>(tempRole);
+        MaintenanceMan* replaced = dynamic_cast<MaintenanceMan*>(newRole);
+
+        if (this->GetName() == "Worker")
+        {
+            Worker* thisGuy = dynamic_cast<Worker*>(this);
+            replacer->SetWorkstation(thisGuy->GetWorkstation());
+        }
+
+        replacer->SetToilet(replaced->GetToilet());
+        replacer->SetPos(this->m_pos);
+        //replacer->SetOriginalSpawn(this->m_pos);
+    }
 }
 
 Entity* Entity::GetTempRole()

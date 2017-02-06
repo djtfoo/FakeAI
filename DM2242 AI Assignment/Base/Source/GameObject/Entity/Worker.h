@@ -46,7 +46,6 @@ private:
     virtual int Think();
     virtual void Act(int value);
 
-
 public:
     Worker();
     virtual ~Worker();
@@ -56,6 +55,7 @@ public:
     bool IsOnBreak();
 
     void SetWorkstation(Workstation* station);
+    Workstation* GetWorkstation();
 
     virtual void Init();
     virtual void Update(double dt);

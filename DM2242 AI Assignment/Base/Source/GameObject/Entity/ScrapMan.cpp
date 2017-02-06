@@ -286,7 +286,20 @@ int ScrapMan::Think()
         m_robotToPickUp->SetInactive();
         m_robotToPickUp = NULL;
         m_pile->SetScrapQuantity(m_pile->GetScrapQuantity() + 1);
-        return 5;
+
+        // check for another message
+        Message* retrievedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
+
+        // Check if retrieved message is invalid
+        if (retrievedMsg)
+        {
+            AcknowledgeMessage();
+
+            m_robotToPickUp = dynamic_cast<Robot*>(retrievedMsg->GetMessageFromObject());
+            return COLLECT_ROBOT;
+        }
+        else
+            return 5;
     }
 
     if (m_state == IDLE && d_breakCharge > 2000)

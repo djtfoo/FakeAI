@@ -61,10 +61,14 @@ void MessageBoard::AddMessage(Message* message)
     for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
     {
         GameObject* go = SharedData::GetInstance()->m_goList[i];
-        if (go->GetName() == message->GetMessageTo() || go->GetName() == "Supervisor")
+        if (go->IsEntity())
         {
             Entity* entity = dynamic_cast<Entity*>(go);
-            entity->ReceiveMessageNotif();
+            if ((entity->GetTempRole() && entity->GetTempRole()->GetName() == message->GetMessageTo()) ||
+                entity->GetName() == message->GetMessageTo() || entity->GetName() == "Supervisor")
+            {
+                entity->ReceiveMessageNotif();
+            }
         }
     }
 }

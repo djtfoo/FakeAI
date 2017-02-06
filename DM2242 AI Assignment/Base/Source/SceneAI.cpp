@@ -135,8 +135,50 @@ void SceneAI::Init()
     SharedData::GetInstance()->m_goList.push_back(machine);
     SharedData::GetInstance()->m_gridMap->m_collisionGrid[9][2] = true;
 
-    // Worker + Assosiated Workstation ( 1 )
+    // Maintenance Man + Assosiated Workstation ( 1 )
     Workstation* tempStation = new Workstation();
+    tempStation->Init();
+    tempStation->SetActive();
+    tempStation->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKSTATION));
+    tempStation->SetPos(Vector3(13, 6, 0));
+    SharedData::GetInstance()->m_goList.push_back(tempStation);
+
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[6][13] = true;
+
+    MaintenanceMan* maintenance = new MaintenanceMan();
+    maintenance->Init();
+    maintenance->SetActive();
+    maintenance->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MAINTENANCEMAN));
+    maintenance->SetPos(Vector3(13, 5, 0));
+    maintenance->SetWorkstation(tempStation);
+    maintenance->SetToilet(tempToilet);
+    SharedData::GetInstance()->m_goList.push_back(maintenance);
+
+    //SharedData::GetInstance()->m_gridMap->m_collisionGrid[5][13] = true;
+
+    // Maintenance Man + Assosiated Workstation ( 2 )
+    tempStation = new Workstation();
+    tempStation->Init();
+    tempStation->SetActive();
+    tempStation->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKSTATION));
+    tempStation->SetPos(Vector3(11, 6, 0));
+    SharedData::GetInstance()->m_goList.push_back(tempStation);
+
+    SharedData::GetInstance()->m_gridMap->m_collisionGrid[6][11] = true;
+
+    maintenance = new MaintenanceMan();
+    maintenance->Init();
+    maintenance->SetActive();
+    maintenance->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MAINTENANCEMAN));
+    maintenance->SetPos(Vector3(11, 5, 0));
+    maintenance->SetWorkstation(tempStation);
+    maintenance->SetToilet(tempToilet);
+    SharedData::GetInstance()->m_goList.push_back(maintenance);
+
+    //SharedData::GetInstance()->m_gridMap->m_collisionGrid[5][11] = true;
+
+    // Worker + Assosiated Workstation ( 1 )
+    tempStation = new Workstation();
     tempStation->Init();
     tempStation->SetActive();
     tempStation->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKSTATION));
@@ -221,49 +263,9 @@ void SceneAI::Init()
     tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
+    tempWorker->SetTempRole(maintenance);
+
     SharedData::GetInstance()->m_gridMap->m_collisionGrid[6][2] = true;
-
-    // Maintenance Man + Assosiated Workstation ( 1 )
-    tempStation = new Workstation();
-    tempStation->Init();
-    tempStation->SetActive();
-    tempStation->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKSTATION));
-    tempStation->SetPos(Vector3(13, 6, 0));
-    SharedData::GetInstance()->m_goList.push_back(tempStation);
-
-    SharedData::GetInstance()->m_gridMap->m_collisionGrid[6][13] = true;
-
-    MaintenanceMan* maintenance = new MaintenanceMan();
-    maintenance->Init();
-    maintenance->SetActive();
-    maintenance->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MAINTENANCEMAN));
-    maintenance->SetPos(Vector3(13, 5, 0));
-    maintenance->SetWorkstation(tempStation);
-    maintenance->SetToilet(tempToilet);
-    SharedData::GetInstance()->m_goList.push_back(maintenance);
-
-    //SharedData::GetInstance()->m_gridMap->m_collisionGrid[5][13] = true;
-
-    // Maintenance Man + Assosiated Workstation ( 2 )
-    tempStation = new Workstation();
-    tempStation->Init();
-    tempStation->SetActive();
-    tempStation->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKSTATION));
-    tempStation->SetPos(Vector3(11, 6, 0));
-    SharedData::GetInstance()->m_goList.push_back(tempStation);
-
-    SharedData::GetInstance()->m_gridMap->m_collisionGrid[6][11] = true;
-
-    maintenance = new MaintenanceMan();
-    maintenance->Init();
-    maintenance->SetActive();
-    maintenance->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MAINTENANCEMAN));
-    maintenance->SetPos(Vector3(11, 5, 0));
-    maintenance->SetWorkstation(tempStation);
-    maintenance->SetToilet(tempToilet);
-    SharedData::GetInstance()->m_goList.push_back(maintenance);
-
-    //SharedData::GetInstance()->m_gridMap->m_collisionGrid[5][11] = true;
 
     // Scrap Man + Assosiated Scrap Pile ( 1 )
     ScrapPile* pile = new ScrapPile();
@@ -469,10 +471,22 @@ void SceneAI::RenderGO(GameObject *go)
     if (go->IsEntity())
     {
         Entity* entity = dynamic_cast<Entity*>(go);
-        //if (entity->GetTempRole() != NULL)
-            RenderTempRoleName(entity);
+        if (entity->GetTempRole()) {
+            Entity* tempRole = entity->GetTempRole();
+            RenderRoleName(tempRole);
+            if (tempRole->HasMessageComeIn())
+            {
+                glUniform1i(m_parameters[U_HIGHLIGHTED], 0);
+                RenderMessageNotification(tempRole);
+            }
+            else if (tempRole->HasAcknowledgedMessage())
+            {
+                glUniform1i(m_parameters[U_HIGHLIGHTED], 0);
+                RenderAcknowledgeNotification(tempRole);
+            }
+        }
 
-        if (entity->HasMessageComeIn())
+        else if (entity->HasMessageComeIn())
         {
             glUniform1i(m_parameters[U_HIGHLIGHTED], 0);
             RenderMessageNotification(entity);
@@ -487,10 +501,10 @@ void SceneAI::RenderGO(GameObject *go)
 	modelStack.PopMatrix();
 }
 
-void SceneAI::RenderTempRoleName(Entity* entity)
+void SceneAI::RenderRoleName(Entity* entity)
 {
     std::string name = entity->GetName();
-    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), name, Color(0, 0, 0), 1, (entity->GetPos().x * 6.f) - (name.size() * 0.5f), (entity->GetPos().y * 4.5f) + 0.4f);
+    RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), name, Color(0, 0, 0), 1, ((entity->GetPos().x + 1) * 5.3f) - (name.size() * 0.5f), ((1 + entity->GetPos().y) * 4.f) - 1.5f);
 }
 
 void SceneAI::RenderMessageNotification(Entity* entity)

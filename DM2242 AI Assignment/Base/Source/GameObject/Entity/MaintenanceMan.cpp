@@ -574,6 +574,16 @@ void MaintenanceMan::SetWorkstation(Workstation* station)
     m_workstation = station;
 }
 
+Workstation* MaintenanceMan::GetWorkstation()
+{
+    return m_workstation;
+}
+
+void MaintenanceMan::SetOriginalSpawn(const Vector3& origSpawn)
+{
+    m_origSpawn = origSpawn;
+}
+
 void MaintenanceMan::SetToilet(Toilet* toilet)
 {
     m_toilet = toilet;

@@ -42,6 +42,25 @@ void Worker::SetPos(Vector3 pos)
 
 void Worker::Update(double dt)
 {
+    // Update message notification
+    if (b_newMsgNotif)
+    {
+        UpdateMessageNotif(dt);
+    }
+    if (b_renderAcknowledgeMsg)
+    {
+        UpdateMessageAcknowledged(dt);
+    }
+
+    if (tempRole)
+    {
+        tempRole->Update(dt);
+        SetPos(tempRole->GetPos());
+        SetDirection(tempRole->GetDirection());
+        //m_dir = tempRole->GetDirection();
+        return;
+    }
+
     if (m_state != OFFWORK)
     {
         if (m_state == BREAK)
@@ -431,6 +450,11 @@ bool Worker::IsOnBreak()
 void Worker::SetWorkstation(Workstation* station)
 {
     m_workstation = station;
+}
+
+Workstation* Worker::GetWorkstation()
+{
+    return m_workstation;
 }
 
 bool Worker::IsAbleToWork()

@@ -67,6 +67,9 @@ public:
     virtual int GetMaxStates();
 
     void SetWorkstation(Workstation* station);
+    Workstation* GetWorkstation();
+
+    void SetOriginalSpawn(const Vector3& origSpawn);
 
     void SetToilet(Toilet* toilet);
     Toilet* GetToilet();
