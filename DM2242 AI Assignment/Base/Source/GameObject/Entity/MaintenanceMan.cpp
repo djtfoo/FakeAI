@@ -115,6 +115,7 @@ void MaintenanceMan::Update(double dt)
                 {
                     WhenReachedDestination();
                     m_doingWork = true;
+                    //SetDirection(CheckDirection(this->m_pos, m_targetMachine->GetPos()));
                 }
                 else
                 {
@@ -125,6 +126,7 @@ void MaintenanceMan::Update(double dt)
             if ((m_pos - m_targetMachine->GetPos()).Length() < 1.001)
             {
                 m_doingWork = true;
+                SetDirection(CheckDirection(this->m_pos, m_targetMachine->GetPos()));
             }
         }
     }
@@ -582,6 +584,11 @@ Workstation* MaintenanceMan::GetWorkstation()
 void MaintenanceMan::SetOriginalSpawn(const Vector3& origSpawn)
 {
     m_origSpawn = origSpawn;
+}
+
+Vector3 MaintenanceMan::GetOriginalSpawn()
+{
+    return m_origSpawn;
 }
 
 void MaintenanceMan::SetToilet(Toilet* toilet)

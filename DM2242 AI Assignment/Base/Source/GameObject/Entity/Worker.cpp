@@ -457,6 +457,16 @@ Workstation* Worker::GetWorkstation()
     return m_workstation;
 }
 
+void Worker::SetOriginalSpawn(const Vector3& origSpawn)
+{
+    m_origSpawn = origSpawn;
+}
+
+Vector3 Worker::GetOriginalSpawn()
+{
+    return m_origSpawn;
+}
+
 bool Worker::IsAbleToWork()
 {
     if (!m_atWorkstation)

@@ -177,6 +177,16 @@ void SceneAI::Init()
 
     //SharedData::GetInstance()->m_gridMap->m_collisionGrid[5][11] = true;
 
+    // Scrap Man + Assosiated Scrap Pile ( 1 )
+    ScrapPile* pile = new ScrapPile();
+    SharedData::GetInstance()->AddGameObject(pile, SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAP_PILE), 12, 2);
+
+    ScrapMan* scrapMan = new ScrapMan();
+    SharedData::GetInstance()->AddGameObject(scrapMan, SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAPMAN), 11, 2);
+    scrapMan->SetPos(Vector3(11, 2, 0));
+    scrapMan->AssignScrapPile(pile);
+    scrapMan->SetToilet(tempToilet);
+
     // Worker + Assosiated Workstation ( 1 )
     tempStation = new Workstation();
     tempStation->Init();
@@ -263,19 +273,10 @@ void SceneAI::Init()
     tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
-    tempWorker->SetTempRole(maintenance);
+    //tempWorker->SetTempRole(maintenance);
+    tempWorker->SetTempRole(scrapMan);
 
     SharedData::GetInstance()->m_gridMap->m_collisionGrid[6][2] = true;
-
-    // Scrap Man + Assosiated Scrap Pile ( 1 )
-    ScrapPile* pile = new ScrapPile();
-    SharedData::GetInstance()->AddGameObject(pile, SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAP_PILE), 12, 2);
-
-    ScrapMan* scrapMan = new ScrapMan();
-    SharedData::GetInstance()->AddGameObject(scrapMan, SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAPMAN), 11, 2);
-    scrapMan->SetPos(Vector3(11, 2, 0));
-    scrapMan->AssignScrapPile(pile);
-    scrapMan->SetToilet(tempToilet);
 
     // Delivery Man + Delivery Truck
     DeliveryTruck* truck = new DeliveryTruck();
@@ -294,6 +295,15 @@ void SceneAI::Init()
     SharedData::GetInstance()->m_goList.push_back(sup);
 
     SharedData::GetInstance()->m_gridMap->m_collisionGrid[12][12] = true;
+
+    // spawn temp Robot
+    Robot* robot = new Robot();
+    robot->Init();
+    robot->SetActive();
+    robot->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT));
+    robot->SetPos(Vector3(7, 5, 0));
+    robot->SetState(Robot::STARTUP);
+    SharedData::GetInstance()->m_goList.push_back(robot);
 
     //// Scrap Pile
     //ScrapPile* pile = new ScrapPile();

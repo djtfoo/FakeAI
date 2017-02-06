@@ -1,6 +1,6 @@
 #include "Workstation.h"
 
-Workstation::Workstation() : GameObject("Workstation")
+Workstation::Workstation(std::string name) : GameObject(name)
 {}
 
 Workstation::~Workstation()

@@ -1,6 +1,6 @@
 #include "ScrapPile.h"
 
-ScrapPile::ScrapPile() : GameObject("Scrap Pile"), m_scrapQuantity(0)
+ScrapPile::ScrapPile() : Workstation("Scrap Pile"), m_scrapQuantity(0)
 {
 }
 

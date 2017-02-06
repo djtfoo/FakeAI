@@ -57,6 +57,9 @@ public:
     void SetWorkstation(Workstation* station);
     Workstation* GetWorkstation();
 
+    void SetOriginalSpawn(const Vector3& origSpawn);
+    Vector3 GetOriginalSpawn();
+
     virtual void Init();
     virtual void Update(double dt);
     virtual void SetPos(Vector3 pos);

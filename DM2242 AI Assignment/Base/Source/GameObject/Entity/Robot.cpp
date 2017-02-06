@@ -158,7 +158,7 @@ int Robot::Think()
     case STARTUP:
         if (m_lifetime >= 3.0)
         {
-            m_pos = m_beltToFollow->GetNextCheckpoint(m_currWaypoint);
+            //m_pos = m_beltToFollow->GetNextCheckpoint(m_currWaypoint);
             m_pathfinder->EmptyPath();
             return WORK_WITHOUTPART;
         }

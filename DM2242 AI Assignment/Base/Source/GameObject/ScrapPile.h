@@ -1,9 +1,9 @@
 #ifndef SCRAPPILE_H
 #define SCRAPPILE_H
 
-#include "GameObject.h"
+#include "Workstation.h"
 
-class ScrapPile : public GameObject
+class ScrapPile : public Workstation
 {
     int m_scrapQuantity;    // how much scrap there is in the pile; if 0, don't render
 

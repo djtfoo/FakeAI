@@ -70,6 +70,7 @@ public:
     Workstation* GetWorkstation();
 
     void SetOriginalSpawn(const Vector3& origSpawn);
+    Vector3 GetOriginalSpawn();
 
     void SetToilet(Toilet* toilet);
     Toilet* GetToilet();

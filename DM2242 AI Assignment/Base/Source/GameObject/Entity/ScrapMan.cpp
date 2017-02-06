@@ -477,6 +477,21 @@ void ScrapMan::AssignScrapPile(ScrapPile* pile)
     m_pile = pile;
 }
 
+ScrapPile* ScrapMan::GetScrapPile()
+{
+    return m_pile;
+}
+
+void ScrapMan::SetOriginalSpawn(const Vector3& origSpawn)
+{
+    m_origSpawn = origSpawn;
+}
+
+Vector3 ScrapMan::GetOriginalSpawn()
+{
+    return m_origSpawn;
+}
+
 void ScrapMan::SetToilet(Toilet* toilet)
 {
     m_toilet = toilet;

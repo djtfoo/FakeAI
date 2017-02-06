@@ -10,7 +10,7 @@
 class Workstation : public GameObject
 {
 public:
-    Workstation();
+    Workstation(std::string name = "Workstation");
     virtual ~Workstation();
 
     virtual void Init();
