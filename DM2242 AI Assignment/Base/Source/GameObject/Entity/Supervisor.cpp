@@ -200,8 +200,6 @@ void Supervisor::Sense(double dt)
             }
         }
     }
-    else if (m_state == MAKEDECISION)
-        d_decisionTimer += dt;
 }
 
 int Supervisor::Think()
@@ -211,8 +209,21 @@ int Supervisor::Think()
 
     case IDLE:
 
+        // If off-work, immediately acknowledge all messages and reset all related variables
         if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+        {
+            for (int i = 0; i < 5; ++i)
+            {
+                Message* retrievedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
+
+                // Check if retrieved message is invalid
+                if (retrievedMsg)
+                {
+                    AcknowledgeMessage();
+                }
+            }
             return OFFWORK;
+        }
 
         if (m_breakCharge >= 2000)
         {
@@ -229,7 +240,7 @@ int Supervisor::Think()
         }
 
         // Make Decision
-        if (b_shouldMakeDecision && !b_decisionMade && d_decisionTimer > 5)
+        if (b_shouldMakeDecision && !b_decisionMade && d_decisionTimer > 15)
         {
             d_decisionTimer = 0;
             return MAKEDECISION;
@@ -244,10 +255,19 @@ int Supervisor::Think()
 
             for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
             {
-                if (SharedData::GetInstance()->m_goList[i]->GetName() == "Worker" || SharedData::GetInstance()->m_goList[i]->GetName() == "Scrap Man" || SharedData::GetInstance()->m_goList[i]->GetName() == "Maintenance Man")
+                if (!SharedData::GetInstance()->m_goList[i]->IsEntity())
+                    continue;
+
+                Entity* checkEntity = dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i]);
+
+                while (checkEntity->GetTempRole())
                 {
-                    GameObject* test = SharedData::GetInstance()->m_goList[i];
-                    if (dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i])->GetUrgencyChanged() == true)
+                    checkEntity = checkEntity->GetTempRole();
+                }
+
+                if (checkEntity->GetName() == "Worker" || checkEntity->GetName() == "Scrap Man" || checkEntity->GetName() == "Maintenance Man")
+                {
+                    if (checkEntity->GetUrgencyChanged() == true)
                         shouldAcknowledged = false;
                 }
             }
@@ -313,10 +333,19 @@ int Supervisor::Think()
 
                 for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
                 {
-                    if (SharedData::GetInstance()->m_goList[i]->GetName() == "Worker" || SharedData::GetInstance()->m_goList[i]->GetName() == "Scrap Man" || SharedData::GetInstance()->m_goList[i]->GetName() == "Maintenance Man")
+                    if (!SharedData::GetInstance()->m_goList[i]->IsEntity())
+                        continue;
+
+                    Entity* checkEntity = dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i]);
+
+                    while (checkEntity->GetTempRole())
                     {
-                        GameObject* test = SharedData::GetInstance()->m_goList[i];
-                        if (dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i])->GetUrgencyChanged() == false)
+                        checkEntity = checkEntity->GetTempRole();
+                    }
+
+                    if (checkEntity->GetName() == "Worker" || checkEntity->GetName() == "Scrap Man" || checkEntity->GetName() == "Maintenance Man")
+                    {
+                        if (checkEntity->GetUrgencyChanged() == false)
                             shouldAcknowledged = false;
                     }
                 }
@@ -502,9 +531,19 @@ void Supervisor::DoMakeDecision()
 
         for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
         {
-            if (SharedData::GetInstance()->m_goList[i]->GetName() == "Worker" || SharedData::GetInstance()->m_goList[i]->GetName() == "Scrap Man" || SharedData::GetInstance()->m_goList[i]->GetName() == "Maintenance Man")
+            if (!SharedData::GetInstance()->m_goList[i]->IsEntity())
+                continue;
+
+            Entity* checkEntity = dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i]);
+
+            while (checkEntity->GetTempRole())
             {
-                averageInactiveLevel += dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i])->GetInactiveLevel();
+                checkEntity = checkEntity->GetTempRole();
+            }
+
+            if (checkEntity->GetName() == "Worker" || checkEntity->GetName() == "Scrap Man" || checkEntity->GetName() == "Maintenance Man")
+            {
+                averageInactiveLevel += checkEntity->GetInactiveLevel();
                 num++;
             }
         }
@@ -524,6 +563,7 @@ void Supervisor::DoMakeDecision()
         }
         else
         {
+            m_MessageToSend = Message::MESSAGE_TYPES_TOTAL;
             b_decisionMade = false;
         }
 

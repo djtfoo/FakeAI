@@ -215,7 +215,7 @@ void SceneAI::Init()
     scrapMan->AssignScrapPile(pile);
     scrapMan->SetToilet(tempToilet);
 
-    scrapMan->SetTempRole(maintenance);
+    //scrapMan->SetTempRole(maintenance);
 
     // Worker + Assosiated Workstation ( 1 )
     tempStation = new Workstation();
