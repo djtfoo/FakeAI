@@ -70,6 +70,15 @@ void ScrapMan::Update(double dt)
         d_inactive_level = Math::Max(0.0, d_inactive_level);
     }
 
+    if (tempRole)
+    {
+        tempRole->Update(dt);
+        SetPos(tempRole->GetPos());
+        SetDirection(tempRole->GetDirection());
+        //m_dir = tempRole->GetDirection();
+        return;
+    }
+
     switch (m_state)
     {
     case IDLE:
@@ -520,6 +529,21 @@ int ScrapMan::GetMaxStates()
 void ScrapMan::AssignScrapPile(ScrapPile* pile)
 {
     m_pile = pile;
+}
+
+ScrapPile* ScrapMan::GetScrapPile()
+{
+    return m_pile;
+}
+
+void ScrapMan::SetOriginalSpawn(const Vector3& origSpawn)
+{
+    m_origSpawn = origSpawn;
+}
+
+Vector3 ScrapMan::GetOriginalSpawn()
+{
+    return m_origSpawn;
 }
 
 void ScrapMan::SetToilet(Toilet* toilet)

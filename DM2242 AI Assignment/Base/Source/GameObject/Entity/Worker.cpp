@@ -428,6 +428,7 @@ void Worker::DoWork()
                 if (SharedData::GetInstance()->m_goList[i]->GetName() == "ConveyorBelt")
                 {
                     tempRobot->SetBelt(dynamic_cast<ConveyorBelt*>(SharedData::GetInstance()->m_goList[i]));
+                    break;
                 }
             }
 
@@ -511,6 +512,16 @@ void Worker::SetWorkstation(Workstation* station)
 Workstation* Worker::GetWorkstation()
 {
     return m_workstation;
+}
+
+void Worker::SetOriginalSpawn(const Vector3& origSpawn)
+{
+    m_origSpawn = origSpawn;
+}
+
+Vector3 Worker::GetOriginalSpawn()
+{
+    return m_origSpawn;
 }
 
 bool Worker::IsAbleToWork()

@@ -62,6 +62,15 @@ void MaintenanceMan::Update(double dt)
         d_inactive_level = Math::Max(0.0, d_inactive_level);
     }
 
+    if (tempRole)
+    {
+        tempRole->Update(dt);
+        SetPos(tempRole->GetPos());
+        SetDirection(tempRole->GetDirection());
+        //m_dir = tempRole->GetDirection();
+        return;
+    }
+
     if (m_state == BREAK)
     {
         // Check if toilet is close, if so add to queue and walk to it
@@ -127,6 +136,7 @@ void MaintenanceMan::Update(double dt)
                 {
                     WhenReachedDestination();
                     m_doingWork = true;
+                    //SetDirection(CheckDirection(this->m_pos, m_targetMachine->GetPos()));
                 }
                 else
                 {
@@ -137,6 +147,7 @@ void MaintenanceMan::Update(double dt)
             if ((m_pos - m_targetMachine->GetPos()).Length() < 1.001)
             {
                 m_doingWork = true;
+                SetDirection(CheckDirection(this->m_pos, m_targetMachine->GetPos()));
             }
         }
     }
@@ -248,7 +259,7 @@ int MaintenanceMan::Think()
             return OFFWORK;
 
         Vector3 temp = m_workstation->GetPos();
-        temp.y -= 1;
+        //temp.y -= 1;
 
         // Check if at workstation
         if ((m_pos - temp).Length() < 1.2)
@@ -623,6 +634,11 @@ Workstation* MaintenanceMan::GetWorkstation()
 void MaintenanceMan::SetOriginalSpawn(const Vector3& origSpawn)
 {
     m_origSpawn = origSpawn;
+}
+
+Vector3 MaintenanceMan::GetOriginalSpawn()
+{
+    return m_origSpawn;
 }
 
 void MaintenanceMan::SetToilet(Toilet* toilet)

@@ -65,6 +65,34 @@ void SceneAI::Init()
 
     SharedData::GetInstance()->m_gridMap->m_collisionGrid[12][2] = true;
 
+    for (int idx = 0; idx < conveyor->m_Checkpoints.size() - 1; ++idx)
+    {
+        int idx2 = idx + 1;
+        Vector3 spawn = conveyor->m_Checkpoints[idx];
+        while (spawn != conveyor->m_Checkpoints[idx2])
+        {
+            if (spawn.x < conveyor->m_Checkpoints[idx2].x)
+            {
+                spawn.x += 1;
+            }
+            else if (spawn.x > conveyor->m_Checkpoints[idx2].x)
+            {
+                spawn.x -= 1;
+            }
+            else if (spawn.y < conveyor->m_Checkpoints[idx2].y)
+            {
+                spawn.y += 1;
+            }
+            else if (spawn.y > conveyor->m_Checkpoints[idx2].y)
+            {
+                spawn.y -= 1;
+            }
+
+            // this should be moved somewhere else, init maybe
+            SharedData::GetInstance()->m_gridMap->m_collisionGrid[(int)spawn.y][(int)spawn.x] = true;
+        }
+    }
+
     // Toilet
     //SharedData::GetInstance()->AddGameObject(new Toilet(), SharedData::GetInstance()->m_meshList->GetMesh(GEO_TOILET), 14, 14);
 
@@ -177,6 +205,18 @@ void SceneAI::Init()
 
     //SharedData::GetInstance()->m_gridMap->m_collisionGrid[5][11] = true;
 
+    // Scrap Man + Assosiated Scrap Pile ( 1 )
+    ScrapPile* pile = new ScrapPile();
+    SharedData::GetInstance()->AddGameObject(pile, SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAP_PILE), 12, 2);
+
+    ScrapMan* scrapMan = new ScrapMan();
+    SharedData::GetInstance()->AddGameObject(scrapMan, SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAPMAN), 11, 2);
+    scrapMan->SetPos(Vector3(11, 2, 0));
+    scrapMan->AssignScrapPile(pile);
+    scrapMan->SetToilet(tempToilet);
+
+    scrapMan->SetTempRole(maintenance);
+
     // Worker + Assosiated Workstation ( 1 )
     tempStation = new Workstation();
     tempStation->Init();
@@ -267,16 +307,6 @@ void SceneAI::Init()
 
     SharedData::GetInstance()->m_gridMap->m_collisionGrid[6][2] = true;
 
-    // Scrap Man + Assosiated Scrap Pile ( 1 )
-    ScrapPile* pile = new ScrapPile();
-    SharedData::GetInstance()->AddGameObject(pile, SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAP_PILE), 12, 2);
-
-    ScrapMan* scrapMan = new ScrapMan();
-    SharedData::GetInstance()->AddGameObject(scrapMan, SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAPMAN), 11, 2);
-    scrapMan->SetPos(Vector3(11, 2, 0));
-    scrapMan->AssignScrapPile(pile);
-    scrapMan->SetToilet(tempToilet);
-
     // Delivery Man + Delivery Truck
     DeliveryTruck* truck = new DeliveryTruck();
     SharedData::GetInstance()->AddGameObject(truck, SharedData::GetInstance()->m_meshList->GetMesh(GEO_DELIVERYTRUCK), 1, 2);
@@ -294,6 +324,15 @@ void SceneAI::Init()
     SharedData::GetInstance()->m_goList.push_back(sup);
 
     SharedData::GetInstance()->m_gridMap->m_collisionGrid[12][12] = true;
+
+    // spawn temp Robot
+    Robot* robot = new Robot();
+    robot->Init();
+    robot->SetActive();
+    robot->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT));
+    robot->SetPos(Vector3(7, 3, 0));
+    robot->SetState(Robot::STARTUP);
+    SharedData::GetInstance()->m_goList.push_back(robot);
 
     //// Scrap Pile
     //ScrapPile* pile = new ScrapPile();
@@ -461,6 +500,18 @@ void SceneAI::RenderGO(GameObject *go)
         modelStack.Translate(0, -0.1f, 0.5f);
     else if (go->GetName() == "Door")
         modelStack.Translate(0, 0, 0.5f);
+    else if (go->GetName() == "Workstation")
+    {
+        Workstation* workstation = dynamic_cast<Workstation*>(go);
+        if (workstation->IfHasRobotPart())
+        {
+            modelStack.PushMatrix();
+            modelStack.Translate(go->GetPos().x, go->GetPos().y - go->GetScale().y * 0.5f, -0.5f);
+            modelStack.Scale(go->GetScale().x * 0.5f, go->GetScale().y * 0.5f, go->GetScale().z);
+            RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_ROBOT_PART_PACKAGE), false);
+            modelStack.PopMatrix();
+        }
+    }
     
     // Render the object
     modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
@@ -694,9 +745,6 @@ void SceneAI::Render()
                         modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
                         RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(geo_type), false);
                         modelStack.PopMatrix();
-
-                        // This should be moved somewhere else, Init maybe
-                        SharedData::GetInstance()->m_gridMap->m_collisionGrid[(int)spawn.y][(int)spawn.x] = true;
                     }
                     
                 }

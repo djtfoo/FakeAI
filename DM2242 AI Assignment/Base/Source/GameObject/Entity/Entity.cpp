@@ -9,6 +9,7 @@
 
 #include "MaintenanceMan.h"
 #include "Worker.h"
+#include "ScrapMan.h"
 
 Entity::Entity(std::string name) : GameObject(name, true)
 , m_dir(DIR_DOWN), m_vel(0, 0, 0)
@@ -340,6 +341,11 @@ void Entity::WhenReachedPathNode()
 
 void Entity::SetTempRole(Entity* newRole)
 {
+    if (tempRole) {
+        delete tempRole;
+        tempRole = NULL;
+    }
+
     if (newRole->GetName() == "Maintenance Man") {
         tempRole = new MaintenanceMan();
         tempRole->Init();
@@ -355,10 +361,56 @@ void Entity::SetTempRole(Entity* newRole)
             Worker* thisGuy = dynamic_cast<Worker*>(this);
             replacer->SetWorkstation(thisGuy->GetWorkstation());
         }
+        else if (this->GetName() == "Scrap Man")
+        {
+            ScrapMan* thisGuy = dynamic_cast<ScrapMan*>(this);
+            replacer->SetWorkstation(thisGuy->GetScrapPile());
+        }
 
         replacer->SetToilet(replaced->GetToilet());
-        replacer->SetPos(this->m_pos);
-        //replacer->SetOriginalSpawn(this->m_pos);
+        //replacer->SetPos(this->m_pos);
+        replacer->SetOriginalSpawn(this->m_pos);
+    }
+
+    else if (newRole->GetName() == "Scrap Man") {
+        tempRole = new ScrapMan();
+        tempRole->Init();
+        tempRole->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAPMAN));
+        tempRole->SetPos(this->m_pos);
+        tempRole->SetDirection(this->m_dir);
+
+        ScrapMan* replacer = dynamic_cast<ScrapMan*>(tempRole);
+        ScrapMan* replaced = dynamic_cast<ScrapMan*>(newRole);
+
+        replacer->SetToilet(replaced->GetToilet());
+        replacer->AssignScrapPile(replaced->GetScrapPile());
+        replacer->SetOriginalSpawn(replaced->m_pos);
+
+
+        // pathfind to workstation
+        replacer->m_pathfinder->EmptyPath();
+        replacer->m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+        replacer->m_pathfinder->ReceiveDestination(replacer->GetOriginalSpawn());
+        replacer->m_pathfinder->FindPathGreedyBestFirst();
+
+        replacer->SetVelocity(CheckVelocity(m_pos, replacer->m_pathfinder->foundPath.back().GetPosition()));
+        replacer->SetDirection(CheckDirection(replacer->m_vel));
+        replacer->m_pathfinder->ReceiveDirection(replacer->m_dir);
+    }
+
+    else if (newRole->GetName() == "Worker") {
+        tempRole = new Worker();
+        tempRole->Init();
+        tempRole->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER));
+        //tempRole->SetPos(this->m_pos);
+        tempRole->SetDirection(this->m_dir);
+
+        Worker* replacer = dynamic_cast<Worker*>(tempRole);
+        Worker* replaced = dynamic_cast<Worker*>(newRole);
+
+        replacer->SetToilet(replaced->GetToilet());
+        replacer->SetWorkstation(replaced->GetWorkstation());
+        replacer->SetOriginalSpawn(this->m_pos);
     }
 }
 

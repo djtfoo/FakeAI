@@ -313,6 +313,14 @@ void Pathfinder::FindPathGreedyBestFirst()
     }
 }
 
+void Pathfinder::MoveStraightLine()
+{
+    int destinationRow = (int)(destination.y);
+    int destinationCol = (int)(destination.x);
+
+    foundPath.push_back(Node(destinationRow, destinationCol));
+}
+
 void Pathfinder::AddFrontier()
 {
     for (std::vector<Node*>::iterator it = closedList.begin(); it != closedList.end(); ++it)

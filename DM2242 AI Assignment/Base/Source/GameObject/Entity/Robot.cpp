@@ -42,22 +42,40 @@ void Robot::Update(double dt)
     case INCOMPLETE_3:
         if (!b_workedOn)
         {
-            if (m_vel.IsZero())
+            //if (m_vel.IsZero())
+            //{
+            //    m_vel = CheckVelocity(m_pos, m_beltToFollow->GetNextCheckpoint(m_currWaypoint));
+            //    SetDirection(CheckDirection(m_vel));
+            //}
+            ////Vector3 dir = (m_beltToFollow->GetNextCheckpoint(m_currWaypoint) - m_pos).Normalized();
+            //m_pos += m_vel * dt;
+            //
+            //if ((m_beltToFollow->GetNextCheckpoint(m_currWaypoint) - m_pos).Length() < 0.1)
+            //{
+            //    ++m_currWaypoint;
+            //    //m_vel = (m_beltToFollow->GetNextCheckpoint(m_currWaypoint) - m_pos).Normalized();
+            //    m_vel = CheckVelocity(m_pos, m_beltToFollow->GetNextCheckpoint(m_currWaypoint));
+            //    SetDirection(CheckDirection(m_vel));
+            //}
+            if (!b_reachedDestination)
             {
-                m_vel = CheckVelocity(m_pos, m_beltToFollow->GetNextCheckpoint(m_currWaypoint));
-                SetDirection(CheckDirection(m_vel));
+                if (!m_vel.IsZero())
+                    m_pos += m_vel * dt;
+                if (m_pathfinder->hasReachedDestination(this->m_pos))
+                {
+                    WhenReachedDestination();
+                    SetWaypoint(m_currWaypoint + 1);
+                    b_reachedDestination = false;
+                    //    // Pathfind to the building block stack
+                    //    m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+                    //    m_pathfinder->ReceiveDestination(m_beltToFollow->GetNextCheckpoint(m_currWaypoint));
+                    //    m_pathfinder->MoveStraightLine();
+                    //
+                    //SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+                    //SetDirection(CheckDirection(m_vel));
+                    //m_pathfinder->ReceiveDirection(m_dir);
+                }
             }
-            //Vector3 dir = (m_beltToFollow->GetNextCheckpoint(m_currWaypoint) - m_pos).Normalized();
-            m_pos += m_vel * dt;
-
-            if ((m_beltToFollow->GetNextCheckpoint(m_currWaypoint) - m_pos).Length() < 0.1)
-            {
-                ++m_currWaypoint;
-                //m_vel = (m_beltToFollow->GetNextCheckpoint(m_currWaypoint) - m_pos).Normalized();
-                m_vel = CheckVelocity(m_pos, m_beltToFollow->GetNextCheckpoint(m_currWaypoint));
-                SetDirection(CheckDirection(m_vel));
-            }
-                
         }
         break;
 
@@ -158,7 +176,7 @@ int Robot::Think()
     case STARTUP:
         if (m_lifetime >= 3.0)
         {
-            m_pos = m_beltToFollow->GetNextCheckpoint(m_currWaypoint);
+            //m_pos = m_beltToFollow->GetNextCheckpoint(m_currWaypoint);
             m_pathfinder->EmptyPath();
             return WORK_WITHOUTPART;
         }
@@ -282,6 +300,15 @@ void Robot::SetBelt(ConveyorBelt* belt)
 void Robot::SetWaypoint(int idx)
 {
 	m_currWaypoint = idx;
+
+    // set path destination
+    m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+    m_pathfinder->ReceiveDestination(m_beltToFollow->GetNextCheckpoint(m_currWaypoint));
+    m_pathfinder->MoveStraightLine();
+
+    SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+    SetDirection(CheckDirection(m_vel));
+    m_pathfinder->ReceiveDirection(m_dir);
 }
 
 Vector3 Robot::GetWaypoint()

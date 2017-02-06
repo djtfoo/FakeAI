@@ -64,6 +64,10 @@ public:
     virtual int GetMaxStates();
 
     void AssignScrapPile(ScrapPile* pile);
+    ScrapPile* GetScrapPile();
+
+    void SetOriginalSpawn(const Vector3& origSpawn);
+    Vector3 GetOriginalSpawn();
 
     // Toilet 
     void SetToilet(Toilet* toilet);
