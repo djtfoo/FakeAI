@@ -344,8 +344,36 @@ int ScrapMan::Think()
         {
             AcknowledgeMessage();
 
-            m_robotToPickUp = dynamic_cast<Robot*>(retrievedMsg->GetMessageFromObject());
-            return COLLECT_ROBOT;
+            switch (retrievedMsg->GetMessageType())
+            {
+            case Message::ROBOT_SHUTDOWN:
+                m_robotToPickUp = dynamic_cast<Robot*>(retrievedMsg->GetMessageFromObject());
+                return COLLECT_ROBOT;
+
+            case Message::INCREASE_URGENCY:
+                if (!b_urgencyChanged)
+                {
+                    i_currUrgencyLevel++;
+                    b_urgencyChanged = true;
+                }
+                return 5;
+
+            case Message::DECREASE_URGENCY:
+                if (!b_urgencyChanged)
+                {
+                    i_currUrgencyLevel--;
+                    i_currUrgencyLevel = Math::Max(0, i_currUrgencyLevel);
+                    b_urgencyChanged = true;
+                }
+                return 5;
+
+            case Message::COMPLETED_URGENCY_CHANGE:
+                b_urgencyChanged = false;
+                return 5;
+            }
+
+            // Update walk speed if needed
+            f_walkSpeed = 1 + i_currUrgencyLevel * 0.25;
         }
         else
             return 5;

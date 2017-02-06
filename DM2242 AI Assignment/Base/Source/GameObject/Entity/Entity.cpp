@@ -442,6 +442,15 @@ Entity* Entity::GetTempRole()
     return tempRole;
 }
 
+void Entity::RemoveTempRole()
+{
+    if (tempRole)
+    {
+        delete tempRole;
+        tempRole = NULL;
+    }
+}
+
 int Entity::GetInactiveLevel()
 {
     return d_inactive_level;
