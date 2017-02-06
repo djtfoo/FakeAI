@@ -29,6 +29,12 @@ private:
     int m_toiletIdx;
     Vector3 m_origSpawn;
 
+    // Urgency
+    bool b_decisionMade;
+    bool b_shouldMakeDecision;
+    double d_decisionTimer;
+    Message::MESSAGE_TYPE m_MessageToSend;
+
     Workstation* m_workstation;
     Toilet* m_toilet;
 

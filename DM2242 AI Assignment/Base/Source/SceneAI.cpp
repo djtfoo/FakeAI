@@ -263,7 +263,7 @@ void SceneAI::Init()
     tempWorker->SetToilet(tempToilet);
     SharedData::GetInstance()->m_goList.push_back(tempWorker);
 
-    tempWorker->SetTempRole(maintenance);
+    //tempWorker->SetTempRole(maintenance);
 
     SharedData::GetInstance()->m_gridMap->m_collisionGrid[6][2] = true;
 

@@ -2,7 +2,7 @@
 
 #include "Robot.h"
 
-Supervisor::Supervisor() : Entity("Supervisor")
+Supervisor::Supervisor() : Entity("Supervisor"), m_MessageToSend(Message::MESSAGE_TYPES_TOTAL), b_decisionMade(false), d_decisionTimer(0.0), b_shouldMakeDecision(true)
 {
 }
 
@@ -171,6 +171,10 @@ void Supervisor::Update(double dt)
         DoBreak();
         break;
 
+    case MAKEDECISION:
+        DoMakeDecision();
+        break;
+
     case OFFWORK:
         DoOffWork();
         break;
@@ -185,6 +189,7 @@ void Supervisor::Sense(double dt)
         m_timer += dt;
     else if (m_state == IDLE)
     {
+        d_decisionTimer += dt;
         if (m_atWorkstation)
         {
             m_timer += dt;
@@ -195,6 +200,8 @@ void Supervisor::Sense(double dt)
             }
         }
     }
+    else if (m_state == MAKEDECISION)
+        d_decisionTimer += dt;
 }
 
 int Supervisor::Think()
@@ -221,6 +228,48 @@ int Supervisor::Think()
             }
         }
 
+        // Make Decision
+        if (b_shouldMakeDecision && !b_decisionMade && d_decisionTimer > 5)
+        {
+            d_decisionTimer = 0;
+            return MAKEDECISION;
+        }
+
+        // Check for urgency complete message
+        // Read Messages
+        if (true)
+        {
+            // Msg can only be acknowledged by supervisor
+            bool shouldAcknowledged = true;
+
+            for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
+            {
+                if (SharedData::GetInstance()->m_goList[i]->GetName() == "Worker" || SharedData::GetInstance()->m_goList[i]->GetName() == "Scrap Man" || SharedData::GetInstance()->m_goList[i]->GetName() == "Maintenance Man")
+                {
+                    GameObject* test = SharedData::GetInstance()->m_goList[i];
+                    if (dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i])->GetUrgencyChanged() == true)
+                        shouldAcknowledged = false;
+                }
+            }
+
+            if (shouldAcknowledged)
+            {
+                Message* retrievedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
+
+                // Check if retrieved message is invalid
+                if (retrievedMsg)
+                {
+                    AcknowledgeMessage();
+                }
+
+                b_shouldMakeDecision = true;
+            }
+            else
+            {
+                b_shouldMakeDecision = false;
+            }
+        }
+
         break;
 
     case PATROL:
@@ -234,6 +283,73 @@ int Supervisor::Think()
             m_breakCharge = 0;
             return IDLE;
         }
+        break;
+
+    case MAKEDECISION:
+
+        // If off-work, immediately acknowledge all messages and reset all related variables
+        if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+        {
+            for (int i = 0; i < 5; ++i)
+            {
+                Message* retrievedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
+
+                // Check if retrieved message is invalid
+                if (retrievedMsg)
+                {
+                    AcknowledgeMessage();
+                }
+            }
+            return OFFWORK;
+        }
+
+        if (b_decisionMade)
+        {
+            // Read Messages
+            if (b_newMsgNotif && d_msgNotifTimer >= 2.0)
+            {
+                // Msg can only be acknowledged by supervisor
+                bool shouldAcknowledged = true;
+
+                for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
+                {
+                    if (SharedData::GetInstance()->m_goList[i]->GetName() == "Worker" || SharedData::GetInstance()->m_goList[i]->GetName() == "Scrap Man" || SharedData::GetInstance()->m_goList[i]->GetName() == "Maintenance Man")
+                    {
+                        GameObject* test = SharedData::GetInstance()->m_goList[i];
+                        if (dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i])->GetUrgencyChanged() == false)
+                            shouldAcknowledged = false;
+                    }
+                }
+
+                if (shouldAcknowledged)
+                {
+                    Message* retrievedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
+
+                    // Check if retrieved message is invalid
+                    if (retrievedMsg)
+                    {
+                        AcknowledgeMessage();
+                    }
+
+                    SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::COMPLETED_URGENCY_CHANGE, "Humans", this, SharedData::GetInstance()->m_clock->GetCurrTimeObject()));
+
+                    d_decisionTimer = 0;
+                    b_decisionMade = false;
+                    return IDLE;
+                }
+                else
+                {
+                    d_decisionTimer = 0;
+                }  
+            }
+        }
+        else
+        {
+            d_decisionTimer = 0;
+            b_decisionMade = false;
+            return IDLE;
+        }
+
         break;
 
     case OFFWORK:
@@ -294,6 +410,10 @@ void Supervisor::Act(int value)
         m_pathfinder->ReceiveDirection(m_dir);
         break;
 
+    case MAKEDECISION:
+        SetState(MAKEDECISION);
+        break;
+
     case OFFWORK:
     {
                     SetState(OFFWORK);
@@ -314,6 +434,11 @@ void Supervisor::Act(int value)
                     SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
                     SetDirection(CheckDirection(m_vel));
                     m_pathfinder->ReceiveDirection(m_dir);
+
+                    b_decisionMade = false;
+                    b_shouldMakeDecision = true;
+                    d_decisionTimer = 0.0;
+
                     break;
     }
     }
@@ -361,10 +486,50 @@ void Supervisor::DoBreak()
         m_breakDone = true;
         m_timer = 0;
         m_toilet->RemoveFromQueue();
-        //std::cout << "POPPED" << std::endl;
         m_shouldMoveForward = true;
 
         m_toilet->SetOccupied(false);
+    }
+}
+
+void Supervisor::DoMakeDecision()
+{
+    if (!b_decisionMade)
+    {
+        // Urgency 
+        double averageInactiveLevel = 0;
+        int num = 0;
+
+        for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
+        {
+            if (SharedData::GetInstance()->m_goList[i]->GetName() == "Worker" || SharedData::GetInstance()->m_goList[i]->GetName() == "Scrap Man" || SharedData::GetInstance()->m_goList[i]->GetName() == "Maintenance Man")
+            {
+                averageInactiveLevel += dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i])->GetInactiveLevel();
+                num++;
+            }
+        }
+
+        averageInactiveLevel = averageInactiveLevel / num;
+
+        // Could be fuzzy
+        if (averageInactiveLevel > 7.5)
+        {
+            m_MessageToSend = Message::INCREASE_URGENCY;
+            b_decisionMade = true;
+        }
+        else if (averageInactiveLevel < 2.5)
+        {
+            m_MessageToSend = Message::DECREASE_URGENCY;
+            b_decisionMade = true;
+        }
+        else
+        {
+            b_decisionMade = false;
+        }
+
+        // Send message
+        if (m_MessageToSend != Message::MESSAGE_TYPES_TOTAL)
+            SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(m_MessageToSend, "Humans", this, SharedData::GetInstance()->m_clock->GetCurrTimeObject()));
     }
 }
 

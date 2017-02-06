@@ -15,8 +15,12 @@ Entity::Entity(std::string name) : GameObject(name, true)
 , b_newMsgNotif(false), d_msgNotifTimer(0.0)
 , f_symbolTranslation(0.f)
 , b_renderMessageComeIn(false), b_renderAcknowledgeMsg(false)
+, d_inactive_level(0.0)
+, b_urgencyChanged(false)
 {
     tempRole = NULL;
+    f_walkSpeed = 1;
+    i_currUrgencyLevel = 1;
 }
 
 Entity::~Entity()
@@ -185,7 +189,37 @@ Message* Entity::ReadMessageBoard(MessageBoard* mb)
     for (int i = 0; i < maxSize; ++i)  // read the message log from oldest message
     {
         Message* msg = mb->GetAMessage(i);
-        if (msg->GetMessageTo() == this->GetName() && !msg->IsAcknowledged())
+        //if (msg->GetMessageTo() == this->GetName() && !msg->IsAcknowledged())
+        //{
+        //    msg->SetAcknowledged(true);
+        //    return msg;
+        //}
+
+        // Check if acknowledged
+        if (msg->IsAcknowledged())
+            continue;
+
+        // Check message, if meant for many different entities
+        if (msg->GetMessageTo() == "Humans")
+        {
+            if (this->GetName() == "Worker" || this->GetName() == "Maintenance Man" || this->GetName() == "Scrap Man")
+            {
+                // Workers, MM and SM shouldn't acknowledge the urgency messages or other supervisor messages so others can also see it
+                if (msg->GetMessageType() != Message::INCREASE_URGENCY && msg->GetMessageType() != Message::DECREASE_URGENCY && msg->GetMessageType() != Message::COMPLETED_URGENCY_CHANGE)
+                    msg->SetAcknowledged(true);
+                else
+                    msg->SetAcknowledged(false);
+                return msg;
+            }
+            else if (this->GetName() == "Supervisor")
+            {
+                msg->SetAcknowledged(true);
+                return msg;
+            }
+        }
+
+        // Default message reading
+        if (msg->GetMessageTo() == this->GetName())
         {
             msg->SetAcknowledged(true);
             return msg;
@@ -331,4 +365,14 @@ void Entity::SetTempRole(Entity* newRole)
 Entity* Entity::GetTempRole()
 {
     return tempRole;
+}
+
+int Entity::GetInactiveLevel()
+{
+    return d_inactive_level;
+}
+
+bool Entity::GetUrgencyChanged()
+{
+    return b_urgencyChanged;
 }

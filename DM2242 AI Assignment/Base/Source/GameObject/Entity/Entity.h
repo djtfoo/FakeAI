@@ -62,6 +62,10 @@ protected:
     double d_msgNotifTimer; // timer offset for notif to come in and render notif symbol
     float f_symbolTranslation;  // value for translation for animation
     bool b_renderAcknowledgeMsg;    // rendering a tick to represent having acknowledged the message
+    float f_walkSpeed; // walk speed modifier for entities
+    int i_currUrgencyLevel; // current level of urgency, used to determine walkspeed
+    double d_inactive_level; // timer to measure inactivity or non-productive time 
+    bool b_urgencyChanged; // boolean to stop entity from increasing urgency level multiple times from one message
 
     // Pathfinding (not all Entities will use)
     Pathfinder* m_pathfinder;
@@ -112,6 +116,10 @@ public:
     // Pathfinding-related functions
     void WhenReachedDestination();  // generic settings for reaching intended destination of found path
     void WhenReachedPathNode();     // generic settings for when reaching next node on found path (but not destination)
+
+    // Urgency related functions
+    int GetInactiveLevel();
+    bool GetUrgencyChanged();
 
     // idea:
     // multiple types of think and act... use int values for switch case

@@ -61,6 +61,18 @@ void Worker::Update(double dt)
         return;
     }
 
+    // Update inactive level
+    if (m_state == IDLE || m_state == BREAK)
+    {
+        d_inactive_level += dt;
+        d_inactive_level = Math::Min(10.0, d_inactive_level);
+    }
+    else
+    {
+        d_inactive_level -= dt;
+        d_inactive_level = Math::Max(0.0, d_inactive_level);
+    }
+
     if (m_state != OFFWORK)
     {
         if (m_state == BREAK)
@@ -84,7 +96,7 @@ void Worker::Update(double dt)
             {
                 //pathfind to toilet
 
-                m_pos += m_vel * dt;
+                m_pos += m_vel * f_walkSpeed * dt;
                 if (m_pathfinder->hasReachedNode(this->m_pos))
                 {
                     // reached destination; can get a part and move on.
@@ -116,7 +128,7 @@ void Worker::Update(double dt)
             if ((m_origSpawn - m_pos).Length() > 0.1)
             {
                 // pathfind to workstation
-                m_pos += m_vel * dt;
+                m_pos += m_vel * f_walkSpeed  * dt;
                 if (m_pathfinder->hasReachedNode(this->m_pos))
                 {
                     // reached destination; can get a part and move on.
@@ -151,7 +163,7 @@ void Worker::Update(double dt)
         if (!m_pathfinder->IsPathEmpty())
         {
             // Walk to door
-            m_pos += m_vel * dt;
+            m_pos += m_vel * f_walkSpeed  * dt;
             if (m_pathfinder->hasReachedNode(this->m_pos))
             {
                 // check if reached destination; 
@@ -231,6 +243,45 @@ int Worker::Think()
             {
                 m_doOnce = false;
                 return BREAK;
+            }
+        }
+
+        // Read Messages
+        if (b_newMsgNotif && d_msgNotifTimer >= 2.0)
+        {
+            Message* retrievedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
+
+            // Check if retrieved message is invalid
+            if (retrievedMsg)
+            {
+                AcknowledgeMessage();
+
+                switch (retrievedMsg->GetMessageType())
+                {
+                case Message::INCREASE_URGENCY:
+                    if (!b_urgencyChanged)
+                    {
+                        i_currUrgencyLevel++;
+                        b_urgencyChanged = true;
+                    }
+                    break;
+
+                case Message::DECREASE_URGENCY:
+                    if (!b_urgencyChanged)
+                    {
+                        i_currUrgencyLevel--;
+                        i_currUrgencyLevel = Math::Max(0, i_currUrgencyLevel);
+                        b_urgencyChanged = true;
+                    }
+                    break;
+
+                case Message::COMPLETED_URGENCY_CHANGE:
+                    b_urgencyChanged = false;
+                    break;
+                }
+
+                // Update walk speed if needed
+                f_walkSpeed = 1 + i_currUrgencyLevel * 0.25;
             }
         }
 
@@ -332,6 +383,11 @@ void Worker::Act(int value)
         SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
         SetDirection(CheckDirection(m_vel));
         m_pathfinder->ReceiveDirection(m_dir);
+
+        d_inactive_level = 0;
+        i_currUrgencyLevel = 1;
+        f_walkSpeed = 1;
+        b_urgencyChanged = false;
         break;
     }
     }

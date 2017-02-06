@@ -17,6 +17,9 @@ public:
         ENTITY_NOTATWORK,
         ENTITY_ROLECHANGE,
         MAINTENANCEMAN_NEEDSCRAP,
+        INCREASE_URGENCY,
+        DECREASE_URGENCY,
+        COMPLETED_URGENCY_CHANGE,
 
         MESSAGE_TYPES_TOTAL     // also acts as NIL
     };
@@ -25,6 +28,7 @@ private:
     bool b_isAcknowledged;
 
     MESSAGE_TYPE m_type;
+    GameObject* m_messageSubject;
 
     std::string m_messageTo;
     GameObject* m_messageFrom;
