@@ -218,21 +218,6 @@ Message* Entity::ReadMessageBoard(MessageBoard* mb)
                     return msg;
                 else
                     int i = 0;
-
-
-                // Workers, MM and SM shouldn't acknowledge the urgency messages or other supervisor messages so others can also see it
-                //if (msg->GetMessageType() == Message::INCREASE_URGENCY || msg->GetMessageType() == Message::DECREASE_URGENCY || msg->GetMessageType() == Message::COMPLETED_URGENCY_CHANGE)
-                //{
-                //    if (msg->GetMessageType() == Message::COMPLETED_URGENCY_CHANGE && this->GetUrgencyChanged() == false)
-                //        msg->SetAcknowledged(true);
-                //    else if ((msg->GetMessageType() == Message::INCREASE_URGENCY || msg->GetMessageType() == Message::DECREASE_URGENCY) && this->GetUrgencyChanged() == true)
-                //        msg->SetAcknowledged(true);
-                //    else
-                //        msg->SetAcknowledged(false);
-                //        
-                //}
-
-                //return msg;
                 
             }
             else if (this->GetName() == "Supervisor")

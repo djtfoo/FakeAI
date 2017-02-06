@@ -2,7 +2,7 @@
 
 #include "Robot.h"
 
-Supervisor::Supervisor() : Entity("Supervisor"), m_MessageToSend(Message::MESSAGE_TYPES_TOTAL), b_decisionMade(false), d_decisionTimer(0.0), b_shouldMakeDecision(true)
+Supervisor::Supervisor() : Entity("Supervisor"), m_MessageToSend(Message::MESSAGE_TYPES_TOTAL), b_decisionMade(false), d_decisionTimer(0.0), b_shouldMakeDecision(true), d_PatrolTimer(0.0), i_currWaypointIdx(0), b_waypointsFound(false)
 {
 }
 
@@ -100,7 +100,7 @@ void Supervisor::Update(double dt)
                 m_inToilet = false;
         }
 
-        if (m_state == IDLE && !m_atWorkstation)
+        if (m_state == IDLE)
         {
             if ((m_origSpawn - m_pos).Length() > 0.1)
             {
@@ -132,6 +132,55 @@ void Supervisor::Update(double dt)
                     m_atWorkstation = true;
                     m_doOnce = false;
                 }
+            }
+        }
+
+        if (m_state == PATROL)
+        {
+            if (b_waypointsFound)
+            {
+                // move to waypoint
+                m_pos += m_vel * dt;
+                if (m_pathfinder->hasReachedNode(this->m_pos))
+                {
+                    // reached destination;
+                    if (m_pathfinder->hasReachedDestination(this->m_pos))
+                    {
+                        WhenReachedDestination();
+                        i_currWaypointIdx = Math::Min(m_Waypoints.size(), (unsigned)i_currWaypointIdx) + 1;
+
+                        if (i_currWaypointIdx < m_Waypoints.size() - 1)
+                        {
+                            // pathfind to next waypoint
+                            m_pathfinder->EmptyPath();
+                            m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+                            m_pathfinder->ReceiveDestination(m_Waypoints[i_currWaypointIdx]);
+                            m_pathfinder->FindPathGreedyBestFirst();
+
+                            SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+                            SetDirection(CheckDirection(m_vel));
+                            m_pathfinder->ReceiveDirection(m_dir);
+                        }
+                        else
+                        {
+                            b_waypointsFound = false;
+                            //// pathfind to orig pos
+                            //m_pathfinder->EmptyPath();
+                            //m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+                            //m_pathfinder->ReceiveDestination(m_origSpawn);
+                            //m_pathfinder->FindPathGreedyBestFirst();
+                            //
+                            //SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+                            //SetDirection(CheckDirection(m_vel));
+                            //m_pathfinder->ReceiveDirection(m_dir);
+                        }
+                    }
+                    else
+                    {
+                        WhenReachedPathNode();
+                    }
+                }
+
             }
         }
     }
@@ -190,8 +239,10 @@ void Supervisor::Sense(double dt)
     else if (m_state == IDLE)
     {
         d_decisionTimer += dt;
+
         if (m_atWorkstation)
         {
+            d_PatrolTimer += dt;
             m_timer += dt;
             if (m_timer > 1)
             {
@@ -212,7 +263,7 @@ int Supervisor::Think()
         // If off-work, immediately acknowledge all messages and reset all related variables
         if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
         {
-            for (int i = 0; i < 5; ++i)
+            for (int i = 0; i < SharedData::GetInstance()->m_messageBoard->GetMessageListSize(); ++i)
             {
                 Message* retrievedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
 
@@ -239,8 +290,19 @@ int Supervisor::Think()
             }
         }
 
+        if (d_PatrolTimer > 5.0)
+        {
+            int randNum = Math::RandIntMinMax(0, 100);
+            d_PatrolTimer = 0;
+            if (randNum > 50)
+            {
+                m_doOnce = false;
+                return PATROL;
+            }
+        }
+
         // Make Decision
-        if (b_shouldMakeDecision && !b_decisionMade && d_decisionTimer > 15)
+        if (b_shouldMakeDecision && !b_decisionMade && d_decisionTimer > 15.0)
         {
             d_decisionTimer = 0;
             return MAKEDECISION;
@@ -293,6 +355,25 @@ int Supervisor::Think()
         break;
 
     case PATROL:
+        if (!b_waypointsFound)
+        {
+            //b_waypointsFound = false;
+            return IDLE;
+        }
+        else if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+        {
+            for (int i = 0; i < SharedData::GetInstance()->m_messageBoard->GetMessageListSize(); ++i)
+            {
+                Message* retrievedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
+
+                // Check if retrieved message is invalid
+                if (retrievedMsg)
+                {
+                    AcknowledgeMessage();
+                }
+            }
+            return OFFWORK;
+        }
 
         break;
 
@@ -419,8 +500,6 @@ void Supervisor::Act(int value)
 
     case PATROL:
         SetState(PATROL);
-        //DoWork();
-        SetDirection(CheckDirection(this->m_pos, m_workstation->GetPos()));
         break;
 
     case BREAK:
@@ -491,7 +570,38 @@ void Supervisor::DoIdle()
 
 void Supervisor::DoPatrol()
 {
+    if (!m_doOnce)
+    {
+        // Rand waypoints
+        int numWaypoints = Math::RandIntMinMax(3, 5);
+        int acceptedWaypoints = 0;
 
+        while (acceptedWaypoints < numWaypoints)
+        {
+            int randX = Math::RandIntMinMax(1, 14);
+            int randY = Math::RandIntMinMax(1, 14);
+            Vector3 temp = Vector3(randX, randY, 0);
+
+            if (SharedData::GetInstance()->m_gridMap->m_collisionGrid[randY][randX] == 0 && temp != this->m_pos)
+            {
+                m_Waypoints.push_back(temp);
+                acceptedWaypoints++;
+            }
+        }
+
+        m_doOnce = true;
+        b_waypointsFound = true;
+
+        // pathfind to first waypoint
+        m_pathfinder->EmptyPath();
+        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+        m_pathfinder->ReceiveDestination(m_Waypoints[0]);
+        m_pathfinder->FindPathGreedyBestFirst();
+
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+        SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
+    }
 }
 
 void Supervisor::DoBreak()
@@ -570,6 +680,27 @@ void Supervisor::DoMakeDecision()
         // Send message
         if (m_MessageToSend != Message::MESSAGE_TYPES_TOTAL)
             SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(m_MessageToSend, "Humans", this, SharedData::GetInstance()->m_clock->GetCurrTimeObject()));
+
+
+        // Role Change
+
+        // Check if anyone is OFFWORK, on MC
+        for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
+        {
+            if (!SharedData::GetInstance()->m_goList[i]->IsEntity())
+                continue;
+
+            Entity* checkEntity = dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i]);
+
+            while (checkEntity->GetTempRole())
+            {
+                checkEntity = checkEntity->GetTempRole();
+            }
+
+            //if (checkEntity == )
+
+        }
+
     }
 }
 

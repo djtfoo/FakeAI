@@ -29,6 +29,11 @@ private:
     int m_toiletIdx;
     Vector3 m_origSpawn;
 
+    double d_PatrolTimer;
+    bool b_waypointsFound;
+    std::vector<Vector3> m_Waypoints;
+    int i_currWaypointIdx;
+
     // Urgency
     bool b_decisionMade;
     bool b_shouldMakeDecision;

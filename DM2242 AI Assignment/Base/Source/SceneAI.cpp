@@ -1316,15 +1316,15 @@ void SceneAI::RenderDebugInfo()
             break;
 
         case Supervisor::PATROL:
-            stateStr = "Work";
+            stateStr = "Patrol";
             break;
 
         case Supervisor::BREAK:
-            stateStr = "Work";
+            stateStr = "Break";
             break;
 
         case Supervisor::MAKEDECISION:
-            stateStr = "Break";
+            stateStr = "Thinking";
             break;
 
         case Supervisor::OFFWORK:
