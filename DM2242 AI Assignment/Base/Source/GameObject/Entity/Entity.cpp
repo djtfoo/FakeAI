@@ -11,6 +11,8 @@
 #include "Worker.h"
 #include "ScrapMan.h"
 
+bool Entity::b_someoneOnLeave = false;
+
 Entity::Entity(std::string name) : GameObject(name, true)
 , m_dir(DIR_DOWN), m_vel(0, 0, 0)
 , b_newMsgNotif(false), d_msgNotifTimer(0.0)
@@ -18,6 +20,7 @@ Entity::Entity(std::string name) : GameObject(name, true)
 , b_renderMessageComeIn(false), b_renderAcknowledgeMsg(false)
 , d_inactive_level(0.0)
 , b_urgencyChanged(false)
+, b_onLeave(false)
 {
     tempRole = NULL;
     f_walkSpeed = 1;
@@ -37,6 +40,16 @@ Entity::~Entity()
         delete tempRole;
         tempRole = NULL;
     }
+}
+
+bool Entity::IsSomeoneOnLeave()
+{
+    return b_someoneOnLeave;
+}
+
+void Entity::SetSomeoneOnLeave(const bool onLeave)
+{
+    b_someoneOnLeave = onLeave;
 }
 
 void Entity::RunFSM(double dt)
@@ -347,6 +360,11 @@ void Entity::WhenReachedPathNode()
     m_pathfinder->ReceiveDirection(m_dir);
 }
 
+bool Entity::HasReachedDestination()
+{
+    return b_reachedDestination;
+}
+
 void Entity::SetTempRole(Entity* newRole)
 {
     if (tempRole) {
@@ -444,4 +462,14 @@ int Entity::GetInactiveLevel()
 bool Entity::GetUrgencyChanged()
 {
     return b_urgencyChanged;
+}
+
+bool Entity::IsOnLeave()
+{
+    return b_onLeave;
+}
+
+void Entity::SetOnLeave(const bool onLeave)
+{
+    b_onLeave = onLeave;
 }

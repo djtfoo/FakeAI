@@ -308,6 +308,20 @@ int Worker::Think()
     case OFFWORK:
         if (SharedData::GetInstance()->m_clock->GetIsWorkDay())
         {
+            if (this->IsOnLeave())
+                break;
+
+            if (!Entity::IsSomeoneOnLeave())
+            {
+                // run the probability codes
+                float rand = Math::RandFloatMinMax(0, 100);
+                if (rand < 0.01f) {
+                    this->SetOnLeave(true);
+                    Entity::SetSomeoneOnLeave(true);
+                    break;
+                }
+            }
+
             float randNum = Math::RandFloatMinMax(0, 100);
             if (randNum < 0.1 || SharedData::GetInstance()->m_clock->GetIsWorkStarted())
             {
@@ -315,7 +329,8 @@ int Worker::Think()
                 return IDLE;
             }
         }
-            
+        break;
+        
     }
 
     return -1;

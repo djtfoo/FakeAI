@@ -144,6 +144,15 @@ void MeshList::Init()
     meshList[GEO_PATHFINDING_NODE] = MeshBuilder::GenerateQuad("pathfinding node", Color(1, 1, 1), 0.25f);
     meshList[GEO_PATHFINDING_NODE]->textureID = LoadTGA("Image//node.tga");
 
+    meshList[GEO_TEMPROLE_WORKER] = MeshBuilder::GenerateQuad("temprole - worker", Color(1, 1, 1));
+    meshList[GEO_TEMPROLE_WORKER]->textureID = LoadTGA("Image//Symbol_Worker.tga");
+
+    meshList[GEO_TEMPROLE_MAINTENANCEMAN] = MeshBuilder::GenerateQuad("temprole - maintenance man", Color(1, 1, 1));
+    meshList[GEO_TEMPROLE_MAINTENANCEMAN]->textureID = LoadTGA("Image//Symbol_MaintenanceMan.tga");
+
+    meshList[GEO_TEMPROLE_SCRAPMAN] = MeshBuilder::GenerateQuad("temprole - scrap man", Color(1, 1, 1));
+    meshList[GEO_TEMPROLE_SCRAPMAN]->textureID = LoadTGA("Image//Symbol_ScrapMan.tga");
+
     meshList[GEO_HIGHLIGHTBOX] = MeshBuilder::GenerateQuad("highlight box", Color(1, 1, 1));
     meshList[GEO_HIGHLIGHTBOX]->textureID = LoadTGA("Image//highlight_box.tga");
 }

@@ -405,6 +405,20 @@ int ScrapMan::Think()
 
     if (m_state == OFFWORK)
     {
+        if (this->IsOnLeave())
+            return -1;
+
+        if (!Entity::IsSomeoneOnLeave())
+        {
+            // run the probability codes
+            float rand = Math::RandFloatMinMax(0, 100);
+            if (rand < 0.01f) {
+                this->SetOnLeave(true);
+                Entity::SetSomeoneOnLeave(true);
+                return -1;
+            }
+        }
+
         if (SharedData::GetInstance()->m_clock->GetIsWorkDay())
         {
             float randNum = Math::RandFloatMinMax(0, 100);
