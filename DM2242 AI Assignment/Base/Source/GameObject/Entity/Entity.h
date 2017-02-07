@@ -66,7 +66,7 @@ protected:
     bool b_renderAcknowledgeMsg;    // rendering a tick to represent having acknowledged the message
     float f_walkSpeed; // walk speed modifier for entities
     int i_currUrgencyLevel; // current level of urgency, used to determine walkspeed
-    double d_inactive_level; // timer to measure inactivity or non-productive time 
+    double d_inactive_level; // timer to measure inactivity or non-productive time
     bool b_urgencyChanged; // boolean to stop entity from increasing urgency level multiple times from one message
 
     // Pathfinding (not all Entities will use)
@@ -77,6 +77,9 @@ protected:
     bool b_onLeave;
 
 public:
+    double d_newRoleVisual;
+    bool b_newRoleVisual;
+
     bool b_doneTempJob;
 
     virtual ~Entity();

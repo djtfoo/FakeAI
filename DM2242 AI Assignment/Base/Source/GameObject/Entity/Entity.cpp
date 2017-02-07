@@ -22,6 +22,8 @@ Entity::Entity(std::string name) : GameObject(name, true)
 , b_urgencyChanged(false)
 , b_onLeave(false)
 , b_doneTempJob(false)
+, d_newRoleVisual(0.0)
+, b_newRoleVisual(false)
 {
     tempRole = NULL;
     f_walkSpeed = 1;
@@ -375,6 +377,8 @@ void Entity::SetTempRole(Entity* newRole)
         delete tempRole;
         tempRole = NULL;
     }
+
+    b_newRoleVisual = true;
 
     if (newRole->GetName() == "Maintenance Man") {
         tempRole = new MaintenanceMan();
