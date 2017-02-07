@@ -488,6 +488,14 @@ void SceneAI::Update(double dt)
 
             if (entity->GetTempRole())
                 CheckEntityTempRoleComplete(entity);
+
+            if (entity->b_newRoleVisual) {
+                entity->d_newRoleVisual += dt;
+                if (entity->d_newRoleVisual > 1.0) {
+                    entity->d_newRoleVisual = 0.0;
+                    entity->b_newRoleVisual = false;
+                }
+            }
         }
     }
 
@@ -603,12 +611,20 @@ void SceneAI::RenderGO(GameObject *go)
     // Render the object
     modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
     modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
-	RenderMesh(go->GetMesh(), false);
 
     // Render message notification for Entities
     if (go->IsEntity())
     {
         Entity* entity = dynamic_cast<Entity*>(go);
+        if (entity->b_newRoleVisual) {
+            if (Math::RandIntMinMax(0, 1))
+                RenderMesh(go->GetMesh(), false);
+        }
+        else
+        {
+            RenderMesh(go->GetMesh(), false);
+        }
+
         if (entity->GetTempRole()) {
             Entity* tempRole = entity->GetTempRole();
             RenderTempRole(tempRole);
@@ -634,6 +650,10 @@ void SceneAI::RenderGO(GameObject *go)
             glUniform1i(m_parameters[U_HIGHLIGHTED], 0);
             RenderAcknowledgeNotification(entity);
         }
+    }
+    else
+    {
+        RenderMesh(go->GetMesh(), false);
     }
 
 	modelStack.PopMatrix();
