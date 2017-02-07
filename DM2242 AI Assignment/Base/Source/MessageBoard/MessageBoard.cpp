@@ -105,7 +105,9 @@ void MessageBoard::SendNotification()
         if (go->IsEntity())
         {
             Entity* entity = dynamic_cast<Entity*>(go);
-            entity->SetNewMessageNotif(true);
+
+            if (!entity->IsOnLeave())
+                entity->SetNewMessageNotif(true);
         }
     }
 }
