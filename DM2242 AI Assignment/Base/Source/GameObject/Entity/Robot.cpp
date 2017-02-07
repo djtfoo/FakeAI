@@ -140,7 +140,7 @@ void Robot::Update(double dt)
 
 void Robot::Sense(double dt)
 {
-    if (m_state > INCOMPLETE_3)
+    if (m_state > INCOMPLETE_3 && m_state <= CHEER)
         m_lifetime += dt;
 
     if ((m_state == WORK_WITHOUTPART || m_state == WORK_WITHPART) && b_reachedDestination)

@@ -522,7 +522,8 @@ void SceneAI::CheckEntityTempRoleComplete(Entity* entity)
     else if (entity->GetTempRole()->GetName() == "Maintenance Man")
     {
         MaintenanceMan* man = dynamic_cast<MaintenanceMan*>(entity->GetTempRole());
-        if (man->GetState() == MaintenanceMan::IDLE && man->b_doneTempJob)
+        if ((man->GetState() == MaintenanceMan::IDLE && man->b_doneTempJob) ||
+            (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted()) )
         {
             if (entity->GetName() == "Worker") {
                 Worker* worker = dynamic_cast<Worker*>(entity);
@@ -544,7 +545,8 @@ void SceneAI::CheckEntityTempRoleComplete(Entity* entity)
     else if (entity->GetTempRole()->GetName() == "Scrap Man")
     {
         ScrapMan* scrapman = dynamic_cast<ScrapMan*>(entity->GetTempRole());
-        if (scrapman->GetState() == ScrapMan::IDLE && scrapman->b_doneTempJob)
+        if ((scrapman->GetState() == ScrapMan::IDLE && scrapman->b_doneTempJob) ||
+            (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted()) )
         {
             if (entity->GetName() == "Worker") {
                 Worker* worker = dynamic_cast<Worker*>(entity);
