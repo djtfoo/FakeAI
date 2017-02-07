@@ -32,11 +32,12 @@ FINITE STATE MACHINES
 
 FEATURES
 
-- 4-directional Pathfinding
-- Waypoint Movement
-- Queuing System
-- Day/Night Cycle
-- Message Board
+- 4-directional Pathfinding (Jing Ting)
+- Waypoint Movement (Donovan)
+- Queuing System (Donovan)
+- Day/Night Cycle (Jing Ting)
+- Message Board (Jing Ting)
+- Urgency Command (Donovan)
 
 
 
