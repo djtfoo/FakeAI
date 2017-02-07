@@ -227,9 +227,6 @@ int Worker::Think()
 
     case IDLE:
         
-        if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
-            return OFFWORK;
-
         if (IsAbleToWork())
             return WORK;
         else if (m_breakCharge >= 2000)
@@ -288,6 +285,9 @@ int Worker::Think()
                 f_walkSpeed = 1 + i_currUrgencyLevel * 0.25;
             }
         }
+
+        if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+            return OFFWORK;
 
         break;
 
@@ -609,7 +609,7 @@ double Worker::GetBreakCharge()
     return m_breakCharge;
 }
 
-Pathfinder* Worker::GetPathfinder()
-{
-    return m_pathfinder;
-}
+//Pathfinder* Worker::GetPathfinder()
+//{
+//    return m_pathfinder;
+//}

@@ -313,7 +313,7 @@ void DeliveryMan::AssignDeliveryTruck(DeliveryTruck* truck)
 //    return NULL;    // no ornament to collect
 //}
 
-Pathfinder* DeliveryMan::GetPathfinder()
-{
-    return m_pathfinder;
-}
+//Pathfinder* DeliveryMan::GetPathfinder()
+//{
+//    return m_pathfinder;
+//}

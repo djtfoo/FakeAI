@@ -414,7 +414,7 @@ void Entity::SetTempRole(Entity* newRole)
 
         replacer->SetToilet(replaced->GetToilet());
         replacer->AssignScrapPile(replaced->GetScrapPile());
-        replacer->SetOriginalSpawn(replaced->m_pos);
+        replacer->SetOriginalSpawn(replaced->GetOriginalSpawn());
 
 
         // pathfind to workstation
@@ -440,7 +440,7 @@ void Entity::SetTempRole(Entity* newRole)
 
         replacer->SetToilet(replaced->GetToilet());
         replacer->SetWorkstation(replaced->GetWorkstation());
-        replacer->SetOriginalSpawn(this->m_pos);
+        replacer->SetOriginalSpawn(replaced->GetOriginalSpawn());
     }
 }
 
@@ -516,4 +516,9 @@ bool Entity::IsOnLeave()
 void Entity::SetOnLeave(const bool onLeave)
 {
     b_onLeave = onLeave;
+}
+
+Pathfinder* Entity::GetPathfinder()
+{
+    return m_pathfinder;
 }

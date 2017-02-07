@@ -977,55 +977,77 @@ void SceneAI::RenderDebugInfo()
     else if (SharedData::GetInstance()->m_goList[index_renderDebugInfo]->GetName() == "Worker")
     {
         Worker* worker = dynamic_cast<Worker*>(SharedData::GetInstance()->m_goList[index_renderDebugInfo]);
-
-        // State
-        std::string stateStr = "";
-        switch (worker->GetState())
+        
+        if (worker->GetTempRole())
         {
-        case Worker::IDLE:
-            stateStr = "Idle";
-            break;
+            RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "Temp Role: " + worker->GetTempRole()->GetName(), Color(0, 0, 0), 2, 18, 0);
 
-        case Worker::WORK:
-            stateStr = "Work";
-            break;
-
-        case Worker::BREAK:
-            stateStr = "Break";
-            break;
-
-        case Worker::OFFWORK:
-            stateStr = "Off Work";
-            break;
-        }
-
-        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State: " + stateStr, Color(0, 0, 0), 2, 18, 0);
-
-        // Break Charge
-        ss.str("");
-        ss << "Break: " << (int)worker->GetBreakCharge() << " / 2000   " << (int)worker->randNum << " > 50";
-        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 32, 0);
-
-        // Timer
-        ss.str("");
-        ss.precision(2);
-        ss << "Timer: " << worker->m_timer;
-        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 62, 0);
-
-        Pathfinder* pathfinder = worker->GetPathfinder();
-        if (pathfinder)
-        {
-            if (!pathfinder->IsPathEmpty())
+            Pathfinder* pathfinder = worker->GetTempRole()->GetPathfinder();
+            if (pathfinder)
             {
-                for (std::vector<Node>::iterator it = pathfinder->foundPath.begin(); it != pathfinder->foundPath.end(); ++it)
+                if (!pathfinder->IsPathEmpty())
                 {
-                    modelStack.PushMatrix();
-                    modelStack.Translate((*it).col, (*it).row, -0.5f);
-                    RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
-                    modelStack.PopMatrix();
+                    for (std::vector<Node>::iterator it = pathfinder->foundPath.begin(); it != pathfinder->foundPath.end(); ++it)
+                    {
+                        modelStack.PushMatrix();
+                        modelStack.Translate((*it).col, (*it).row, -0.5f);
+                        RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
+                        modelStack.PopMatrix();
+                    }
                 }
+            }   // end of pathfinder
+        }
+        else
+        {
+            // State
+            std::string stateStr = "";
+            switch (worker->GetState())
+            {
+            case Worker::IDLE:
+                stateStr = "Idle";
+                break;
+
+            case Worker::WORK:
+                stateStr = "Work";
+                break;
+
+            case Worker::BREAK:
+                stateStr = "Break";
+                break;
+
+            case Worker::OFFWORK:
+                stateStr = "Off Work";
+                break;
             }
-        }   // end of pathfinder
+
+            RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State: " + stateStr, Color(0, 0, 0), 2, 18, 0);
+
+            // Break Charge
+            ss.str("");
+            ss << "Break: " << (int)worker->GetBreakCharge() << " / 2000   " << (int)worker->randNum << " > 50";
+            RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 32, 0);
+
+            // Timer
+            ss.str("");
+            ss.precision(2);
+            ss << "Timer: " << worker->m_timer;
+            RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 62, 0);
+
+            Pathfinder* pathfinder = worker->GetPathfinder();
+            if (pathfinder)
+            {
+                if (!pathfinder->IsPathEmpty())
+                {
+                    for (std::vector<Node>::iterator it = pathfinder->foundPath.begin(); it != pathfinder->foundPath.end(); ++it)
+                    {
+                        modelStack.PushMatrix();
+                        modelStack.Translate((*it).col, (*it).row, -0.5f);
+                        RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
+                        modelStack.PopMatrix();
+                    }
+                }
+            }   // end of pathfinder
+        }
 
     }
 
@@ -1034,63 +1056,85 @@ void SceneAI::RenderDebugInfo()
     {
         MaintenanceMan* maintenanceman = dynamic_cast<MaintenanceMan*>(SharedData::GetInstance()->m_goList[index_renderDebugInfo]);
 
-        // State
-        std::string stateStr = "";
-        switch (maintenanceman->GetState())
+        if (maintenanceman->GetTempRole())
         {
-        case MaintenanceMan::IDLE:
-            stateStr = "Idle";
-            break;
+            RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "Temp Role: " + maintenanceman->GetTempRole()->GetName(), Color(0, 0, 0), 2, 32, 0);
 
-        case MaintenanceMan::REPAIR:
-            stateStr = "Repair";
-            break;
-
-        case MaintenanceMan::REFILL:
-            stateStr = "Refill";
-            break;
-
-        case MaintenanceMan::BREAK:
-            stateStr = "Break";
-            break;
-
-        case MaintenanceMan::OFFWORK:
-            stateStr = "Off Work";
-            break;
-        }
-
-        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State: " + stateStr, Color(0, 0, 0), 2, 32, 0);
-
-        // Break Charge
-        ss.str("");
-        ss << "Break: " << (int)maintenanceman->GetBreakCharge() << " / 2000   " << (int)maintenanceman->randNum << " > 50";
-        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 50, 0);
-
-
-        Pathfinder* pathfinder = maintenanceman->GetPathfinder();
-        if (pathfinder)
-        {
-            if (!pathfinder->IsPathEmpty())
+            Pathfinder* pathfinder = maintenanceman->GetTempRole()->GetPathfinder();
+            if (pathfinder)
             {
-                if (maintenanceman->GetTargetMachine() != NULL)
+                if (!pathfinder->IsPathEmpty())
                 {
-                    // destination machine
-                    modelStack.PushMatrix();
-                    modelStack.Translate(pathfinder->foundPath.begin()->GetPosition().x, pathfinder->foundPath.begin()->GetPosition().y, 0.5f);
-                    RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_HIGHLIGHTBOX), false);
-                    modelStack.PopMatrix();
+                    // nodes
+                    for (std::vector<Node>::iterator it = pathfinder->foundPath.begin(); it != pathfinder->foundPath.end(); ++it)
+                    {
+                        modelStack.PushMatrix();
+                        modelStack.Translate((*it).col, (*it).row, -0.5f);
+                        RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
+                        modelStack.PopMatrix();
+                    }
                 }
+            }   // end of pathfinder
+        }
+        else
+        {
+            // State
+            std::string stateStr = "";
+            switch (maintenanceman->GetState())
+            {
+            case MaintenanceMan::IDLE:
+                stateStr = "Idle";
+                break;
 
-                // nodes
-                for (std::vector<Node>::iterator it = pathfinder->foundPath.begin(); it != pathfinder->foundPath.end(); ++it)
-                {
-                    modelStack.PushMatrix();
-                    modelStack.Translate((*it).col, (*it).row, -0.5f);
-                    RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
-                    modelStack.PopMatrix();
-                }
+            case MaintenanceMan::REPAIR:
+                stateStr = "Repair";
+                break;
+
+            case MaintenanceMan::REFILL:
+                stateStr = "Refill";
+                break;
+
+            case MaintenanceMan::BREAK:
+                stateStr = "Break";
+                break;
+
+            case MaintenanceMan::OFFWORK:
+                stateStr = "Off Work";
+                break;
             }
-        }   // end of pathfinder
+
+            RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State: " + stateStr, Color(0, 0, 0), 2, 32, 0);
+
+            // Break Charge
+            ss.str("");
+            ss << "Break: " << (int)maintenanceman->GetBreakCharge() << " / 2000   " << (int)maintenanceman->randNum << " > 50";
+            RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 50, 0);
+
+            Pathfinder* pathfinder = maintenanceman->GetPathfinder();
+            if (pathfinder)
+            {
+                if (!pathfinder->IsPathEmpty())
+                {
+                    if (maintenanceman->GetTargetMachine() != NULL)
+                    {
+                        // destination machine
+                        modelStack.PushMatrix();
+                        modelStack.Translate(pathfinder->foundPath.begin()->GetPosition().x, pathfinder->foundPath.begin()->GetPosition().y, 0.5f);
+                        RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_HIGHLIGHTBOX), false);
+                        modelStack.PopMatrix();
+                    }
+
+                    // nodes
+                    for (std::vector<Node>::iterator it = pathfinder->foundPath.begin(); it != pathfinder->foundPath.end(); ++it)
+                    {
+                        modelStack.PushMatrix();
+                        modelStack.Translate((*it).col, (*it).row, -0.5f);
+                        RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
+                        modelStack.PopMatrix();
+                    }
+                }
+            }   // end of pathfinder
+        }
 
     }
 
@@ -1329,36 +1373,58 @@ void SceneAI::RenderDebugInfo()
     {
         ScrapMan* scrapman = dynamic_cast<ScrapMan*>(SharedData::GetInstance()->m_goList[index_renderDebugInfo]);
 
-        // State
-        std::string stateStr = "";
-        switch (scrapman->GetState())
+        if (scrapman->GetTempRole())
         {
-        case ScrapMan::IDLE:
-            stateStr = "Idle";
-            break;
+            RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "Temp Role:" + scrapman->GetTempRole()->GetName(), Color(0, 0, 0), 2, 20, 0);
 
-        case ScrapMan::COLLECT_ROBOT:
-            stateStr = "Work";
-            break;
+            Pathfinder* pathfinder = scrapman->GetTempRole()->GetPathfinder();
+            if (pathfinder)
+            {
+                if (!pathfinder->IsPathEmpty())
+                {
+                    for (std::vector<Node>::iterator it = pathfinder->foundPath.begin(); it != pathfinder->foundPath.end(); ++it)
+                    {
+                        modelStack.PushMatrix();
+                        modelStack.Translate((*it).col, (*it).row, -0.5f);
+                        RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
+                        modelStack.PopMatrix();
+                    }
+                }
+            }   // end of pathfinder
 
-        case ScrapMan::BREAKDOWN_ROBOT:
-            stateStr = "Work";
-            break;
-
-        case ScrapMan::BREAK:
-            stateStr = "Break";
-            break;
-
-        case ScrapMan::OFFWORK:
-            stateStr = "Off Work";
-            break;
         }
+        else
+        {
+            // State
+            std::string stateStr = "";
+            switch (scrapman->GetState())
+            {
+            case ScrapMan::IDLE:
+                stateStr = "Idle";
+                break;
 
-        RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State:" + stateStr, Color(0, 0, 0), 2, 20, 0);
+            case ScrapMan::COLLECT_ROBOT:
+                stateStr = "Work";
+                break;
 
-        // Holding on to Robot
-        //if (scrapman->GetState() == ScrapMan::COLLECT_ROBOT || scrapman->GetState() == ScrapMan::BREAKDOWN_ROBOT)   // working
-        //{
+            case ScrapMan::BREAKDOWN_ROBOT:
+                stateStr = "Work";
+                break;
+
+            case ScrapMan::BREAK:
+                stateStr = "Break";
+                break;
+
+            case ScrapMan::OFFWORK:
+                stateStr = "Off Work";
+                break;
+            }
+
+            RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State:" + stateStr, Color(0, 0, 0), 2, 20, 0);
+
+            // Holding on to Robot
+            //if (scrapman->GetState() == ScrapMan::COLLECT_ROBOT || scrapman->GetState() == ScrapMan::BREAKDOWN_ROBOT)   // working
+            //{
             std::stringstream ss;
 
             ss << "Got Robot:";
@@ -1375,7 +1441,6 @@ void SceneAI::RenderDebugInfo()
                 RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 60, 0);
             }
 
-        //}
             if (scrapman->GetState() == ScrapMan::IDLE)
             {
                 // Break Charge
@@ -1384,21 +1449,22 @@ void SceneAI::RenderDebugInfo()
                 RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 52, 0);
             }
 
-
-        Pathfinder* pathfinder = scrapman->GetPathfinder();
-        if (pathfinder)
-        {
-            if (!pathfinder->IsPathEmpty())
+            Pathfinder* pathfinder = scrapman->GetPathfinder();
+            if (pathfinder)
             {
-                for (std::vector<Node>::iterator it = pathfinder->foundPath.begin(); it != pathfinder->foundPath.end(); ++it)
+                if (!pathfinder->IsPathEmpty())
                 {
-                    modelStack.PushMatrix();
-                    modelStack.Translate((*it).col, (*it).row, -0.5f);
-                    RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
-                    modelStack.PopMatrix();
+                    for (std::vector<Node>::iterator it = pathfinder->foundPath.begin(); it != pathfinder->foundPath.end(); ++it)
+                    {
+                        modelStack.PushMatrix();
+                        modelStack.Translate((*it).col, (*it).row, -0.5f);
+                        RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
+                        modelStack.PopMatrix();
+                    }
                 }
-            }
-        }   // end of pathfinder
+            }   // end of pathfinder
+
+        }
 
     }
 

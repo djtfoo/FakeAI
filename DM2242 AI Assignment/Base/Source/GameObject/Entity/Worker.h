@@ -76,7 +76,6 @@ public:
 
     // Getters
     double GetBreakCharge();
-    Pathfinder* GetPathfinder();
 
     // DEBUG UI
     int randNum;

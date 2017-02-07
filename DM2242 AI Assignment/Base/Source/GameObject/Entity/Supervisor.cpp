@@ -578,7 +578,7 @@ void Supervisor::DoPatrol()
     if (!m_doOnce)
     {
         // Rand waypoints
-        int numWaypoints = Math::RandIntMinMax(3, 5);
+        int numWaypoints = Math::RandIntMinMax(1, 3);
         int acceptedWaypoints = 0;
 
         while (acceptedWaypoints < numWaypoints)
@@ -590,7 +590,7 @@ void Supervisor::DoPatrol()
             if (SharedData::GetInstance()->m_gridMap->m_collisionGrid[randY][randX] == 0 && temp != this->m_pos)
             {
                 m_Waypoints.push_back(temp);
-                acceptedWaypoints++;
+                ++acceptedWaypoints;
             }
         }
 
@@ -972,7 +972,7 @@ double Supervisor::GetBreakCharge()
     return m_breakCharge;
 }
 
-Pathfinder* Supervisor::GetPathfinder()
-{
-    return m_pathfinder;
-}
+//Pathfinder* Supervisor::GetPathfinder()
+//{
+//    return m_pathfinder;
+//}

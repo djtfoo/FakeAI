@@ -29,7 +29,7 @@ private:
 
     double d_timerForShutDown;
     bool b_toShutDown;
-    
+
     //bool b_reachedLane; // maybe
 
     //Pathfinder* m_pathfinder;
@@ -70,7 +70,6 @@ public:
 
     // Getters
     double GetLifetime();
-    Pathfinder* GetPathfinder();
 };
 
 #endif

@@ -76,7 +76,6 @@ public:
     void DoBreak();
 
     // Getters
-    Pathfinder* GetPathfinder();
     bool GotRobot();
     bool IsBreakingRobot();
     int GetBreakCharge(); 

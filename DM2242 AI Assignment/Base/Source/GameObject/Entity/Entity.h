@@ -125,6 +125,7 @@ public:
     void UpdateMessageAcknowledged(const double dt);
 
     // Pathfinding-related functions
+    Pathfinder* GetPathfinder();
     void WhenReachedDestination();  // generic settings for reaching intended destination of found path
     void WhenReachedPathNode();     // generic settings for when reaching next node on found path (but not destination)
     bool HasReachedDestination();

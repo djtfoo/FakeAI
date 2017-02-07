@@ -279,9 +279,6 @@ int ScrapMan::Think()
 
     if (m_state == IDLE)
     {
-        if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
-            return OFFWORK;
-
         // Read Messages
         if (b_newMsgNotif && d_msgNotifTimer >= 2.0)
         {
@@ -328,6 +325,9 @@ int ScrapMan::Think()
                 f_walkSpeed = 1 + i_currUrgencyLevel * 0.25;
             }
         }
+
+        if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+            return OFFWORK;
     }
 
     if (b_reachedDestination && m_state == COLLECT_ROBOT)
@@ -591,10 +591,10 @@ void ScrapMan::DoBreak()
     }
 }
 
-Pathfinder* ScrapMan::GetPathfinder()
-{
-    return m_pathfinder;
-}
+//Pathfinder* ScrapMan::GetPathfinder()
+//{
+//    return m_pathfinder;
+//}
 
 bool ScrapMan::GotRobot()
 {

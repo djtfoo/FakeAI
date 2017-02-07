@@ -50,9 +50,6 @@ public:
 
     //void AddCompletedOrnament(Ornament* ornament);
     //Ornament* GetOrnamentToCollect();
-
-    // Getters
-    Pathfinder* GetPathfinder();
 };
 
 #endif
