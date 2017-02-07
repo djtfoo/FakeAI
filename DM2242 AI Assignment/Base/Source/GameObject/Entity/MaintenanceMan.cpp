@@ -51,7 +51,26 @@ void MaintenanceMan::Update(double dt)
     }
 
     // Update inactive level
-    if (m_state == IDLE || m_state == BREAK)
+    bool UntargetedMachines = false;
+    for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
+    {
+        if (!SharedData::GetInstance()->m_goList[i]->IsEntity())
+            continue;
+
+        Entity* checkEntity = dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i]);
+
+        if (checkEntity->GetName() == "Machine")
+        {
+            if (!dynamic_cast<Machine*>(checkEntity)->GetIsBeingWorkedOn())
+            {
+                UntargetedMachines = true;
+                break;
+            }
+        }
+        
+    }
+
+    if ((m_state == IDLE || m_state == BREAK) && !UntargetedMachines)
     {
         d_inactive_level += dt;
         d_inactive_level = Math::Min(10.0, d_inactive_level);
@@ -259,6 +278,9 @@ int MaintenanceMan::Think()
 
     case IDLE:
     {
+        if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+            return OFFWORK;
+
         Vector3 temp = m_workstation->GetPos();
         //temp.y -= 1;
 
@@ -340,9 +362,6 @@ int MaintenanceMan::Think()
         //    if (value != IDLE)
         //        return value;
         //}
-
-        if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
-            return OFFWORK;
 
         break;
     }

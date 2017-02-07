@@ -5,7 +5,7 @@
 #include "ScrapMan.h"
 #include "MaintenanceMan.h"
 
-Supervisor::Supervisor() : Entity("Supervisor"), m_MessageToSend(Message::MESSAGE_TYPES_TOTAL), b_decisionMade(false), d_decisionTimer(0.0), b_shouldMakeDecision(true), d_PatrolTimer(0.0), i_currWaypointIdx(0), b_waypointsFound(false)
+Supervisor::Supervisor() : Entity("Supervisor"), m_MessageToSend(Message::MESSAGE_TYPES_TOTAL), b_decisionMade(false), d_decisionTimer(20.0), b_shouldMakeDecision(true), d_PatrolTimer(0.0), i_currWaypointIdx(0), b_waypointsFound(false)
 {
 }
 
@@ -684,7 +684,10 @@ void Supervisor::DoMakeDecision()
 
         // Send message
         if (m_MessageToSend != Message::MESSAGE_TYPES_TOTAL)
+        {
             SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(m_MessageToSend, "Humans", this, SharedData::GetInstance()->m_clock->GetCurrTimeObject()));
+            return;
+        }
 
 
         // Role Change
@@ -702,30 +705,40 @@ void Supervisor::DoMakeDecision()
             }
 
             bool someoneMC = false;
+            Entity* replaced = NULL;
             if (checkEntity->GetName() == "Worker")
             {
                 Worker* worker = dynamic_cast<Worker*>(checkEntity);
                 if (worker->GetState() == Worker::OFFWORK)
+                {
                     someoneMC = true;
+                    replaced = worker;
+                }
 
             }
             else if (checkEntity->GetName() == "Scrap Man")
             {
                 ScrapMan* scrapMan = dynamic_cast<ScrapMan*>(checkEntity);
                 if (scrapMan->GetState() == ScrapMan::OFFWORK)
+                {
                     someoneMC = true;
+                    replaced = scrapMan;
+                }
             }
             else if (checkEntity->GetName() == "Maintenance Man")
             {
                 MaintenanceMan* maintenanceMan = dynamic_cast<MaintenanceMan*>(checkEntity);
                 if (maintenanceMan->GetState() == MaintenanceMan::OFFWORK)
+                {
                     someoneMC = true;
+                    replaced = maintenanceMan;
+                }
             }
 
             if (someoneMC)
             {   
                 // Find free MM or SM
-                Entity* replacement;
+                Entity* replacement = NULL;
                 int highest_inactive_level = -999999999;
 
                 for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
@@ -746,10 +759,16 @@ void Supervisor::DoMakeDecision()
                             replacement = checkEntity2;
                         }
                     }
-                }
 
-                // Send Replacement Message
-                SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::ENTITY_ROLECHANGE, "Humans", this, SharedData::GetInstance()->m_clock->GetCurrTimeObject(), replacement));
+                    // Send Replacement Message
+                    SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::ENTITY_ROLECHANGE, replacement->GetName(), this, SharedData::GetInstance()->m_clock->GetCurrTimeObject(), replaced));
+                    b_decisionMade = true;
+                    return;
+                }
+            }
+            else
+            {
+                b_decisionMade = false;
             }
         }
 
@@ -800,10 +819,10 @@ void Supervisor::DoMakeDecision()
 
         std::string busy, idle;
 
-        if (work_average_inactivity >= scrap_average_inactivity && work_average_inactivity >= maintenance_average_inactivity)
+        if (work_average_inactivity > scrap_average_inactivity && work_average_inactivity > maintenance_average_inactivity)
         {
             idle = "Worker";
-            if (scrap_average_inactivity <= maintenance_average_inactivity)
+            if (scrap_average_inactivity < maintenance_average_inactivity)
             {
                 busy = "Scrap Man";
             }
@@ -812,10 +831,10 @@ void Supervisor::DoMakeDecision()
                 busy = "Maintenance Man";
             }
         }
-        else if (maintenance_average_inactivity >= scrap_average_inactivity && maintenance_average_inactivity >= work_average_inactivity)
+        else if (maintenance_average_inactivity > scrap_average_inactivity && maintenance_average_inactivity > work_average_inactivity)
         {
             idle = "Maintenance Man";
-            if (scrap_average_inactivity <= work_average_inactivity)
+            if (scrap_average_inactivity < work_average_inactivity)
             {
                 busy = "Scrap Man";
             }
@@ -824,10 +843,10 @@ void Supervisor::DoMakeDecision()
                 busy = "Worker";
             }
         }
-        else if (scrap_average_inactivity >= work_average_inactivity && scrap_average_inactivity >= maintenance_average_inactivity)
+        else if (scrap_average_inactivity > work_average_inactivity && scrap_average_inactivity > maintenance_average_inactivity)
         {
             idle = "Scrap Man";
-            if (work_average_inactivity <= maintenance_average_inactivity)
+            if (work_average_inactivity < maintenance_average_inactivity)
             {
                 busy = "Worker";
             }
@@ -914,7 +933,17 @@ void Supervisor::DoMakeDecision()
 
         // Send Message
         if (needy)
+        {
             SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::ENTITY_ROLECHANGE, idle, this, SharedData::GetInstance()->m_clock->GetCurrTimeObject(), needy));
+            b_decisionMade = true;
+            return;
+        }
+        else
+        {
+            b_decisionMade = false;
+        }
+
+        b_decisionMade = false;
     }
 }
 

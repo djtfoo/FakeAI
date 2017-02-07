@@ -59,7 +59,26 @@ void ScrapMan::Update(double dt)
     }
 
     // Update inactive level
-    if (m_state == IDLE || m_state == BREAK)
+    bool UntargetedRobots = false;
+    for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
+    {
+        if (!SharedData::GetInstance()->m_goList[i]->IsEntity())
+            continue;
+
+        Entity* checkEntity = dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i]);
+
+        if (checkEntity->GetName() == "Robot")
+        {
+            if (!dynamic_cast<Robot*>(checkEntity)->b_toBePickedUp && dynamic_cast<Robot*>(checkEntity)->GetState() == Robot::SHUTDOWN)
+            {
+                UntargetedRobots = true;
+                break;
+            }
+        }
+
+    }
+
+    if ((m_state == IDLE || m_state == BREAK) && !UntargetedRobots)
     {
         d_inactive_level += dt;
         d_inactive_level = Math::Min(10.0, d_inactive_level);
@@ -279,6 +298,9 @@ int ScrapMan::Think()
 
     if (m_state == IDLE)
     {
+        if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
+            return OFFWORK;
+
         // Read Messages
         if (b_newMsgNotif && d_msgNotifTimer >= 2.0)
         {
@@ -293,6 +315,7 @@ int ScrapMan::Think()
                 {
                 case Message::ROBOT_SHUTDOWN:
                     m_robotToPickUp = dynamic_cast<Robot*>(retrievedMsg->GetMessageFromObject());
+                    m_robotToPickUp->b_toBePickedUp = true;
                     return COLLECT_ROBOT;
 
                 case Message::INCREASE_URGENCY:
@@ -325,9 +348,6 @@ int ScrapMan::Think()
                 f_walkSpeed = 1 + i_currUrgencyLevel * 0.25;
             }
         }
-
-        if (!SharedData::GetInstance()->m_clock->GetIsWorkDay() && !SharedData::GetInstance()->m_clock->GetIsWorkStarted())
-            return OFFWORK;
     }
 
     if (b_reachedDestination && m_state == COLLECT_ROBOT)

@@ -31,6 +31,8 @@ void Robot::Init()
 
     m_stateBeforeCheer = CHEER;
     b_ornamentCompleted = false;
+
+    b_toBePickedUp = false;
 }
 
 void Robot::Update(double dt)

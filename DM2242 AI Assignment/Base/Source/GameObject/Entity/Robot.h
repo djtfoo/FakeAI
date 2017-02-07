@@ -53,6 +53,8 @@ public:
     Robot();
     virtual ~Robot();
 
+    bool b_toBePickedUp;
+
 	void SetBelt(ConveyorBelt* belt);
 	void SetWaypoint(int idx);
     Vector3 GetWaypoint();
