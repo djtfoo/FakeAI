@@ -518,7 +518,7 @@ void SceneAI::CheckEntityTempRoleComplete(Entity* entity)
     else if (entity->GetTempRole()->GetName() == "Maintenance Man")
     {
         MaintenanceMan* man = dynamic_cast<MaintenanceMan*>(entity->GetTempRole());
-        if (man->GetState() == MaintenanceMan::IDLE && man->HasReachedDestination())
+        if (man->GetState() == MaintenanceMan::IDLE && man->b_doneTempJob)
         {
             if (entity->GetName() == "Worker") {
                 Worker* worker = dynamic_cast<Worker*>(entity);
@@ -536,7 +536,7 @@ void SceneAI::CheckEntityTempRoleComplete(Entity* entity)
     else if (entity->GetTempRole()->GetName() == "Scrap Man")
     {
         ScrapMan* scrapman = dynamic_cast<ScrapMan*>(entity->GetTempRole());
-        if (scrapman->GetState() == ScrapMan::IDLE && scrapman->HasReachedDestination())
+        if (scrapman->GetState() == ScrapMan::IDLE && scrapman->b_doneTempJob)
         {
             if (entity->GetName() == "Worker") {
                 Worker* worker = dynamic_cast<Worker*>(entity);
@@ -631,7 +631,7 @@ void SceneAI::RenderTempRole(Entity* tempRole)
     //RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), name, Color(0, 0, 0), 1, ((tempRole->GetPos().x + 1) * 5.3f) - (name.size() * 0.5f), ((1 + tempRole->GetPos().y) * 4.f) - 1.5f);
 
     modelStack.PushMatrix();
-    modelStack.Translate(0.f, 0.3f, 1.f);
+    modelStack.Translate(0.f, 0.3f, 0.f);
     modelStack.Scale(0.5f, 0.5f, 0.5f);
 
     if (tempRole->GetName() == "Worker")

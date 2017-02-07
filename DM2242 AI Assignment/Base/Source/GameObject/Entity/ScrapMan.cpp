@@ -340,47 +340,7 @@ int ScrapMan::Think()
         m_robotToPickUp = NULL;
         m_pile->SetScrapQuantity(m_pile->GetScrapQuantity() + 1);
 
-        // check for another message
-        Message* retrievedMsg = this->ReadMessageBoard(SharedData::GetInstance()->m_messageBoard);
-
-        // Check if retrieved message is invalid
-        if (retrievedMsg)
-        {
-            AcknowledgeMessage();
-
-            switch (retrievedMsg->GetMessageType())
-            {
-            case Message::ROBOT_SHUTDOWN:
-                m_robotToPickUp = dynamic_cast<Robot*>(retrievedMsg->GetMessageFromObject());
-                return COLLECT_ROBOT;
-
-            case Message::INCREASE_URGENCY:
-                if (!b_urgencyChanged)
-                {
-                    i_currUrgencyLevel++;
-                    b_urgencyChanged = true;
-                }
-                return 5;
-
-            case Message::DECREASE_URGENCY:
-                if (!b_urgencyChanged)
-                {
-                    i_currUrgencyLevel--;
-                    i_currUrgencyLevel = Math::Max(0, i_currUrgencyLevel);
-                    b_urgencyChanged = true;
-                }
-                return 5;
-
-            case Message::COMPLETED_URGENCY_CHANGE:
-                b_urgencyChanged = false;
-                return 5;
-            }
-
-            // Update walk speed if needed
-            f_walkSpeed = 1 + i_currUrgencyLevel * 0.25;
-        }
-        else
-            return 5;
+        return 5;   // idle
     }
 
     if (m_state == IDLE && d_breakCharge > 2000)
@@ -461,6 +421,8 @@ void ScrapMan::Act(int value)
 
     case COLLECT_ROBOT:
     {
+                          b_doneTempJob = true;
+
                           SetState(COLLECT_ROBOT);
                           b_reachedDestination = false;
                           b_gotRobot = false;

@@ -153,6 +153,8 @@ void MeshList::Init()
     meshList[GEO_TEMPROLE_SCRAPMAN] = MeshBuilder::GenerateQuad("temprole - scrap man", Color(1, 1, 1));
     meshList[GEO_TEMPROLE_SCRAPMAN]->textureID = LoadTGA("Image//Symbol_ScrapMan.tga");
 
+    meshList[GEO_TEMPMESH] = MeshBuilder::GenerateQuad("temp", Color(1, 1, 1), 1.f);
+
     meshList[GEO_HIGHLIGHTBOX] = MeshBuilder::GenerateQuad("highlight box", Color(1, 1, 1));
     meshList[GEO_HIGHLIGHTBOX]->textureID = LoadTGA("Image//highlight_box.tga");
 }

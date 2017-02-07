@@ -204,6 +204,10 @@ void MaintenanceMan::Update(double dt)
                 
             }
         }
+        else
+        {
+            b_reachedDestination = true;
+        }
     }
 
     
@@ -437,6 +441,8 @@ void MaintenanceMan::Act(int value)
         break;
 
     case REPAIR:
+        b_doneTempJob = true;
+
         SetState(REPAIR);
         b_reachedDestination = false;
         //DoRepair();
@@ -453,6 +459,8 @@ void MaintenanceMan::Act(int value)
         break;
 
     case REFILL:
+        b_doneTempJob = true;
+
         SetState(REFILL);
         b_reachedDestination = false;
         //DoRefill();

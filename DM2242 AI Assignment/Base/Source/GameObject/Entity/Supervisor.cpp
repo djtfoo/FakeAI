@@ -758,9 +758,6 @@ void Supervisor::DoMakeDecision()
         double scrap_inactivity = 0;
         int scrap_num = 0;
 
-        double work_inactivity = 0;
-        int work_num = 0;
-
         // Find all inactivity values and get the lowest value (most busy) and send that role someone from the highest value
         for (int i = 0; i < SharedData::GetInstance()->m_goList.size(); ++i)
         {
@@ -774,13 +771,7 @@ void Supervisor::DoMakeDecision()
                 checkEntity = checkEntity->GetTempRole();
             }
 
-            if (checkEntity->GetName() == "Worker")
-            {
-                work_inactivity += checkEntity->GetInactiveLevel();
-                work_num++;
-
-            }
-            else if (checkEntity->GetName() == "Scrap Man")
+            if (checkEntity->GetName() == "Scrap Man")
             {
                 scrap_inactivity += checkEntity->GetInactiveLevel();
                 scrap_num++;
@@ -792,52 +783,26 @@ void Supervisor::DoMakeDecision()
             }
         }
 
-        double work_average_inactivity = work_inactivity / work_num;
         double scrap_average_inactivity = scrap_inactivity / scrap_num;
         double maintenance_average_inactivity = maintenance_inactivity / maintenance_num;
 
         std::string busy, idle;
 
-        if (work_average_inactivity >= scrap_average_inactivity && work_average_inactivity >= maintenance_average_inactivity)
-        {
-            idle = "Work";
-            if (scrap_average_inactivity <= maintenance_average_inactivity)
-            {
-                busy = "Scrap";
-            }
-            else
-            {
-                busy = "Maintenance";
-            }
-        }
-        else if (maintenance_average_inactivity >= scrap_average_inactivity && maintenance_average_inactivity >= work_average_inactivity)
-        {
-            idle = "Maintenance";
-            if (scrap_average_inactivity <= work_average_inactivity)
-            {
-                busy = "Scrap";
-            }
-            else
-            {
-                busy = "Work";
-            }
-        }
-        else if (scrap_average_inactivity >= work_average_inactivity && scrap_average_inactivity >= maintenance_average_inactivity)
+        if (scrap_average_inactivity >= maintenance_average_inactivity)
         {
             idle = "Scrap";
-            if (work_average_inactivity <= maintenance_average_inactivity)
-            {
-                busy = "Work";
-            }
-            else
-            {
-                busy = "Maintenance";
-            }
+            busy = "Maintenance";
+        }
+        else
+        {
+            idle = "Maintenance";
+            busy = "Scrap";
         }
 
+
         // Transfer over someone
-        Entity* helper;
-        Entity* needy;
+        Entity* helper = NULL;
+        Entity* needy = NULL;
         if (idle == "Scrap")
         {
             if (busy == "Maintenance")
@@ -852,6 +817,7 @@ void Supervisor::DoMakeDecision()
                     if (checkEntity->GetName() == "Maintenance Man")
                     {
                         needy = checkEntity;
+                        break;
                     }
                 }
             }
@@ -867,9 +833,10 @@ void Supervisor::DoMakeDecision()
 
                     Entity* checkEntity = dynamic_cast<Entity*>(SharedData::GetInstance()->m_goList[i]);
 
-                    if (checkEntity->GetName() == "ScrapMan")
+                    if (checkEntity->GetName() == "Scrap Man")
                     {
                         needy = checkEntity;
+                        break;
                     }
 
                 }
@@ -877,7 +844,8 @@ void Supervisor::DoMakeDecision()
         }
 
         // Send Message
-        SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::ENTITY_ROLECHANGE, idle, this, SharedData::GetInstance()->m_clock->GetCurrTimeObject(), needy));
+        if (needy)
+            SharedData::GetInstance()->m_messageBoard->AddMessage(new Message(Message::ENTITY_ROLECHANGE, idle + " Man", this, SharedData::GetInstance()->m_clock->GetCurrTimeObject(), needy));
     }
 }
 

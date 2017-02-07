@@ -21,6 +21,7 @@ Entity::Entity(std::string name) : GameObject(name, true)
 , d_inactive_level(0.0)
 , b_urgencyChanged(false)
 , b_onLeave(false)
+, b_doneTempJob(false)
 {
     tempRole = NULL;
     f_walkSpeed = 1;
@@ -375,7 +376,7 @@ void Entity::SetTempRole(Entity* newRole)
     if (newRole->GetName() == "Maintenance Man") {
         tempRole = new MaintenanceMan();
         tempRole->Init();
-        tempRole->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_MAINTENANCEMAN));
+        tempRole->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEMPMESH));
         tempRole->SetPos(this->m_pos);
         tempRole->SetDirection(this->m_dir);
 
@@ -401,7 +402,7 @@ void Entity::SetTempRole(Entity* newRole)
     else if (newRole->GetName() == "Scrap Man") {
         tempRole = new ScrapMan();
         tempRole->Init();
-        tempRole->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_SCRAPMAN));
+        tempRole->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEMPMESH));
         tempRole->SetPos(this->m_pos);
         tempRole->SetDirection(this->m_dir);
 
@@ -427,7 +428,7 @@ void Entity::SetTempRole(Entity* newRole)
     else if (newRole->GetName() == "Worker") {
         tempRole = new Worker();
         tempRole->Init();
-        tempRole->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WORKER));
+        tempRole->SetMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEMPMESH));
         //tempRole->SetPos(this->m_pos);
         tempRole->SetDirection(this->m_dir);
 
@@ -451,6 +452,46 @@ void Entity::RemoveTempRole()
     {
         delete tempRole;
         tempRole = NULL;
+    }
+
+    if (this->GetName() == "Maintenance Man")
+    {
+        MaintenanceMan* man = dynamic_cast<MaintenanceMan*>(this);
+        // pathfind to workstation
+        m_pathfinder->EmptyPath();
+        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+        m_pathfinder->ReceiveDestination(man->GetOriginalSpawn());
+        m_pathfinder->FindPathGreedyBestFirst();
+
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+        SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
+    }
+    else if (this->GetName() == "Scrap Man")
+    {
+        ScrapMan* man = dynamic_cast<ScrapMan*>(this);
+        // pathfind to workstation
+        m_pathfinder->EmptyPath();
+        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+        m_pathfinder->ReceiveDestination(man->GetOriginalSpawn());
+        m_pathfinder->FindPathGreedyBestFirst();
+
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+        SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
+    }
+    else if (this->GetName() == "Worker")
+    {
+        Worker* worker = dynamic_cast<Worker*>(this);
+        // pathfind to workstation
+        m_pathfinder->EmptyPath();
+        m_pathfinder->ReceiveCurrentPos(Vector3(RoundOff(m_pos.x), RoundOff(m_pos.y), m_pos.z));
+        m_pathfinder->ReceiveDestination(worker->GetOriginalSpawn());
+        m_pathfinder->FindPathGreedyBestFirst();
+
+        SetVelocity(CheckVelocity(m_pos, m_pathfinder->foundPath.back().GetPosition()));
+        SetDirection(CheckDirection(m_vel));
+        m_pathfinder->ReceiveDirection(m_dir);
     }
 }
 

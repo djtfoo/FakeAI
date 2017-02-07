@@ -5,7 +5,7 @@ Message::Message(MESSAGE_TYPE type, std::string msgTo, GameObject* msgFrom, Time
 , m_messageTo(msgTo)
 , m_messageFrom(msgFrom)
 , m_time(time)
-, m_messageSubject(NULL)
+, m_messageSubject(m_messageSubject)
 {
     b_isAcknowledged = false;
 }
@@ -16,7 +16,7 @@ Message::Message(MESSAGE_TYPE type, std::string msgTo, std::string msgFrom, Time
 , m_messageFromStr(msgFrom)
 , m_time(time)
 , m_messageFrom(0)
-, m_messageSubject(NULL)
+, m_messageSubject(m_messageSubject)
 {
     b_isAcknowledged = false;
 }
@@ -34,11 +34,11 @@ std::string Message::GetMessageString()
     case ROBOT_SHUTDOWN: return "I have shut down.";
     case ORNAMENT_COMPLETE: return "An ornament is completed.";
     case ENTITY_NOTATWORK: return "I am going on leave today.";
-    case ENTITY_ROLECHANGE: return "Replace ";
+    case ENTITY_ROLECHANGE: return "Replace " + m_messageSubject->GetName() + ".";
     case MAINTENANCEMAN_NEEDSCRAP: return "I need more scrap parts.";
     case INCREASE_URGENCY: return "Increase urgency.";
     case DECREASE_URGENCY: return "Decrease urgency.";
-    case COMPLETED_URGENCY_CHANGE: return "Urgency change complete.";
+    case COMPLETED_URGENCY_CHANGE: return "Go back to normal productivity.";
     }
 
     return "";

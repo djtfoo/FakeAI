@@ -361,6 +361,8 @@ void Worker::Act(int value)
         break;
 
     case WORK:
+        b_doneTempJob = true;
+
         SetState(WORK);
         //DoWork();
         SetDirection(CheckDirection(this->m_pos, m_workstation->GetPos()));

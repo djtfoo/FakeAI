@@ -77,6 +77,8 @@ protected:
     bool b_onLeave;
 
 public:
+    bool b_doneTempJob;
+
     virtual ~Entity();
     
     static bool IsSomeoneOnLeave();
