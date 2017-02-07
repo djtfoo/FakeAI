@@ -197,6 +197,9 @@ DIRECTION Entity::CheckDirection(const Vector3& ownPos, const Vector3& toFacePos
 
 Message* Entity::ReadMessageBoard(MessageBoard* mb)
 {
+    if (IsOnLeave())
+        return NULL;
+
     b_newMsgNotif = false;     // messages will be processed now
 
     int maxSize = mb->GetMessageListSize();
