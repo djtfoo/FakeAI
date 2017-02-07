@@ -144,6 +144,9 @@ void MeshList::Init()
     meshList[GEO_PATHFINDING_NODE] = MeshBuilder::GenerateQuad("pathfinding node", Color(1, 1, 1), 0.25f);
     meshList[GEO_PATHFINDING_NODE]->textureID = LoadTGA("Image//node.tga");
 
+    meshList[GEO_WAYPOINT_NODE] = MeshBuilder::GenerateQuad("waypoint node", Color(1, 1, 1), 0.25f);
+    //meshList[GEO_WAYPOINT_NODE]->textureID = LoadTGA("Image//node_waypoint.tga");
+
     meshList[GEO_TEMPROLE_WORKER] = MeshBuilder::GenerateQuad("temprole - worker", Color(1, 1, 1));
     meshList[GEO_TEMPROLE_WORKER]->textureID = LoadTGA("Image//Symbol_Worker.tga");
 

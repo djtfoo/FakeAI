@@ -33,6 +33,8 @@ void Supervisor::Init()
     m_workstation = NULL;
     m_toilet = NULL;
 
+    randNum = 0;
+
 }
 
 void Supervisor::SetPos(Vector3 pos)
@@ -281,7 +283,7 @@ int Supervisor::Think()
 
         if (m_breakCharge >= 2000)
         {
-            int randNum = Math::RandIntMinMax(0, 100);
+            randNum = Math::RandIntMinMax(0, 100);
             if (randNum < 50)
             {
                 m_breakCharge = 0;

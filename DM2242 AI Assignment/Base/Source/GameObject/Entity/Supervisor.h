@@ -31,8 +31,6 @@ private:
 
     double d_PatrolTimer;
     bool b_waypointsFound;
-    std::vector<Vector3> m_Waypoints;
-    int i_currWaypointIdx;
 
     // Urgency
     bool b_decisionMade;
@@ -81,9 +79,15 @@ public:
 
     double m_timer;
 
+    int i_currWaypointIdx;
+    std::vector<Vector3> m_Waypoints;
+
     // Getters
     double GetBreakCharge();
     Pathfinder* GetPathfinder();
+
+    // DEBUG UI
+    int randNum;
 };
 
 #endif

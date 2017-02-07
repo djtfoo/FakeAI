@@ -73,7 +73,7 @@ void ScrapMan::Update(double dt)
     if (tempRole)
     {
         tempRole->Update(dt);
-        SetPos(tempRole->GetPos());
+        m_pos = tempRole->GetPos();
         SetDirection(tempRole->GetDirection());
         //m_dir = tempRole->GetDirection();
         return;

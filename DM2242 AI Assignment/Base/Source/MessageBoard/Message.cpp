@@ -38,7 +38,7 @@ std::string Message::GetMessageString()
     case MAINTENANCEMAN_NEEDSCRAP: return "I need more scrap parts.";
     case INCREASE_URGENCY: return "Increase urgency.";
     case DECREASE_URGENCY: return "Decrease urgency.";
-    case COMPLETED_URGENCY_CHANGE: return "Go back to normal productivity.";
+    case COMPLETED_URGENCY_CHANGE: return "Go back to normal speed.";
     }
 
     return "";

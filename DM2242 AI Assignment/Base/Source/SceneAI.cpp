@@ -506,11 +506,15 @@ void SceneAI::CheckEntityTempRoleComplete(Entity* entity)
                 MaintenanceMan* man = dynamic_cast<MaintenanceMan*>(entity);
                 man->RemoveTempRole();
                 man->SetState(MaintenanceMan::IDLE);
+
+                return;
             }
             else if (entity->GetName() == "Scrap Man") {
                 ScrapMan* man = dynamic_cast<ScrapMan*>(entity);
                 man->RemoveTempRole();
                 man->SetState(ScrapMan::IDLE);
+
+                return;
             }
         }
     }
@@ -524,11 +528,15 @@ void SceneAI::CheckEntityTempRoleComplete(Entity* entity)
                 Worker* worker = dynamic_cast<Worker*>(entity);
                 worker->RemoveTempRole();
                 worker->SetState(Worker::IDLE);
+
+                return;
             }
             else if (entity->GetName() == "Scrap Man") {
                 ScrapMan* scrapman = dynamic_cast<ScrapMan*>(entity);
                 scrapman->RemoveTempRole();
                 scrapman->SetState(ScrapMan::IDLE);
+
+                return;
             }
         }
     }
@@ -542,11 +550,15 @@ void SceneAI::CheckEntityTempRoleComplete(Entity* entity)
                 Worker* worker = dynamic_cast<Worker*>(entity);
                 worker->RemoveTempRole();
                 worker->SetState(Worker::IDLE);
+
+                return;
             }
             else if (entity->GetName() == "Maintenance Man") {
                 MaintenanceMan* man = dynamic_cast<MaintenanceMan*>(entity);
                 man->RemoveTempRole();
                 man->SetState(MaintenanceMan::IDLE);
+
+                return;
             }
         }
     }
@@ -910,7 +922,7 @@ void SceneAI::RenderDebugInfo()
             waypointPos = conveyorbelt->GetCheckpoint(idx);
             modelStack.PushMatrix();
             modelStack.Translate(waypointPos.x, waypointPos.y, 0.5f);
-            RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
+            RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WAYPOINT_NODE), false);
             modelStack.PopMatrix();
         }
 
@@ -1420,6 +1432,38 @@ void SceneAI::RenderDebugInfo()
 
         RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), "State:" + stateStr, Color(0, 0, 0), 2, 23, 0);
 
+        if (sup->GetState() == Supervisor::IDLE)
+        {
+            // Break Charge
+            ss.str("");
+            ss << "Break: " << (int)sup->GetBreakCharge() << " / 2000   " << sup->randNum << " > 50";
+            RenderTextOnScreen(SharedData::GetInstance()->m_meshList->GetMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 2, 52, 0);
+        }
+        else if (sup->GetState() == Supervisor::PATROL)
+        {
+            for (int i = sup->i_currWaypointIdx; i < sup->m_Waypoints.size(); ++i)
+            {
+                modelStack.PushMatrix();
+                modelStack.Translate(sup->m_Waypoints[i].x, sup->m_Waypoints[i].y, -0.5f);
+                RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_WAYPOINT_NODE), false);
+                modelStack.PopMatrix();
+            }
+        }
+
+        Pathfinder* pathfinder = sup->GetPathfinder();
+        if (pathfinder)
+        {
+            if (!pathfinder->IsPathEmpty())
+            {
+                for (std::vector<Node>::iterator it = pathfinder->foundPath.begin(); it != pathfinder->foundPath.end(); ++it)
+                {
+                    modelStack.PushMatrix();
+                    modelStack.Translate((*it).col, (*it).row, -0.5f);
+                    RenderMesh(SharedData::GetInstance()->m_meshList->GetMesh(GEO_PATHFINDING_NODE), false);
+                    modelStack.PopMatrix();
+                }
+            }
+        }   // end of pathfinder
     }
 
     //BUILDING BLOCK STACK - selected or not, and if selected, the timer left
